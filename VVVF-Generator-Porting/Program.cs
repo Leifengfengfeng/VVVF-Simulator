@@ -1,15 +1,11 @@
 ﻿using NAudio.CoreAudioApi;
 using NAudio.Wave;
-using NAudio.Wave.SampleProviders;
 using OpenCvSharp;
 using System;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using System.IO;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 using static VVVF_Generator_Porting.vvvf_wave;
 
 namespace VVVF_Generator_Porting
