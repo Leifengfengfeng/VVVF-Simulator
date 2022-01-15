@@ -43,7 +43,7 @@ W - 変化大
 S - 変化中
 X - 変化小
 B - ブレーキON/OFF
-M - マスコンON/OFF
+N - マスコンON/OFF
 R - VVVF音再選択
 Enter - 終了
 ```
