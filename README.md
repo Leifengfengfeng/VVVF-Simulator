@@ -43,7 +43,7 @@ W - Largest Change in frequency
 S - Medium Change in frequency
 X - Smallest Change in frequency
 B - Brake Toggle between ON/OFF
-M - Mascon Toggle between ON/OFF 
+N - Mascon Toggle between ON/OFF 
 R - Reselect vvvf inverter sound
 Enter - Exit the program
 ```
