@@ -862,24 +862,39 @@ namespace VVVF_Generator_Porting
         }
         static void Main(string[] args)
         {
-            DateTime startDt = DateTime.Now;
+            Console.WriteLine("Select the function to do. (Use \",\" to use multiple function)");
 
-            //VVVF_Sound_Names sound_name = get_Choosed_Sound();
-            //String output_path = get_Path();
-            //generate_sound(output_path, sound_name);
-            //generate_video(output_path, sound_name);
-            //generate_status_video(output_path, sound_name);
-            realtime_sound();
+            Console.WriteLine("1 : Generate Sound");
+            Console.WriteLine("2 : Generate Wave form Video");
+            Console.WriteLine("3 : Generate Mascon Video");
+            Console.WriteLine("4 : Realtime VVVF Sound generation");
 
+            String line = Console.ReadLine();
 
+            String[] split = line.Split(",");
 
-            DateTime endDt = DateTime.Now;
+            bool gen_audio = false, gen_video = false, gen_mascon_video = false, realtime = false;
 
-            TimeSpan ts = endDt - startDt;
+            for(int i = 0; i < split.Length; i++)
+            {
+                if (split[i] == "1") gen_audio = true;
+                if (split[i] == "2") gen_video = true;
+                if (split[i] == "3") gen_mascon_video = true;
+                if (split[i] == "4") realtime = true;
+            }
 
-            Console.WriteLine("Time took to generate vvvf sound : " + ts.TotalSeconds);
             
+            if(gen_audio || gen_video || gen_mascon_video)
+            {
+                VVVF_Sound_Names sound_name = get_Choosed_Sound();
+                String output_path = get_Path();
 
+                if (gen_audio) generate_sound(output_path, sound_name);
+                if (gen_video) generate_video(output_path, sound_name);
+                if (gen_mascon_video) generate_status_video(output_path, sound_name);
+            }
+
+            if (realtime) realtime_sound();
         }
     }
 }
