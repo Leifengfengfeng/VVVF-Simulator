@@ -338,15 +338,15 @@ namespace VVVF_Generator_Porting
 					pulse_mode = Pulse_Mode.P_Wide_3;
 					amplitude = 0.8 + 0.1 / 8.0 * (cv.wave_stat - 67);
 				}
-				else if (cv.wave_stat > 56)
+				else if (cv.wave_stat >= 56)
 				{
 					double expect_saw_freq = 700 + (1600 - 700) / 11 * (cv.wave_stat - 56);
 					expect_saw_angle_freq = M_2PI * expect_saw_freq;
 					pulse_mode = Pulse_Mode.Not_In_Sync;
 				}
-				else if (cv.wave_stat > 29)
+				else if (cv.wave_stat >= 29)
 				{
-					double expect_saw_freq = 1045 + (700 - 1045) / (56-29) * (cv.wave_stat - 29);
+					double expect_saw_freq = 1045 + (700 - 1045) / (55.9-29) * (cv.wave_stat - 29);
 					expect_saw_angle_freq = M_2PI * expect_saw_freq;
 					pulse_mode = Pulse_Mode.Not_In_Sync;
 				}
@@ -380,15 +380,15 @@ namespace VVVF_Generator_Porting
 					pulse_mode = Pulse_Mode.P_Wide_3;
 					amplitude = 0.8 + 0.2 / 8.0 * (cv.wave_stat - 60);
 				}
-				else if (49 <= cv.wave_stat && cv.wave_stat <= 60)
+				else if (cv.wave_stat >= 49)
 				{
 					double expect_saw_freq = 710 + (1750 - 710) / 11 * (cv.wave_stat - 49);
 					expect_saw_angle_freq = M_2PI * expect_saw_freq;
 					pulse_mode = Pulse_Mode.Not_In_Sync;
 				}
-				else if (23 <= cv.wave_stat && cv.wave_stat < 50)
+				else if (cv.wave_stat >= 23)
 				{
-					double expect_saw_freq = 1045 + (710 - 1045) / 26 * (cv.wave_stat - 23);
+					double expect_saw_freq = 1045 + (710 - 1045) / (48.9-23) * (cv.wave_stat - 23);
 					expect_saw_angle_freq = M_2PI * expect_saw_freq;
 					pulse_mode = Pulse_Mode.Not_In_Sync;
 				}
