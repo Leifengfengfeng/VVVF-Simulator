@@ -311,47 +311,92 @@ namespace VVVF_Generator_Porting
 
 		public static Wave_Values calculate_E231(Control_Values cv)
 		{
-			Program.mascon_off_div = 12000;
-
-			double amplitude = get_Amplitude(cv.wave_stat, 65);
+			
+			double amplitude = 0;
 			double expect_saw_angle_freq = 0;
-			Pulse_Mode pulse_mode;
-
-			if (cv.free_run && !cv.mascon_on && cv.wave_stat > 67)
+			Pulse_Mode pulse_mode = Pulse_Mode.P_1;
+			if (cv.brake)
             {
-				cv.wave_stat = 67;
-				Program.wave_stat = 67;
-			}
-				
-			else if(cv.free_run && cv.mascon_on && cv.wave_stat > 67)
-            {
-				cv.wave_stat = sin_angle_freq * M_1_2PI;
-				Program.wave_stat = sin_angle_freq * M_1_2PI;
-			}
+				Program.mascon_off_div = 24000;
+				amplitude = get_Amplitude(cv.wave_stat, 73);
+				if (cv.free_run && !cv.mascon_on && cv.wave_stat > 73)
+				{
+					cv.wave_stat = 73;
+					Program.wave_stat = 73;
+				}
 
-			if (cv.wave_stat > 67)
-				pulse_mode = Pulse_Mode.P_1;
-			else if (cv.wave_stat > 60)
-			{
-				pulse_mode = Pulse_Mode.P_Wide_3;
-				amplitude = 0.8 + 0.2 / 8.0 * (cv.wave_stat - 60);
+				else if (cv.free_run && cv.mascon_on && cv.wave_stat > 73)
+				{
+					cv.wave_stat = sin_angle_freq * M_1_2PI;
+					Program.wave_stat = sin_angle_freq * M_1_2PI;
+				}
+
+				if (cv.wave_stat > 73)
+					pulse_mode = Pulse_Mode.P_1;
+				else if (cv.wave_stat > 67)
+				{
+					pulse_mode = Pulse_Mode.P_Wide_3;
+					amplitude = 0.8 + 0.1 / 8.0 * (cv.wave_stat - 67);
+				}
+				else if (cv.wave_stat > 56)
+				{
+					double expect_saw_freq = 700 + (1600 - 700) / 11 * (cv.wave_stat - 56);
+					expect_saw_angle_freq = M_2PI * expect_saw_freq;
+					pulse_mode = Pulse_Mode.Not_In_Sync;
+				}
+				else if (cv.wave_stat > 29)
+				{
+					double expect_saw_freq = 1045 + (700 - 1045) / (56-29) * (cv.wave_stat - 29);
+					expect_saw_angle_freq = M_2PI * expect_saw_freq;
+					pulse_mode = Pulse_Mode.Not_In_Sync;
+				}
+				else
+				{
+					expect_saw_angle_freq = 1045 * M_2PI;
+					pulse_mode = Pulse_Mode.Not_In_Sync;
+				}
 			}
-			else if (49 <= cv.wave_stat && cv.wave_stat <= 60)
-			{
-				double expect_saw_freq = 710 + (1750 - 710) / 11 * (cv.wave_stat - 49);
-				expect_saw_angle_freq = M_2PI * expect_saw_freq;
-				pulse_mode = Pulse_Mode.Not_In_Sync;
-			}
-			else if (23 <= cv.wave_stat && cv.wave_stat < 50)
-			{
-				double expect_saw_freq = 1045 + (710 - 1045) / 26 * (cv.wave_stat - 23);
-				expect_saw_angle_freq = M_2PI * expect_saw_freq;
-				pulse_mode = Pulse_Mode.Not_In_Sync;
-			}
-			else
-			{
-				expect_saw_angle_freq = 1045 * M_2PI;
-				pulse_mode = Pulse_Mode.Not_In_Sync;
+            else
+            {
+				Program.mascon_off_div = 12000;
+				amplitude = get_Amplitude(cv.wave_stat, 65);
+
+				if (cv.free_run && !cv.mascon_on && cv.wave_stat > 67)
+				{
+					cv.wave_stat = 67;
+					Program.wave_stat = 67;
+				}
+
+				else if (cv.free_run && cv.mascon_on && cv.wave_stat > 67)
+				{
+					cv.wave_stat = sin_angle_freq * M_1_2PI;
+					Program.wave_stat = sin_angle_freq * M_1_2PI;
+				}
+
+				if (cv.wave_stat > 67)
+					pulse_mode = Pulse_Mode.P_1;
+				else if (cv.wave_stat > 60)
+				{
+					pulse_mode = Pulse_Mode.P_Wide_3;
+					amplitude = 0.8 + 0.2 / 8.0 * (cv.wave_stat - 60);
+				}
+				else if (49 <= cv.wave_stat && cv.wave_stat <= 60)
+				{
+					double expect_saw_freq = 710 + (1750 - 710) / 11 * (cv.wave_stat - 49);
+					expect_saw_angle_freq = M_2PI * expect_saw_freq;
+					pulse_mode = Pulse_Mode.Not_In_Sync;
+				}
+				else if (23 <= cv.wave_stat && cv.wave_stat < 50)
+				{
+					double expect_saw_freq = 1045 + (710 - 1045) / 26 * (cv.wave_stat - 23);
+					expect_saw_angle_freq = M_2PI * expect_saw_freq;
+					pulse_mode = Pulse_Mode.Not_In_Sync;
+				}
+				else
+				{
+					expect_saw_angle_freq = 1045 * M_2PI;
+					pulse_mode = Pulse_Mode.Not_In_Sync;
+				}
 			}
 
 			return calculate_common(pulse_mode, expect_saw_angle_freq, cv.initial_phase, amplitude);
