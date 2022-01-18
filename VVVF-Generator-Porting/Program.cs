@@ -120,8 +120,8 @@ namespace VVVF_Generator_Porting
             if (count % 60 == 0 && do_frequency_change && sin_angle_freq * M_1_2PI == wave_stat)
             {
                 double sin_new_angle_freq = sin_angle_freq;
-                if (!brake) sin_new_angle_freq += Math.PI / 500 * 1.5;
-                else sin_new_angle_freq -= Math.PI / 500 * 1.5;
+                if (!brake) sin_new_angle_freq += Math.PI / 400;
+                else sin_new_angle_freq -= Math.PI / 400;
                 double amp = sin_angle_freq / sin_new_angle_freq;
                 sin_angle_freq = sin_new_angle_freq;
                 sin_time = amp * sin_time;
@@ -135,7 +135,7 @@ namespace VVVF_Generator_Porting
                     mascon_off = true;
                     count = 0;
                 }
-                else if (count / div_freq > 3 && !do_frequency_change)
+                else if (count / div_freq > 2 && !do_frequency_change)
                 {
                     do_frequency_change = true;
                     mascon_off = false;
