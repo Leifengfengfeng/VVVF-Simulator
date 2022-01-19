@@ -52,6 +52,9 @@ namespace VVVF_Generator_Porting
             if (name == VVVF_Sound_Names.Sound_toyo_IGBT) return calculate_toyo_IGBT(cv);
             if (name == VVVF_Sound_Names.Sound_jre_209_mitsubishi_gto) return calculate_jre_209_mitsubishi_gto(cv);
             if (name == VVVF_Sound_Names.Sound_E231_3_level) return calculate_E231_3_level(cv);
+            if (name == VVVF_Sound_Names.Sound_wmata_6000_alstom_igbt) return calculate_wmata_6000_alstom_igbt(cv);
+            if (name == VVVF_Sound_Names.Sound_wmata_7000_toshiba_igbt) return calculate_wmata_7000_toshiba_igbt(cv);
+            
 
             return calculate_silent(cv);
         }
