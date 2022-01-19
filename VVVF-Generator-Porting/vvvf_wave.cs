@@ -260,7 +260,7 @@ namespace VVVF_Generator_Porting
 			return wv;
 		}
 
-		public static Wave_Values calculate_common(Pulse_Mode pulse_mode, double expect_saw_angle_freq, double initial_phase, double amplitude)
+		public static Wave_Values calculate_two_level(Pulse_Mode pulse_mode, double expect_saw_angle_freq, double initial_phase, double amplitude)
 		{
 			//variable change for video
 			//no need in RPI zero vvvf
@@ -399,7 +399,7 @@ namespace VVVF_Generator_Porting
 				}
 			}
 
-			return calculate_common(pulse_mode, expect_saw_angle_freq, cv.initial_phase, amplitude);
+			return calculate_two_level(pulse_mode, expect_saw_angle_freq, cv.initial_phase, amplitude);
 		}
 
 		public static Wave_Values calculate_207(Control_Values cv)
@@ -459,7 +459,7 @@ namespace VVVF_Generator_Porting
 				}
 			}
 
-			return calculate_common(pulse_mode, expect_saw_angle_freq, cv.initial_phase, amplitude);
+			return calculate_two_level(pulse_mode, expect_saw_angle_freq, cv.initial_phase, amplitude);
 		}
 
 		public static Wave_Values calculate_doremi(Control_Values cv)
@@ -526,7 +526,7 @@ namespace VVVF_Generator_Porting
 			}
 
 
-			return calculate_common(pulse_mode, expect_saw_angle_freq, cv.initial_phase, amplitude);
+			return calculate_two_level(pulse_mode, expect_saw_angle_freq, cv.initial_phase, amplitude);
 		}
 
 		public static Wave_Values calculate_E235(Control_Values cv)
@@ -608,7 +608,7 @@ namespace VVVF_Generator_Porting
 			{
 				return get_Wave_Values_None();
 			}
-			return calculate_common(pulse_mode, expect_saw_angle_freq, cv.initial_phase, amplitude);
+			return calculate_two_level(pulse_mode, expect_saw_angle_freq, cv.initial_phase, amplitude);
 		}
 
 		public static Wave_Values calculate_9820_mitsubishi(Control_Values cv)
@@ -642,7 +642,7 @@ namespace VVVF_Generator_Porting
 				pulse_Mode = Pulse_Mode.Not_In_Sync;
 			}
 
-			return calculate_common(pulse_Mode, expect_saw_angle_freq, cv.initial_phase, amplitude);
+			return calculate_two_level(pulse_Mode, expect_saw_angle_freq, cv.initial_phase, amplitude);
 		}
 
 		public static Wave_Values calculate_9820_hitachi(Control_Values cv)
@@ -670,7 +670,7 @@ namespace VVVF_Generator_Porting
 				pulse_Mode = Pulse_Mode.Not_In_Sync;
 			}
 
-			return calculate_common(pulse_Mode, expect_saw_angle_freq, cv.initial_phase, amplitude);
+			return calculate_two_level(pulse_Mode, expect_saw_angle_freq, cv.initial_phase, amplitude);
 		}
 
 		public static Wave_Values calculate_E233(Control_Values cv)
@@ -710,7 +710,7 @@ namespace VVVF_Generator_Porting
 				}
 			}
 			 
-			return calculate_common(pulse_Mode, expect_saw_angle_freq, cv.initial_phase, amplitude);
+			return calculate_two_level(pulse_Mode, expect_saw_angle_freq, cv.initial_phase, amplitude);
 		}
 
 		public static Wave_Values calculate_silent(Control_Values cv)
@@ -726,7 +726,7 @@ namespace VVVF_Generator_Porting
 				expect_saw_angle_freq = get_random_freq(550, 100) * M_2PI;
 			}
 
-			return calculate_common(pulse_Mode, expect_saw_angle_freq, cv.initial_phase, amplitude);
+			return calculate_two_level(pulse_Mode, expect_saw_angle_freq, cv.initial_phase, amplitude);
 		}
 
 		public static Wave_Values calculate_mitsubishi_gto(Control_Values cv)
@@ -766,7 +766,7 @@ namespace VVVF_Generator_Porting
 				pulse_Mode = Pulse_Mode.Not_In_Sync;
 			}
 
-			return calculate_common(pulse_Mode, expect_saw_angle_freq, cv.initial_phase, amplitude);
+			return calculate_two_level(pulse_Mode, expect_saw_angle_freq, cv.initial_phase, amplitude);
 		}
 
 		public static Wave_Values calculate_toyo_IGBT(Control_Values cv)
@@ -792,7 +792,7 @@ namespace VVVF_Generator_Porting
 					pulse_Mode = Pulse_Mode.Not_In_Sync;
 				}
 
-				return calculate_common(pulse_Mode, expect_saw_angle_freq, cv.initial_phase, amplitude);
+				return calculate_two_level(pulse_Mode, expect_saw_angle_freq, cv.initial_phase, amplitude);
 			}
 			else
 			{
@@ -815,7 +815,7 @@ namespace VVVF_Generator_Porting
 					pulse_Mode = Pulse_Mode.Not_In_Sync;
 				}
 
-				return calculate_common(pulse_Mode, expect_saw_angle_freq, cv.initial_phase, amplitude);
+				return calculate_two_level(pulse_Mode, expect_saw_angle_freq, cv.initial_phase, amplitude);
 			}
 		}
 
@@ -862,7 +862,7 @@ namespace VVVF_Generator_Porting
 				pulse_mode = Pulse_Mode.Not_In_Sync;
 			}
 
-			return calculate_common(pulse_mode, expect_saw_angle_freq, cv.initial_phase, amplitude);
+			return calculate_two_level(pulse_mode, expect_saw_angle_freq, cv.initial_phase, amplitude);
 		}
 
 		public static Wave_Values calculate_real_doremi(Control_Values cv)
@@ -928,7 +928,7 @@ namespace VVVF_Generator_Porting
 				}
 			}
 
-			return calculate_common(pulse_mode, expect_saw_angle_freq, cv.initial_phase, amplitude);
+			return calculate_two_level(pulse_mode, expect_saw_angle_freq, cv.initial_phase, amplitude);
 		}
 
 		public static Wave_Values calculate_toubu_50050(Control_Values cv)
@@ -968,7 +968,7 @@ namespace VVVF_Generator_Porting
 				expect_saw_angle_freq = get_random_freq((int)base_freq, 100) * M_2PI;
 			}
 
-			return calculate_common(pulse_Mode, expect_saw_angle_freq, cv.initial_phase, amplitude);
+			return calculate_two_level(pulse_Mode, expect_saw_angle_freq, cv.initial_phase, amplitude);
 		}
 	
 		public static Wave_Values calculate_207_1000_update(Control_Values cv)
@@ -1028,7 +1028,7 @@ namespace VVVF_Generator_Porting
 				}
 			}
 
-			return calculate_common(pulse_mode, expect_saw_angle_freq, cv.initial_phase, amplitude);
+			return calculate_two_level(pulse_mode, expect_saw_angle_freq, cv.initial_phase, amplitude);
 		}
 
 		public static Wave_Values calculate_225_5100_mitsubishi(Control_Values cv)
@@ -1071,7 +1071,7 @@ namespace VVVF_Generator_Porting
 				}
 			}
 
-			return calculate_common(pulse_Mode, expect_saw_angle_freq, cv.initial_phase, amplitude);
+			return calculate_two_level(pulse_Mode, expect_saw_angle_freq, cv.initial_phase, amplitude);
 		}
 
 		public static Wave_Values calculate_321_hitachi(Control_Values cv)
@@ -1117,7 +1117,7 @@ namespace VVVF_Generator_Porting
 				}
 			}
 
-			return calculate_common(pulse_Mode, expect_saw_angle_freq, cv.initial_phase, amplitude);
+			return calculate_two_level(pulse_Mode, expect_saw_angle_freq, cv.initial_phase, amplitude);
 		}
 
 		public static Wave_Values calculate_toyo_GTO(Control_Values cv)
@@ -1201,7 +1201,7 @@ namespace VVVF_Generator_Porting
 				}
 			}
 
-			return calculate_common(pulse_Mode, expect_saw_angle_freq, cv.initial_phase, amplitude);
+			return calculate_two_level(pulse_Mode, expect_saw_angle_freq, cv.initial_phase, amplitude);
 		}
 
 		//need research
@@ -1226,7 +1226,7 @@ namespace VVVF_Generator_Porting
 				pulse_Mode = Pulse_Mode.Not_In_Sync;
 			}
 
-			return calculate_common(pulse_Mode, expect_saw_angle_freq, cv.initial_phase, amplitude);
+			return calculate_two_level(pulse_Mode, expect_saw_angle_freq, cv.initial_phase, amplitude);
 		}
 
 		public static Wave_Values calculate_toei_6300_3(Control_Values cv)
@@ -1264,7 +1264,7 @@ namespace VVVF_Generator_Porting
 				pulse_Mode = Pulse_Mode.Not_In_Sync;
 			}
 
-			return calculate_common(pulse_Mode, expect_saw_angle_freq, cv.initial_phase, amplitude);
+			return calculate_two_level(pulse_Mode, expect_saw_angle_freq, cv.initial_phase, amplitude);
 		}
 		public static Wave_Values calculate_tokyu_9000_hitachi_gto(Control_Values cv)
 		{
@@ -1344,7 +1344,7 @@ namespace VVVF_Generator_Porting
 					pulse_mode = Pulse_Mode.Not_In_Sync;
 				}
 			}
-			return calculate_common(pulse_mode, expect_saw_angle_freq, cv.initial_phase, amplitude);
+			return calculate_two_level(pulse_mode, expect_saw_angle_freq, cv.initial_phase, amplitude);
 		}
 
 		public static Wave_Values calculate_tokyuu_5000(Control_Values cv)
@@ -1418,7 +1418,7 @@ namespace VVVF_Generator_Porting
 
 			if (!cv.mascon_on && cv.free_run && cv.wave_stat < 23) amplitude = 0;
 
-			return calculate_common(pulse_Mode, expect_saw_angle_freq, cv.initial_phase, amplitude);
+			return calculate_two_level(pulse_Mode, expect_saw_angle_freq, cv.initial_phase, amplitude);
 		}
 
 		public static Wave_Values calculate_keio_8000_gto(Control_Values cv)
@@ -1477,7 +1477,7 @@ namespace VVVF_Generator_Porting
 				}
 			}
 
-			return calculate_common(pulse_Mode, expect_saw_angle_freq, cv.initial_phase, amplitude);
+			return calculate_two_level(pulse_Mode, expect_saw_angle_freq, cv.initial_phase, amplitude);
 		}
 
 		public static Wave_Values calculate_tokyuu_1000_1500_IGBT(Control_Values cv)
@@ -1533,7 +1533,7 @@ namespace VVVF_Generator_Porting
 				}
 			}
 
-			return calculate_common(pulse_Mode, expect_saw_angle_freq, cv.initial_phase, amplitude);
+			return calculate_two_level(pulse_Mode, expect_saw_angle_freq, cv.initial_phase, amplitude);
 		}
 
 		public static Wave_Values calculate_E233_3000(Control_Values cv)
@@ -1612,7 +1612,7 @@ namespace VVVF_Generator_Porting
 				}
 			}
 
-			return calculate_common(pulse_Mode, expect_saw_angle_freq, cv.initial_phase, amplitude);
+			return calculate_two_level(pulse_Mode, expect_saw_angle_freq, cv.initial_phase, amplitude);
 		}
 
 		public static Wave_Values calculate_jre_209_mitsubishi_gto(Control_Values cv)
