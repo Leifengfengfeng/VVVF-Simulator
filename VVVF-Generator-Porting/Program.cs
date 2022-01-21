@@ -55,8 +55,28 @@ namespace VVVF_Generator_Porting
             if (name == VVVF_Sound_Names.sound_jre_209_mitsubishi_gto_2_level) return calculate_jre_209_mitsubishi_gto_2_level(cv);
             if (name == VVVF_Sound_Names.sound_famina_2_level) return calculate_famina_2_level(cv);
             if (name == VVVF_Sound_Names.sound_real_doremi_2_level) return calculate_real_doremi_2_level(cv);
-   
+
             return calculate_silent_2_level(cv);
+        }
+
+        public static String get_Sound_Name(VVVF_Sound_Names name)
+        {
+            String name_str = name.ToString();
+            String[] pattern = name_str.Split("_");
+
+            String final_name = "";
+            for(int i = 1; i < pattern.Length - 2;i++)
+            {
+                final_name += pattern[i];
+                if(i + 1 < pattern.Length - 2)
+                {
+                    final_name += "_";
+                }
+            }
+
+            final_name += "(" + pattern[pattern.Length - 2] + "-" + pattern[pattern.Length - 1] + ")";
+
+            return final_name;
         }
 
         public static VVVF_Sound_Names get_Choosed_Sound()
@@ -66,7 +86,7 @@ namespace VVVF_Generator_Porting
             int enum_len = Enum.GetNames(typeof(VVVF_Sound_Names)).Length;
             for (int i = 0; i < enum_len; i++)
             {
-                Console.WriteLine(i.ToString() + " : " + (((VVVF_Sound_Names)i).ToString()));
+                Console.WriteLine(i.ToString() + " : " + get_Sound_Name((VVVF_Sound_Names)i));
             }
 
             while (true)
@@ -222,9 +242,10 @@ namespace VVVF_Generator_Porting
             Int32 sound_block_count = 0;
             DateTime dt = DateTime.Now;
             String gen_time = dt.ToString("yyyy-MM-dd_HH-mm-ss");
+            String appear_sound_name = get_Sound_Name(sound_name);
 
 
-            String fileName = output_path + "\\" + gen_time + ".wav";
+            String fileName = output_path + "\\" + appear_sound_name + "-" + gen_time + ".wav";
 
             BinaryWriter writer = new BinaryWriter(new FileStream(fileName, FileMode.Create));
 
@@ -305,18 +326,17 @@ namespace VVVF_Generator_Porting
 
             DateTime dt = DateTime.Now;
             String gen_time = dt.ToString("yyyy-MM-dd_HH-mm-ss");
+            String appear_sound_name = get_Sound_Name(sound_name);
+            String fileName = output_path + "\\" + appear_sound_name + "-" + gen_time + ".avi";
+
             bool temp = true;
             Int32 sound_block_count = 0;
-
-
-            
 
             int image_width = 2000;
             int image_height = 500;
             int movie_div = 3000;
             int wave_height = 50;
 
-            String fileName = output_path + "\\" + gen_time + ".avi";
             VideoWriter vr = new VideoWriter(fileName, OpenCvSharp.FourCC.H264, div_freq / movie_div, new OpenCvSharp.Size(image_width, image_height));
 
             if (!vr.IsOpened())
@@ -511,14 +531,14 @@ namespace VVVF_Generator_Porting
 
             DateTime dt = DateTime.Now;
             String gen_time = dt.ToString("yyyy-MM-dd_HH-mm-ss");
+            String appear_sound_name = get_Sound_Name(sound_name);
+            String fileName = output_path + "\\" + appear_sound_name + "-" + gen_time + ".avi";
 
             Int32 sound_block_count = 0;
 
             int image_width = 500;
             int image_height = 1080;
             int movie_div = 3000;
-
-            String fileName = output_path + "\\" + gen_time + ".avi";
             VideoWriter vr = new VideoWriter(fileName, OpenCvSharp.FourCC.H264, div_freq / movie_div, new OpenCvSharp.Size(image_width, image_height));
 
             if (!vr.IsOpened())
@@ -806,7 +826,7 @@ namespace VVVF_Generator_Porting
                     else if (voltage_stat > 0) d = 0xC0;
                     else d = 0x40;
                     */
-                    add[i] = sound_byte;
+            add[i] = sound_byte;
                 }
 
 
