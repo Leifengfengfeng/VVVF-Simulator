@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using System.IO;
+using static VVVF_Generator_Porting.vvvf_wave_calculate;
 using static VVVF_Generator_Porting.vvvf_wave;
 
 namespace VVVF_Generator_Porting
@@ -26,35 +27,60 @@ namespace VVVF_Generator_Porting
 
         public static Wave_Values get_Calculated_Value(VVVF_Sound_Names name, Control_Values cv)
         {
-            if (name == VVVF_Sound_Names.sound_jre_209_mitsubishi_gto_3_level) return calculate_jre_209_mitsubishi_gto_3_level(cv);
-            if (name == VVVF_Sound_Names.sound_jre_e231_mitsubishi_igbt_3_level) return calculate_jre_e231_mitsubishi_igbt_3_level(cv);
-            if (name == VVVF_Sound_Names.sound_jre_e231_1000_hitachi_igbt_2_level) return calculate_jre_e231_1000_hitachi_igbt_2_level(cv);
-            if (name == VVVF_Sound_Names.sound_jre_e233_mitsubishi_igbt_2_level) return calculate_jre_e233_mitsubishi_igbt_2_level(cv);
-            if (name == VVVF_Sound_Names.sound_jre_e233_3000_hitachi_igbt_2_level) return calculate_jre_e233_3000_hitachi_igbt_2_level(cv);
-            if (name == VVVF_Sound_Names.sound_jre_e235_toshiba_sic_2_level) return calculate_jre_e235_toshiba_sic_2_level(cv);
-            if (name == VVVF_Sound_Names.sound_jrw_207_toshiba_gto_2_level) return calculate_jrw_207_toshiba_gto_2_level(cv);
-            if (name == VVVF_Sound_Names.sound_jrw_207_update_toshiba_igbt_2_level) return calculate_jrw_207_update_toshiba_igbt_2_level(cv);
-            if (name == VVVF_Sound_Names.sound_jrw_321_hitachi_igbt_2_level) return calculate_jrw_321_hitachi_igbt_2_level(cv);
-            if (name == VVVF_Sound_Names.sound_jrw_225_5100_mitsubishi_igbt_2_level) return calculate_jrw_225_5100_mitsubishi_igbt_2_level(cv);
-            if (name == VVVF_Sound_Names.sound_tokyuu_9000_hitachi_gto_2_level) return calculate_tokyuu_9000_hitachi_gto_2_level(cv);
-            if (name == VVVF_Sound_Names.sound_tokyuu_5000_hitachi_igbt_2_level) return calculate_tokyuu_5000_hitachi_igbt_2_level(cv);
-            if (name == VVVF_Sound_Names.sound_tokyuu_1000_1500_update_toshiba_igbt_2_level) return calculate_tokyuu_1000_1500_update_toshiba_igbt_2_level(cv);
-            if (name == VVVF_Sound_Names.sound_kintetsu_9820_mitsubishi_igbt_2_level) return calculate_kintetsu_9820_mitsubishi_igbt_2_level(cv);
-            if (name == VVVF_Sound_Names.sound_kintetsu_9820_hitachi_igbt_2_level) return calculate_kintetsu_9820_hitachi_igbt_2_level(cv);
-            if (name == VVVF_Sound_Names.sound_keio_8000_hitachi_gto_2_level) return calculate_keio_8000_hitachi_gto_2_level(cv);
-            if (name == VVVF_Sound_Names.sound_keikyu_n1000_siemens_gto_2_level) return calculate_keikyu_n1000_siemens_gto_2_level(cv);
-            if (name == VVVF_Sound_Names.sound_toubu_50050_hitachi_igbt_2_level) return calculate_toubu_50050_hitachi_igbt_2_level(cv);
-            if (name == VVVF_Sound_Names.sound_kyoto_subway_50_mitsubishi_gto_2_level) return calculate_kyoto_subway_50_mitsubishi_gto_2_level(cv);
-            if (name == VVVF_Sound_Names.sound_keihan_13000_toyo_igbt_2_level) return calculate_keihan_13000_toyo_igbt_2_level(cv);
-            if (name == VVVF_Sound_Names.sound_toei_6300_mitsubishi_igbt_2_level) return calculate_toei_6300_mitsubishi_igbt_2_level(cv);
-            if (name == VVVF_Sound_Names.sound_wmata_6000_alstom_igbt_2_level) return calculate_wmata_6000_alstom_igbt_2_level(cv);
-            if (name == VVVF_Sound_Names.sound_wmata_7000_toshiba_igbt_2_level) return calculate_wmata_7000_toshiba_igbt_2_level(cv);
-            if (name == VVVF_Sound_Names.sound_toyo_gto_2_level) return calculate_toyo_gto_2_level(cv);
-            if (name == VVVF_Sound_Names.sound_toyo_igbt_2_level) return calculate_toyo_igbt_2_level(cv);
-            if (name == VVVF_Sound_Names.sound_silent_2_level) return calculate_silent_2_level(cv);
-            if (name == VVVF_Sound_Names.sound_jre_209_mitsubishi_gto_2_level) return calculate_jre_209_mitsubishi_gto_2_level(cv);
-            if (name == VVVF_Sound_Names.sound_famina_2_level) return calculate_famina_2_level(cv);
-            if (name == VVVF_Sound_Names.sound_real_doremi_2_level) return calculate_real_doremi_2_level(cv);
+            //JR EAST
+            if (name == VVVF_Sound_Names.SOUND_JRE_209_MITSUBISHI_GTO_3_LEVEL) return calculate_jre_209_mitsubishi_gto_3_level(cv);
+            if (name == VVVF_Sound_Names.SOUND_JRE_E231_MITSUBISHI_IGBT_3_LEVEL) return calculate_jre_e231_mitsubishi_igbt_3_level(cv);
+            if (name == VVVF_Sound_Names.SOUND_JRE_E231_1000_HITACHI_IGBT_2_LEVEL) return calculate_jre_e231_1000_hitachi_igbt_2_level(cv);
+            if (name == VVVF_Sound_Names.SOUND_JRE_E233_MITSUBISHI_IGBT_2_LEVEL) return calculate_jre_e233_mitsubishi_igbt_2_level(cv);
+            if (name == VVVF_Sound_Names.SOUND_JRE_E233_3000_HITACHI_IGBT_2_LEVEL) return calculate_jre_e233_3000_hitachi_igbt_2_level(cv);
+            if (name == VVVF_Sound_Names.SOUND_JRE_E235_TOSHIBA_SIC_2_LEVEL) return calculate_jre_e235_toshiba_sic_2_level(cv);
+
+            //JR WEST
+            if (name == VVVF_Sound_Names.SOUND_JRW_207_TOSHIBA_GTO_2_LEVEL) return calculate_jrw_207_toshiba_gto_2_level(cv);
+            if (name == VVVF_Sound_Names.SOUND_JRW_207_UPDATE_TOSHIBA_IGBT_2_LEVEL) return calculate_jrw_207_update_toshiba_igbt_2_level(cv);
+            if (name == VVVF_Sound_Names.SOUND_JRW_321_HITACHI_IGBT_2_LEVEL) return calculate_jrw_321_hitachi_igbt_2_level(cv);
+            if (name == VVVF_Sound_Names.SOUND_JRW_225_5100_MITSUBISHI_IGBT_2_LEVEL) return calculate_jrw_225_5100_mitsubishi_igbt_2_level(cv);
+
+            //TOKYUU
+            if (name == VVVF_Sound_Names.SOUND_TOKYUU_9000_HITACHI_GTO_2_LEVEL) return calculate_tokyuu_9000_hitachi_gto_2_level(cv);
+            if (name == VVVF_Sound_Names.SOUND_TOKYUU_5000_HITACHI_IGBT_2_LEVEL) return calculate_tokyuu_5000_hitachi_igbt_2_level(cv);
+            if (name == VVVF_Sound_Names.SOUND_TOKYUU_1000_1500_UPDATE_TOSHIBA_IGBT_2_LEVEL) return calculate_tokyuu_1000_1500_update_toshiba_igbt_2_level(cv);
+
+            //KINTETSU
+            if (name == VVVF_Sound_Names.SOUND_KINTETSU_9820_MITSUBISHI_IGBT_2_LEVEL) return calculate_kintetsu_9820_mitsubishi_igbt_2_level(cv);
+            if (name == VVVF_Sound_Names.SOUND_KINTETSU_9820_HITACHI_IGBT_2_LEVEL) return calculate_kintetsu_9820_hitachi_igbt_2_level(cv);
+
+            //KEIO
+            if (name == VVVF_Sound_Names.SOUND_KEIO_8000_HITACHI_GTO_2_LEVEL) return calculate_keio_8000_hitachi_gto_2_level(cv);
+
+            //KEIKYUU
+            if (name == VVVF_Sound_Names.SOUND_KEIKYU_N1000_SIEMENS_GTO_2_LEVEL) return calculate_keikyu_n1000_siemens_gto_2_level(cv);
+            if (name == VVVF_Sound_Names.SOUND_KEIKYU_N1000_SIEMENS_IGBT_2_LEVEL) return calculate_keikyu_n1000_siemens_igbt_2_level(cv);
+
+            //TOBU
+            if (name == VVVF_Sound_Names.SOUND_TOUBU_50050_HITACHI_IGBT_2_LEVEL) return calculate_toubu_50050_hitachi_igbt_2_level(cv);
+
+            //KYOTO SUBWAY
+            if (name == VVVF_Sound_Names.SOUND_KYOTO_SUBWAY_50_MITSUBISHI_GTO_2_LEVEL) return calculate_kyoto_subway_50_mitsubishi_gto_2_level(cv);
+
+            //KEIHAN
+            if (name == VVVF_Sound_Names.SOUND_KEIHAN_13000_TOYO_IGBT_2_LEVEL) return calculate_keihan_13000_toyo_igbt_2_level(cv);
+
+            //TOEI SUBWAY
+            if (name == VVVF_Sound_Names.SOUND_TOEI_6300_MITSUBISHI_IGBT_2_LEVEL) return calculate_toei_6300_mitsubishi_igbt_2_level(cv);
+
+            //WMATA
+            if (name == VVVF_Sound_Names.SOUND_WMATA_6000_ALSTOM_IGBT_2_LEVEL) return calculate_wmata_6000_alstom_igbt_2_level(cv);
+            if (name == VVVF_Sound_Names.SOUND_WMATA_7000_TOSHIBA_IGBT_2_LEVEL) return calculate_wmata_7000_toshiba_igbt_2_level(cv);
+
+            //custom sounds
+            if (name == VVVF_Sound_Names.SOUND_X_TOYO_GTO_2_LEVEL) return calculate_toyo_gto_2_level(cv);
+            if (name == VVVF_Sound_Names.SOUND_X_TOYO_IGBT_2_LEVEL) return calculate_toyo_igbt_2_level(cv);
+            if (name == VVVF_Sound_Names.SOUND_X_SILENT_2_LEVEL) return calculate_silent_2_level(cv);
+            if (name == VVVF_Sound_Names.SOUND_JRE_209_MITSUBISHI_GTO_2_LEVEL) return calculate_jre_209_mitsubishi_gto_2_level(cv);
+            if (name == VVVF_Sound_Names.SOUND_X_FAMINA_2_LEVEL) return calculate_famina_2_level(cv);
+            if (name == VVVF_Sound_Names.SOUND_X_REAL_DOREMI_2_LEVEL) return calculate_real_doremi_2_level(cv);
+            if (name == VVVF_Sound_Names.SOUND_KEIKYU_NOT_REAL_N1000_SIEMENS_GTO_2_LEVEL) return calculate_not_real_keikyu_n1000_siemens_gto_2_level(cv);
 
             return calculate_silent_2_level(cv);
         }
@@ -81,7 +107,7 @@ namespace VVVF_Generator_Porting
 
         public static VVVF_Sound_Names get_Choosed_Sound()
         {
-            VVVF_Sound_Names sound_name = VVVF_Sound_Names.sound_jre_e231_1000_hitachi_igbt_2_level;
+            VVVF_Sound_Names sound_name = VVVF_Sound_Names.SOUND_JRE_E231_1000_HITACHI_IGBT_2_LEVEL;
             Console.WriteLine("Select sound");
             int enum_len = Enum.GetNames(typeof(VVVF_Sound_Names)).Length;
             for (int i = 0; i < enum_len; i++)
@@ -268,8 +294,8 @@ namespace VVVF_Generator_Porting
 
             while (loop)
             {
-                vvvf_wave.sin_time += 1.00 / div_freq;
-                vvvf_wave.saw_time += 1.00 / div_freq;
+                sin_time += 1.00 / div_freq;
+                saw_time += 1.00 / div_freq;
 
                 Control_Values cv_U = new Control_Values
                 {
@@ -770,7 +796,7 @@ namespace VVVF_Generator_Porting
                     if (!free_run) wave_stat = sin_angle_freq / M_2PI;
                     else
                     {
-                        wave_stat += (Math.PI * 2) / (double)(mascon_off_div / 20.0);
+                        wave_stat += (Math.PI * 2) / (double)(mascon_off_div / 12.0);
                         if (sin_angle_freq / (Math.PI * 2) < wave_stat)
                         {
                             wave_stat = sin_angle_freq / (Math.PI * 2);
@@ -782,7 +808,7 @@ namespace VVVF_Generator_Porting
                 }
                 else
                 {
-                    wave_stat -= (Math.PI * 2) / (double)(mascon_off_div / 20.0);
+                    wave_stat -= (Math.PI * 2) / (double)(mascon_off_div / 12.0);
                     if (wave_stat < 0) wave_stat = 0;
                     free_run = true;
                 }

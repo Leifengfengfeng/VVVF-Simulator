@@ -9,12 +9,12 @@ namespace VVVF_Generator_Porting
     public class my_math
     {
 
-        static double M_2PI = 6.283185307179586476925286766559;
-        static double M_PI = 3.1415926535897932384626433832795;
-        static double M_PI_2 = 1.5707963267948966192313216916398;
-        static double M_2_PI = 0.63661977236758134307553505349006;
-        static double M_1_PI = 0.31830988618379067153776752674503;
-        static double M_1_2PI = 0.15915494309189533576888376337251;
+        private static double M_2PI = 6.283185307179586476925286766559;
+        private static double M_PI = 3.1415926535897932384626433832795;
+        private static double M_PI_2 = 1.5707963267948966192313216916398;
+        private static double M_2_PI = 0.63661977236758134307553505349006;
+        private static double M_1_PI = 0.31830988618379067153776752674503;
+        private static double M_1_2PI = 0.15915494309189533576888376337251;
 
         static int sin_table_size = 2000;
         static double[] sin_table = new double[]{0.0000000000000000,
