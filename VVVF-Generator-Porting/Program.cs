@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using System.IO;
+using static VVVF_Generator_Porting.vvvf_wave_calculate;
 using static VVVF_Generator_Porting.vvvf_wave;
 
 namespace VVVF_Generator_Porting
@@ -26,35 +27,60 @@ namespace VVVF_Generator_Porting
 
         public static Wave_Values get_Calculated_Value(VVVF_Sound_Names name, Control_Values cv)
         {
-            if (name == VVVF_Sound_Names.sound_jre_209_mitsubishi_gto_3_level) return calculate_jre_209_mitsubishi_gto_3_level(cv);
-            if (name == VVVF_Sound_Names.sound_jre_e231_mitsubishi_igbt_3_level) return calculate_jre_e231_mitsubishi_igbt_3_level(cv);
-            if (name == VVVF_Sound_Names.sound_jre_e231_1000_hitachi_igbt_2_level) return calculate_jre_e231_1000_hitachi_igbt_2_level(cv);
-            if (name == VVVF_Sound_Names.sound_jre_e233_mitsubishi_igbt_2_level) return calculate_jre_e233_mitsubishi_igbt_2_level(cv);
-            if (name == VVVF_Sound_Names.sound_jre_e233_3000_hitachi_igbt_2_level) return calculate_jre_e233_3000_hitachi_igbt_2_level(cv);
-            if (name == VVVF_Sound_Names.sound_jre_e235_toshiba_sic_2_level) return calculate_jre_e235_toshiba_sic_2_level(cv);
-            if (name == VVVF_Sound_Names.sound_jrw_207_toshiba_gto_2_level) return calculate_jrw_207_toshiba_gto_2_level(cv);
-            if (name == VVVF_Sound_Names.sound_jrw_207_update_toshiba_igbt_2_level) return calculate_jrw_207_update_toshiba_igbt_2_level(cv);
-            if (name == VVVF_Sound_Names.sound_jrw_321_hitachi_igbt_2_level) return calculate_jrw_321_hitachi_igbt_2_level(cv);
-            if (name == VVVF_Sound_Names.sound_jrw_225_5100_mitsubishi_igbt_2_level) return calculate_jrw_225_5100_mitsubishi_igbt_2_level(cv);
-            if (name == VVVF_Sound_Names.sound_tokyuu_9000_hitachi_gto_2_level) return calculate_tokyuu_9000_hitachi_gto_2_level(cv);
-            if (name == VVVF_Sound_Names.sound_tokyuu_5000_hitachi_igbt_2_level) return calculate_tokyuu_5000_hitachi_igbt_2_level(cv);
-            if (name == VVVF_Sound_Names.sound_tokyuu_1000_1500_update_toshiba_igbt_2_level) return calculate_tokyuu_1000_1500_update_toshiba_igbt_2_level(cv);
-            if (name == VVVF_Sound_Names.sound_kintetsu_9820_mitsubishi_igbt_2_level) return calculate_kintetsu_9820_mitsubishi_igbt_2_level(cv);
-            if (name == VVVF_Sound_Names.sound_kintetsu_9820_hitachi_igbt_2_level) return calculate_kintetsu_9820_hitachi_igbt_2_level(cv);
-            if (name == VVVF_Sound_Names.sound_keio_8000_hitachi_gto_2_level) return calculate_keio_8000_hitachi_gto_2_level(cv);
-            if (name == VVVF_Sound_Names.sound_keikyu_n1000_siemens_gto_2_level) return calculate_keikyu_n1000_siemens_gto_2_level(cv);
-            if (name == VVVF_Sound_Names.sound_toubu_50050_hitachi_igbt_2_level) return calculate_toubu_50050_hitachi_igbt_2_level(cv);
-            if (name == VVVF_Sound_Names.sound_kyoto_subway_50_mitsubishi_gto_2_level) return calculate_kyoto_subway_50_mitsubishi_gto_2_level(cv);
-            if (name == VVVF_Sound_Names.sound_keihan_13000_toyo_igbt_2_level) return calculate_keihan_13000_toyo_igbt_2_level(cv);
-            if (name == VVVF_Sound_Names.sound_toei_6300_mitsubishi_igbt_2_level) return calculate_toei_6300_mitsubishi_igbt_2_level(cv);
-            if (name == VVVF_Sound_Names.sound_wmata_6000_alstom_igbt_2_level) return calculate_wmata_6000_alstom_igbt_2_level(cv);
-            if (name == VVVF_Sound_Names.sound_wmata_7000_toshiba_igbt_2_level) return calculate_wmata_7000_toshiba_igbt_2_level(cv);
-            if (name == VVVF_Sound_Names.sound_toyo_gto_2_level) return calculate_toyo_gto_2_level(cv);
-            if (name == VVVF_Sound_Names.sound_toyo_igbt_2_level) return calculate_toyo_igbt_2_level(cv);
-            if (name == VVVF_Sound_Names.sound_silent_2_level) return calculate_silent_2_level(cv);
-            if (name == VVVF_Sound_Names.sound_jre_209_mitsubishi_gto_2_level) return calculate_jre_209_mitsubishi_gto_2_level(cv);
-            if (name == VVVF_Sound_Names.sound_famina_2_level) return calculate_famina_2_level(cv);
-            if (name == VVVF_Sound_Names.sound_real_doremi_2_level) return calculate_real_doremi_2_level(cv);
+            //JR EAST
+            if (name == VVVF_Sound_Names.SOUND_JRE_209_MITSUBISHI_GTO_3_LEVEL) return calculate_jre_209_mitsubishi_gto_3_level(cv);
+            if (name == VVVF_Sound_Names.SOUND_JRE_E231_MITSUBISHI_IGBT_3_LEVEL) return calculate_jre_e231_mitsubishi_igbt_3_level(cv);
+            if (name == VVVF_Sound_Names.SOUND_JRE_E231_1000_HITACHI_IGBT_2_LEVEL) return calculate_jre_e231_1000_hitachi_igbt_2_level(cv);
+            if (name == VVVF_Sound_Names.SOUND_JRE_E233_MITSUBISHI_IGBT_2_LEVEL) return calculate_jre_e233_mitsubishi_igbt_2_level(cv);
+            if (name == VVVF_Sound_Names.SOUND_JRE_E233_3000_HITACHI_IGBT_2_LEVEL) return calculate_jre_e233_3000_hitachi_igbt_2_level(cv);
+            if (name == VVVF_Sound_Names.SOUND_JRE_E235_TOSHIBA_SIC_2_LEVEL) return calculate_jre_e235_toshiba_sic_2_level(cv);
+
+            //JR WEST
+            if (name == VVVF_Sound_Names.SOUND_JRW_207_TOSHIBA_GTO_2_LEVEL) return calculate_jrw_207_toshiba_gto_2_level(cv);
+            if (name == VVVF_Sound_Names.SOUND_JRW_207_UPDATE_TOSHIBA_IGBT_2_LEVEL) return calculate_jrw_207_update_toshiba_igbt_2_level(cv);
+            if (name == VVVF_Sound_Names.SOUND_JRW_321_HITACHI_IGBT_2_LEVEL) return calculate_jrw_321_hitachi_igbt_2_level(cv);
+            if (name == VVVF_Sound_Names.SOUND_JRW_225_5100_MITSUBISHI_IGBT_2_LEVEL) return calculate_jrw_225_5100_mitsubishi_igbt_2_level(cv);
+
+            //TOKYUU
+            if (name == VVVF_Sound_Names.SOUND_TOKYUU_9000_HITACHI_GTO_2_LEVEL) return calculate_tokyuu_9000_hitachi_gto_2_level(cv);
+            if (name == VVVF_Sound_Names.SOUND_TOKYUU_5000_HITACHI_IGBT_2_LEVEL) return calculate_tokyuu_5000_hitachi_igbt_2_level(cv);
+            if (name == VVVF_Sound_Names.SOUND_TOKYUU_1000_1500_UPDATE_TOSHIBA_IGBT_2_LEVEL) return calculate_tokyuu_1000_1500_update_toshiba_igbt_2_level(cv);
+
+            //KINTETSU
+            if (name == VVVF_Sound_Names.SOUND_KINTETSU_9820_MITSUBISHI_IGBT_2_LEVEL) return calculate_kintetsu_9820_mitsubishi_igbt_2_level(cv);
+            if (name == VVVF_Sound_Names.SOUND_KINTETSU_9820_HITACHI_IGBT_2_LEVEL) return calculate_kintetsu_9820_hitachi_igbt_2_level(cv);
+
+            //KEIO
+            if (name == VVVF_Sound_Names.SOUND_KEIO_8000_HITACHI_GTO_2_LEVEL) return calculate_keio_8000_hitachi_gto_2_level(cv);
+
+            //KEIKYUU
+            if (name == VVVF_Sound_Names.SOUND_KEIKYU_N1000_SIEMENS_GTO_2_LEVEL) return calculate_keikyu_n1000_siemens_gto_2_level(cv);
+            if (name == VVVF_Sound_Names.SOUND_KEIKYU_N1000_SIEMENS_IGBT_2_LEVEL) return calculate_keikyu_n1000_siemens_igbt_2_level(cv);
+
+            //TOBU
+            if (name == VVVF_Sound_Names.SOUND_TOUBU_50050_HITACHI_IGBT_2_LEVEL) return calculate_toubu_50050_hitachi_igbt_2_level(cv);
+
+            //KYOTO SUBWAY
+            if (name == VVVF_Sound_Names.SOUND_KYOTO_SUBWAY_50_MITSUBISHI_GTO_2_LEVEL) return calculate_kyoto_subway_50_mitsubishi_gto_2_level(cv);
+
+            //KEIHAN
+            if (name == VVVF_Sound_Names.SOUND_KEIHAN_13000_TOYO_IGBT_2_LEVEL) return calculate_keihan_13000_toyo_igbt_2_level(cv);
+
+            //TOEI SUBWAY
+            if (name == VVVF_Sound_Names.SOUND_TOEI_6300_MITSUBISHI_IGBT_2_LEVEL) return calculate_toei_6300_mitsubishi_igbt_2_level(cv);
+
+            //WMATA
+            if (name == VVVF_Sound_Names.SOUND_WMATA_6000_ALSTOM_IGBT_2_LEVEL) return calculate_wmata_6000_alstom_igbt_2_level(cv);
+            if (name == VVVF_Sound_Names.SOUND_WMATA_7000_TOSHIBA_IGBT_2_LEVEL) return calculate_wmata_7000_toshiba_igbt_2_level(cv);
+
+            //custom sounds
+            if (name == VVVF_Sound_Names.SOUND_X_TOYO_GTO_2_LEVEL) return calculate_toyo_gto_2_level(cv);
+            if (name == VVVF_Sound_Names.SOUND_X_TOYO_IGBT_2_LEVEL) return calculate_toyo_igbt_2_level(cv);
+            if (name == VVVF_Sound_Names.SOUND_X_SILENT_2_LEVEL) return calculate_silent_2_level(cv);
+            if (name == VVVF_Sound_Names.SOUND_JRE_209_MITSUBISHI_GTO_2_LEVEL) return calculate_jre_209_mitsubishi_gto_2_level(cv);
+            if (name == VVVF_Sound_Names.SOUND_X_FAMINA_2_LEVEL) return calculate_famina_2_level(cv);
+            if (name == VVVF_Sound_Names.SOUND_X_REAL_DOREMI_2_LEVEL) return calculate_real_doremi_2_level(cv);
+            if (name == VVVF_Sound_Names.SOUND_KEIKYU_NOT_REAL_N1000_SIEMENS_GTO_2_LEVEL) return calculate_not_real_keikyu_n1000_siemens_gto_2_level(cv);
 
             return calculate_silent_2_level(cv);
         }
@@ -81,7 +107,7 @@ namespace VVVF_Generator_Porting
 
         public static VVVF_Sound_Names get_Choosed_Sound()
         {
-            VVVF_Sound_Names sound_name = VVVF_Sound_Names.sound_jre_e231_1000_hitachi_igbt_2_level;
+            VVVF_Sound_Names sound_name = VVVF_Sound_Names.SOUND_JRE_E231_1000_HITACHI_IGBT_2_LEVEL;
             Console.WriteLine("Select sound");
             int enum_len = Enum.GetNames(typeof(VVVF_Sound_Names)).Length;
             for (int i = 0; i < enum_len; i++)
@@ -166,6 +192,7 @@ namespace VVVF_Generator_Porting
                     temp_count++;
                 }
             }
+            /*
             else if (temp_count == 1)
             {
                 if (sin_angle_freq / 2 / Math.PI < 20 && brake && do_frequency_change)
@@ -199,6 +226,7 @@ namespace VVVF_Generator_Porting
                     temp_count++;
                 }
             }
+            */
             else
             {
                 if (sin_angle_freq / 2 / Math.PI < 0 && brake && do_frequency_change) return false;
@@ -268,8 +296,8 @@ namespace VVVF_Generator_Porting
 
             while (loop)
             {
-                vvvf_wave.sin_time += 1.00 / div_freq;
-                vvvf_wave.saw_time += 1.00 / div_freq;
+                sin_time += 1.00 / div_freq;
+                saw_time += 1.00 / div_freq;
 
                 Control_Values cv_U = new Control_Values
                 {
@@ -339,9 +367,34 @@ namespace VVVF_Generator_Porting
 
             VideoWriter vr = new VideoWriter(fileName, OpenCvSharp.FourCC.H264, div_freq / movie_div, new OpenCvSharp.Size(image_width, image_height));
 
+
             if (!vr.IsOpened())
             {
                 return;
+            }
+
+            Boolean START_F192_WAIT = true;
+            if (START_F192_WAIT)
+            {
+                for(int i = 0; i < 192; i++)
+                {
+                    Bitmap image = new(image_width, image_height);
+                    Graphics g = Graphics.FromImage(image);
+                    g.FillRectangle(new SolidBrush(Color.White), 0, 0, image_width, image_height);
+                    g.DrawLine(new Pen(Color.Gray), 0, image_height / 2, image_width, image_height / 2);
+                    MemoryStream ms = new MemoryStream();
+                    image.Save(ms, ImageFormat.Png);
+                    byte[] img = ms.GetBuffer();
+                    Mat mat = OpenCvSharp.Mat.FromImageData(img);
+
+                    Cv2.ImShow("Wave Form View", mat);
+                    Cv2.WaitKey(1);
+
+                    vr.Write(mat);
+
+                    g.Dispose();
+                    image.Dispose();
+                }
             }
 
             Boolean loop = true;
@@ -429,28 +482,82 @@ namespace VVVF_Generator_Porting
 
             }
 
+            Boolean END_F64_WAIT = true;
+            if (END_F64_WAIT)
+            {
+                for (int i = 0; i < 64; i++)
+                {
+                    Bitmap image = new(image_width, image_height);
+                    Graphics g = Graphics.FromImage(image);
+                    g.FillRectangle(new SolidBrush(Color.White), 0, 0, image_width, image_height);
+                    g.DrawLine(new Pen(Color.Gray), 0, image_height / 2, image_width, image_height / 2);
+                    MemoryStream ms = new MemoryStream();
+                    image.Save(ms, ImageFormat.Png);
+                    byte[] img = ms.GetBuffer();
+                    Mat mat = OpenCvSharp.Mat.FromImageData(img);
+
+                    Cv2.ImShow("Wave Form View", mat);
+                    Cv2.WaitKey(1);
+
+                    vr.Write(mat);
+
+                    g.Dispose();
+                    image.Dispose();
+                }
+            }
+
             vr.Release();
             vr.Dispose();
         }
 
 
-        private static String get_Pulse_Name(Pulse_Mode mode)
+        private static String[] get_Pulse_Name(Pulse_Mode mode)
         {
-            if (mode == Pulse_Mode.Not_In_Sync)
+            //Not in sync
+            if (mode == Pulse_Mode.Not_In_Sync || mode == Pulse_Mode.Asyn_THI)
             {
                 double saw_freq = saw_angle_freq / Math.PI / 2.0;
-                return String.Format("Async - " + saw_freq.ToString("F2")).PadLeft(6);
+                return new string[] { String.Format("Async - " + saw_freq.ToString("F2")).PadLeft(6) };
             }
-            if(mode == Pulse_Mode.P_Wide_3)
-                return "Wide 3 Pulse";
 
-            String[] mode_name_type = mode.ToString().Split("_");
-            String mode_name = "";
-            if (mode_name_type[0] == "SP") mode_name = "Shifted ";
+            //Abs
+            if (mode == Pulse_Mode.P_Wide_3)
+                return new string[] { "Wide 3 Pulse" };
 
-            mode_name += mode_name_type[1] + " Pulse";
+            if (mode.ToString().StartsWith("CHM"))
+            {
+                String mode_name = mode.ToString();
+                bool contain_wide = mode_name.Contains("Wide");
+                mode_name = mode_name.Replace("_Wide", "");
 
-            return mode_name;
+                String[] mode_name_type = mode_name.Split("_");
+
+                String final_mode_name = ((contain_wide) ? "Wide " : "") + mode_name_type[1] + " Pulse";
+
+                return new string[] { "Current Harmonic Minimum" , final_mode_name };
+            }
+            if (mode.ToString().StartsWith("SHE"))
+            {
+                String mode_name = mode.ToString();
+                bool contain_wide = mode_name.Contains("Wide");
+                mode_name = mode_name.Replace("_Wide", "");
+
+                String[] mode_name_type = mode_name.Split("_");
+
+                String final_mode_name = (contain_wide) ? "Wide " : "" + mode_name_type[1] + " Pulse";
+
+                return new string[] { "SHE", final_mode_name };
+            }
+            else
+            {
+                String[] mode_name_type = mode.ToString().Split("_");
+                String mode_name = "";
+                if (mode_name_type[0] == "SP") mode_name = "Shifted ";
+
+                mode_name += mode_name_type[1] + " Pulse";
+
+                return new string[] { mode_name };
+            }
         }
         
         private static void generate_opening(int image_width,int image_height, VideoWriter vr)
@@ -608,14 +715,32 @@ namespace VVVF_Generator_Porting
                        FontStyle.Regular,
                        GraphicsUnit.Pixel);
 
+                    FontFamily val_mini_fontFamily = new FontFamily("Arial Rounded MT Bold");
+                    Font val_mini_fnt = new Font(
+                       val_mini_fontFamily,
+                       25,
+                       FontStyle.Regular,
+                       GraphicsUnit.Pixel);
+
                     Brush title_brush = Brushes.Black;
                     Brush letter_brush = Brushes.Black;
 
                     g.FillRectangle(new SolidBrush(Color.FromArgb(200, 200, 255)), 0, 0, image_width, 68 - 0);
                     g.DrawString("Pulse Mode", title_fnt, title_brush, 17, 8);
                     g.FillRectangle(Brushes.Blue, 0, 68, image_width, 8);
-                    if(!final_show)
-                        g.DrawString(get_Pulse_Name(video_pulse_mode), val_fnt, letter_brush, 17, 100);
+                    if (!final_show)
+                    {
+                        String[] pulse_name = get_Pulse_Name(video_pulse_mode);
+
+                        g.DrawString(pulse_name[pulse_name.Length - 1], val_fnt, letter_brush, 17, 100);
+
+                        if(pulse_name.Length > 1)
+                        {
+                            g.DrawString(pulse_name[0], val_mini_fnt, letter_brush, 17, 170);
+                        }
+
+                    }
+                        
 
                     g.FillRectangle(new SolidBrush(Color.FromArgb(200, 200, 255)), 0, 226, image_width, 291 - 226);
                     g.DrawString("Sine Freq[Hz]", title_fnt, title_brush, 17, 231);
@@ -770,7 +895,7 @@ namespace VVVF_Generator_Porting
                     if (!free_run) wave_stat = sin_angle_freq / M_2PI;
                     else
                     {
-                        wave_stat += (Math.PI * 2) / (double)(mascon_off_div / 20.0);
+                        wave_stat += (Math.PI * 2) / (double)(mascon_off_div / 12.0);
                         if (sin_angle_freq / (Math.PI * 2) < wave_stat)
                         {
                             wave_stat = sin_angle_freq / (Math.PI * 2);
@@ -782,7 +907,7 @@ namespace VVVF_Generator_Porting
                 }
                 else
                 {
-                    wave_stat -= (Math.PI * 2) / (double)(mascon_off_div / 20.0);
+                    wave_stat -= (Math.PI * 2) / (double)(mascon_off_div / 12.0);
                     if (wave_stat < 0) wave_stat = 0;
                     free_run = true;
                 }

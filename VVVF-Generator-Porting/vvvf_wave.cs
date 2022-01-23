@@ -1,368 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using static VVVF_Generator_Porting.vvvf_wave_calculate;
 
 namespace VVVF_Generator_Porting
 {
     public class vvvf_wave
     {
-
-		static double M_2PI = 6.283185307179586476925286766559;
-		static double M_PI = 3.1415926535897932384626433832795;
-		static double M_PI_2 = 1.5707963267948966192313216916398;
-		static double M_2_PI = 0.63661977236758134307553505349006;
-		static double M_1_PI = 0.31830988618379067153776752674503;
-		static double M_1_2PI = 0.15915494309189533576888376337251;
-
-		public struct Wave_Values
-        {
-
-            public double sin_value;
-			public double saw_value;
-			public int pwm_value;
-        };
-
-		public static Wave_Values get_Wave_Values_None()
-        {
-			Wave_Values wv;
-			wv.sin_value = 0;
-			wv.saw_value = 0;
-			wv.pwm_value = 0;
-			return wv;
-		}
-
-        public struct Control_Values {
-			public bool brake;
-			public bool mascon_on;
-			public bool free_run;
-			public double initial_phase;
-			public double wave_stat;
-		};
-
-
-        public enum Pulse_Mode
-        {
-            Not_In_Sync, P_1, P_Wide_3 , P_10, P_12, P_18, 
-			P_3, P_5, P_7, P_9, P_11, P_13, P_15, P_17, P_19,
-            P_21, P_23, P_25, P_27, P_29, P_31, P_33, P_35, P_37, P_39, P_41
-            , P_43, P_45, P_47, P_49, P_51, P_53, P_55, P_57, P_59, P_61,
-
-			SP_1, SP_Wide_3, SP_10, SP_12, SP_18,
-			SP_3, SP_5, SP_7, SP_9, SP_11, SP_13, SP_15, SP_17, SP_19,
-			SP_21, SP_23, SP_25, SP_27, SP_29, SP_31, SP_33, SP_35, SP_37, SP_39, SP_41
-			, SP_43, SP_45, SP_47, SP_49, SP_51, SP_53, SP_55, SP_57, SP_59, SP_61
-        };
-
-        public enum VVVF_Sound_Names {
-			sound_jre_209_mitsubishi_gto_3_level,
-			sound_jre_e231_mitsubishi_igbt_3_level,
-			sound_jre_e231_1000_hitachi_igbt_2_level,
-			sound_jre_e233_mitsubishi_igbt_2_level,
-			sound_jre_e233_3000_hitachi_igbt_2_level,
-			sound_jre_e235_toshiba_sic_2_level,
-
-			sound_jrw_207_toshiba_gto_2_level,
-			sound_jrw_207_update_toshiba_igbt_2_level,
-			sound_jrw_321_hitachi_igbt_2_level,
-			sound_jrw_225_5100_mitsubishi_igbt_2_level,
-
-			sound_tokyuu_9000_hitachi_gto_2_level,
-			sound_tokyuu_5000_hitachi_igbt_2_level,
-			sound_tokyuu_1000_1500_update_toshiba_igbt_2_level,
-
-			sound_kintetsu_9820_mitsubishi_igbt_2_level,
-			sound_kintetsu_9820_hitachi_igbt_2_level,
-
-			sound_keio_8000_hitachi_gto_2_level,
-
-			sound_keikyu_n1000_siemens_gto_2_level,
-
-			sound_toubu_50050_hitachi_igbt_2_level,
-
-			sound_kyoto_subway_50_mitsubishi_gto_2_level,
-
-			sound_keihan_13000_toyo_igbt_2_level,
-
-			sound_toei_6300_mitsubishi_igbt_2_level,
-
-			sound_wmata_6000_alstom_igbt_2_level,
-			sound_wmata_7000_toshiba_igbt_2_level,
-
-			sound_toyo_gto_2_level,
-			sound_toyo_igbt_2_level,
-			sound_silent_2_level,
-			sound_jre_209_mitsubishi_gto_2_level,
-			sound_famina_2_level,
-			sound_real_doremi_2_level,
-		}
-
-
-        //function calculation
-        public static double get_saw_value_simple(double x)
-		{
-			double fixed_x = x - (double)((int)(x * M_1_2PI) * M_2PI);
-			if (0 <= fixed_x && fixed_x < M_PI_2)
-				return M_2_PI * fixed_x;
-			else if (M_PI_2 <= fixed_x && fixed_x < 3.0 * M_PI_2)
-				return -M_2_PI * fixed_x + 2;
-			else
-				return M_2_PI * fixed_x - 4;
-		}
-
-		public static double get_saw_value(double time, double angle_frequency, double initial_phase)
-		{
-			return -get_saw_value_simple(time * angle_frequency + initial_phase);
-		}
-
-		public static double get_sin_value(double time, double angle_frequency, double initial_phase, double amplitude)
-		{
-			return my_math.sin(time * angle_frequency + initial_phase) * amplitude;
-		}
-
-		public static int get_pwm_value(double sin_value, double saw_value)
-		{
-			if (sin_value - saw_value > 0)
-				return 1;
-			else
-				return 0;
-		}
-
-		public static Wave_Values get_Wide_P_3(double time, double angle_frequency, double initial_phase, double voltage, bool saw_oppose)
-		{
-			double sin = get_sin_value(time, angle_frequency, initial_phase, 1);
-			double saw = get_saw_value(time, angle_frequency, initial_phase);
-			if (saw_oppose)
-				saw = -saw;
-			double pwm = ((sin - saw > 0) ? 1 : -1) * voltage;
-			double nega_saw = (saw > 0) ? saw - 1 : saw + 1;
-			int gate = get_pwm_value(pwm, nega_saw) * 2;
-			Wave_Values wv = new Wave_Values();
-			wv.sin_value = pwm;
-			wv.saw_value = nega_saw;
-			wv.pwm_value = gate;
-			return wv;
-		}
-
-		public static Wave_Values get_P_with_saw(double time, double sin_angle_frequency, double initial_phase, double voltage, double carrier_mul, bool saw_oppose)
-		{
-			double carrier_saw = -get_saw_value(time, carrier_mul * sin_angle_frequency, carrier_mul * initial_phase);
-			double saw = -get_saw_value(time, sin_angle_frequency, initial_phase);
-			if (saw_oppose)
-				saw = -saw;
-			double pwm = (saw > 0) ? voltage : -voltage;
-			int gate = get_pwm_value(pwm, carrier_saw) * 2;
-			Wave_Values wv;
-			wv.sin_value = saw;
-			wv.saw_value = carrier_saw;
-			wv.pwm_value = gate;
-			return wv;
-		}
-
-		public static double get_Amplitude(double freq, double max_freq)
-		{
-
-			double rate = 0.99, init = 0.01;
-			if (freq > max_freq)
-				return 1.0;
-			if (freq <= 0.1)
-				return 0.0;
-
-			return rate / max_freq * freq + init;
-		}
-
-		public static int get_Pulse_Num(Pulse_Mode mode)
-		{
-			if (mode == Pulse_Mode.Not_In_Sync)
-				return -1;
-			if (mode == Pulse_Mode.P_1)
-				return 0;
-			if (mode == Pulse_Mode.P_Wide_3)
-				return 0;
-			if (mode == Pulse_Mode.P_5)
-				return 6;
-			if (mode == Pulse_Mode.P_7)
-				return 9;
-			if (mode == Pulse_Mode.P_10)
-				return 10;
-			if (mode == Pulse_Mode.P_11)
-				return 15;
-			if (mode == Pulse_Mode.P_12)
-				return 12;
-			if (mode == Pulse_Mode.P_18)
-				return 18;
-			if ((int)mode <= (int)Pulse_Mode.P_61)
-				return 3 + (2 * ((int)mode - 6));
-
-			return get_Pulse_Num((Pulse_Mode)((int)mode - 35));
-		}
-
-		//sin value definitions
-		public static double sin_angle_freq = 0;
-		public static double sin_time = 0;
-
-		//saw value definitions
-		public static double saw_angle_freq = 1050;
-		public static double saw_time = 0;
-		public static int pre_saw_random_freq = 0;
-
-
-		public static int random_freq_move_count = 0;
-
-		//Video variables
-		//no need in RPI zero vvvf
-		public static Pulse_Mode video_pulse_mode = Pulse_Mode.P_1;
-		public static double video_sine_amplitude = 0.0;
-
-		public static void reset_all_variables()
-		{
-			sin_angle_freq = 0;
-			sin_time = 0;
-
-			//saw value definitions
-			saw_angle_freq = 1050;
-			saw_time = 0;
-
-			random_freq_move_count = 0;
-		}
-
-		// random range => -range ~ range
-		public static int get_random_freq(int base_freq,int range)
-        {
-			int random_freq = 0 ;
-			if (random_freq_move_count == 0 || pre_saw_random_freq == 0)
-			{
-				int random_v = my_math.my_random();
-				int diff_freq = my_math.mod_i(random_v, range);
-				if ((random_v & 0x01) == 1)
-					diff_freq = -diff_freq;
-				int silent_random_freq = base_freq + diff_freq;
-				random_freq = silent_random_freq;
-				pre_saw_random_freq = silent_random_freq;
-			}
-			else
-			{
-				random_freq = pre_saw_random_freq;
-			}
-			random_freq_move_count++;
-			if (random_freq_move_count == 100)
-				random_freq_move_count = 0;
-			return random_freq;
-		}
-
-		public static double get_pattern_random(int lowest, int highest,int interval_count)
-		{
-			double random_freq = 0;
-			if (random_freq_move_count < interval_count / 2.0)
-				random_freq = lowest + (highest - lowest) / (interval_count / 2.0) * random_freq_move_count;
-			else
-				random_freq = highest + (lowest - highest) / (interval_count / 2.0) * (random_freq_move_count - interval_count / 2.0);
-			if (++random_freq_move_count > interval_count)
-				random_freq_move_count = 0;
-			return random_freq;
-		}
-
-		public static Wave_Values calculate_three_level(Pulse_Mode pulse_mode, double expect_saw_angle_freq, double initial_phase, double amplitude,bool dipolar)
-		{
-			//variable change for video
-			//no need in RPI zero vvvf
-			video_pulse_mode = pulse_mode;
-			video_sine_amplitude = amplitude;
-
-			if (pulse_mode == Pulse_Mode.Not_In_Sync)
-				saw_time = saw_angle_freq / expect_saw_angle_freq * saw_time;
-			else
-			{
-				expect_saw_angle_freq = sin_angle_freq * get_Pulse_Num(pulse_mode);
-				saw_time = sin_time;
-			}
-			saw_angle_freq = expect_saw_angle_freq;
-
-			double sin_value = get_sin_value(sin_time, sin_angle_freq, initial_phase, amplitude);
-
-			double saw_value = get_saw_value(saw_time, saw_angle_freq, 0);
-			if ((int)pulse_mode > (int)Pulse_Mode.P_61)
-				saw_value = -saw_value;
-
-			double changed_saw = ((dipolar) ? 2 : 0.5) * saw_value;
-			int pwm_value = get_pwm_value(sin_value, changed_saw + 0.5) + get_pwm_value(sin_value, changed_saw - 0.5);
-
-			Wave_Values wv;
-			wv.sin_value = sin_value;
-			wv.saw_value = saw_value;
-			wv.pwm_value = pwm_value;
-			return wv;
-		}
-
-		public static Wave_Values calculate_two_level(Pulse_Mode pulse_mode, double expect_saw_angle_freq, double initial_phase, double amplitude)
-		{
-			//variable change for video
-			//no need in RPI zero vvvf
-			video_pulse_mode = pulse_mode;
-			video_sine_amplitude = amplitude;
-
-			if (pulse_mode == Pulse_Mode.P_Wide_3)
-				return get_Wide_P_3(sin_time, sin_angle_freq, initial_phase, amplitude, false);
-			if (pulse_mode == Pulse_Mode.SP_Wide_3)
-				return get_Wide_P_3(sin_time, sin_angle_freq, initial_phase, amplitude, true);
-			if (pulse_mode == Pulse_Mode.P_5)
-				return get_P_with_saw(sin_time, sin_angle_freq, initial_phase, amplitude, get_Pulse_Num(pulse_mode), false);
-			if (pulse_mode == Pulse_Mode.SP_5)
-				return get_P_with_saw(sin_time, sin_angle_freq, initial_phase, amplitude, get_Pulse_Num(pulse_mode), true);
-			if (pulse_mode == Pulse_Mode.P_7)
-				return get_P_with_saw(sin_time, sin_angle_freq, initial_phase, amplitude, get_Pulse_Num(pulse_mode), false);
-			if (pulse_mode == Pulse_Mode.SP_7)
-				return get_P_with_saw(sin_time, sin_angle_freq, initial_phase, amplitude, get_Pulse_Num(pulse_mode), true);
-			if (pulse_mode == Pulse_Mode.P_11)
-				return get_P_with_saw(sin_time, sin_angle_freq, initial_phase, amplitude, get_Pulse_Num(pulse_mode), false);
-			if (pulse_mode == Pulse_Mode.SP_11)
-				return get_P_with_saw(sin_time, sin_angle_freq, initial_phase, amplitude, get_Pulse_Num(pulse_mode), true);
-
-			if (pulse_mode == Pulse_Mode.Not_In_Sync)
-				saw_time = saw_angle_freq / expect_saw_angle_freq * saw_time;
-			else
-			{
-				expect_saw_angle_freq = sin_angle_freq * get_Pulse_Num(pulse_mode);
-				saw_time = sin_time;
-			}
-			saw_angle_freq = expect_saw_angle_freq;
-
-			double sin_value = get_sin_value(sin_time, sin_angle_freq, initial_phase, amplitude);
-
-			double saw_value = get_saw_value(saw_time, saw_angle_freq, 0);
-			if ((int)pulse_mode > (int)Pulse_Mode.P_61)
-				saw_value = -saw_value;
-
-			int pwm_value = get_pwm_value(sin_value, saw_value)*2;
-			//Console.WriteLine(pwm_value);
-
-			Wave_Values wv;
-			wv.sin_value = sin_value;
-			wv.saw_value = saw_value;
-			wv.pwm_value = pwm_value;
-			return wv;
-		}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 		//JR East
 		public static Wave_Values calculate_jre_209_mitsubishi_gto_3_level(Control_Values cv)
 		{
@@ -415,7 +56,7 @@ namespace VVVF_Generator_Porting
 					expect_saw_angle_freq = M_2PI * 114;
 				}
 			}
-			return calculate_three_level(pulse_Mode, expect_saw_angle_freq, cv.initial_phase, amplitude, false);
+			return calculate_three_level(pulse_Mode, expect_saw_angle_freq, cv.initial_phase, amplitude, -1);
 		}
 
 		public static Wave_Values calculate_jre_e231_mitsubishi_igbt_3_level(Control_Values cv)
@@ -423,7 +64,7 @@ namespace VVVF_Generator_Porting
 			double amplitude = 0;
 			double expect_saw_angle_freq = 1;
 			Pulse_Mode pulse_Mode = Pulse_Mode.P_1;
-			bool dipolar = false;
+			double dipolar = -1;
 			if (cv.brake)
 			{
 				amplitude = get_Amplitude(cv.wave_stat, 68);
@@ -494,14 +135,14 @@ namespace VVVF_Generator_Porting
 					pulse_Mode = Pulse_Mode.Not_In_Sync;
 					double expect_freq = 198 + (460 - 198) / 12.0 * (cv.wave_stat - 2);
 					expect_saw_angle_freq = M_2PI * get_random_freq((int)expect_freq, 100);
-					dipolar = true;
+					dipolar = 2;
 				}
 				else
 				{
 					amplitude *= 2;
 					pulse_Mode = Pulse_Mode.Not_In_Sync;
 					expect_saw_angle_freq = M_2PI * get_random_freq(198, 100);
-					dipolar = true;
+					dipolar = 2;
 				}
 			}
 			return calculate_three_level(pulse_Mode, expect_saw_angle_freq, cv.initial_phase, amplitude, dipolar);
@@ -1387,6 +1028,314 @@ namespace VVVF_Generator_Porting
 
 		//Keikyu
 		public static Wave_Values calculate_keikyu_n1000_siemens_gto_2_level(Control_Values cv)
+		{
+			int a = 2, b = 3;
+			double[,] k = new double[2, 3]
+			{
+				{ 0.0193294460641,0.0222656250000,0},
+				{ 0.014763975813,0.018464,0.013504901961},
+			};
+			double[,] B = new double[2, 3]
+			{
+				{ 0.10000000000,-0.07467187500,0},
+				{ 0.10000000000,-0.095166,0.100000000000},
+			};
+			double expect_saw_angle_freq = 0;
+			Pulse_Mode pulse_mode;
+			if (!cv.brake)
+			{
+				Program.mascon_off_div = 12000;
+				if (cv.free_run && !cv.mascon_on && cv.wave_stat > 80)
+				{
+					cv.wave_stat = 80;
+					Program.wave_stat = 80;
+				}
+
+				else if (cv.free_run && cv.mascon_on && cv.wave_stat > 80)
+				{
+					cv.wave_stat = sin_angle_freq * M_1_2PI;
+					Program.wave_stat = sin_angle_freq * M_1_2PI;
+				}
+
+
+				if (80 <= cv.wave_stat)
+				{
+					pulse_mode = Pulse_Mode.P_1;
+				}
+				else if (59 <= cv.wave_stat)
+				{
+					a = 1; b = 2;
+					pulse_mode = Pulse_Mode.CHMP_Wide_3;
+				}
+				else if (cv.free_run && sin_angle_freq >= 57 * M_2PI)
+				{
+					pulse_mode = Pulse_Mode.P_3;
+				}
+				else if (57 <= cv.wave_stat || (cv.free_run && sin_angle_freq >= 57.0 * M_2PI))
+				{
+					a = 1; b = 2;
+					pulse_mode = Pulse_Mode.CHMP_Wide_5;
+				}
+				else if (53.5 <= cv.wave_stat || (cv.free_run && sin_angle_freq >= 53.5 * M_2PI))
+				{
+					a = 1; b = 2;
+					pulse_mode = Pulse_Mode.CHMP_Wide_7;
+				}
+				else if (43.5 <= cv.wave_stat || (cv.free_run && sin_angle_freq >= 43.5 * M_2PI))
+				{
+					a = 1; b = 1;
+					pulse_mode = Pulse_Mode.CHMP_7;
+				}
+				else if (36.7 <= cv.wave_stat || (cv.free_run && sin_angle_freq >= 36.7 * M_2PI))
+				{
+					a = 1; b = 1;
+					pulse_mode = Pulse_Mode.CHMP_9;
+				}
+				else if (30 <= cv.wave_stat || (cv.free_run && sin_angle_freq >= 30 * M_2PI))
+				{
+					a = 1; b = 1;
+					pulse_mode = Pulse_Mode.CHMP_11;
+				}
+				else if (27 <= cv.wave_stat || (cv.free_run && sin_angle_freq >= 27 * M_2PI))
+				{
+					a = 1; b = 1;
+					pulse_mode = Pulse_Mode.CHMP_13;
+				}
+				else if (24 <= cv.wave_stat || (cv.free_run && sin_angle_freq >= 24 * M_2PI))
+				{
+					a = 1; b = 1;
+					pulse_mode = Pulse_Mode.CHMP_15;
+				}
+				else
+				{
+					a = 1; b = 1;
+					double expect_saw_freq = 400;
+					pulse_mode = Pulse_Mode.Asyn_THI;
+					if (5.6 <= cv.wave_stat || (cv.free_run && sin_angle_freq >= 5.6 * M_2PI))
+						expect_saw_freq = 400;
+					else if (5 <= cv.wave_stat || (cv.free_run && sin_angle_freq >= 5.0 * M_2PI))
+						expect_saw_freq = 350;
+					else if (4.3 <= cv.wave_stat || (cv.free_run && sin_angle_freq >= 4.3 * M_2PI))
+						expect_saw_freq = 311;
+					else if (3.4 <= cv.wave_stat || (cv.free_run && sin_angle_freq >= 3.4 * M_2PI))
+						expect_saw_freq = 294;
+					else if (2.7 <= cv.wave_stat || (cv.free_run && sin_angle_freq >= 2.7 * M_2PI))
+						expect_saw_freq = 262;
+					else if (2.0 <= cv.wave_stat || (cv.free_run && sin_angle_freq >= 2.0 * M_2PI))
+						expect_saw_freq = 233;
+					else if (1.5 <= cv.wave_stat || (cv.free_run && sin_angle_freq >= 1.5 * M_2PI))
+						expect_saw_freq = 223;
+					else if (0.5 <= cv.wave_stat || (cv.free_run && sin_angle_freq >= 0.5 * M_2PI))
+						expect_saw_freq = 196;
+					else
+						expect_saw_freq = 175;
+
+					expect_saw_angle_freq = M_2PI * expect_saw_freq;
+				}
+			}
+			else
+			{
+				Program.mascon_off_div = 20000;
+
+				if (cv.free_run && !cv.mascon_on && cv.wave_stat > 79.5)
+				{
+					cv.wave_stat = 79.5;
+					Program.wave_stat = 79.5;
+				}
+
+				else if (cv.free_run && cv.mascon_on && cv.wave_stat > 79.5)
+				{
+					cv.wave_stat = sin_angle_freq * M_1_2PI;
+					Program.wave_stat = sin_angle_freq * M_1_2PI;
+				}
+
+				if (79.5 <= cv.wave_stat)
+				{
+					pulse_mode = Pulse_Mode.P_1;
+				}
+				else if (70.7 <= cv.wave_stat)
+				{
+					a = 2; b = 2;
+					pulse_mode = Pulse_Mode.CHMP_Wide_3;
+				}
+				else if(cv.free_run && sin_angle_freq >= 63.35 * M_2PI)
+                {
+					pulse_mode = Pulse_Mode.P_3;
+                }
+				else if (63.35 <= cv.wave_stat || (cv.free_run && sin_angle_freq >= 63.35 * M_2PI))
+				{
+					a = 2; b = 2;
+					pulse_mode = Pulse_Mode.CHMP_Wide_5;
+				}
+				else if (56.84 <= cv.wave_stat || (cv.free_run && sin_angle_freq >= 56.84 * M_2PI))
+				{
+					a = 2; b = 2;
+					pulse_mode = Pulse_Mode.CHMP_Wide_7;
+				}
+				else if (53.5 <= cv.wave_stat || (cv.free_run && sin_angle_freq >= 53.5 * M_2PI))
+				{
+					a = 2; b = 1;
+					pulse_mode = Pulse_Mode.CHMP_7;
+				}
+				else if (41 <= cv.wave_stat || (cv.free_run && sin_angle_freq >= 41 * M_2PI))
+				{
+					a = 2; b = 3;
+					pulse_mode = Pulse_Mode.CHMP_7;
+				}
+				else if (34.5 <= cv.wave_stat || (cv.free_run && sin_angle_freq >= 34.5 * M_2PI))
+				{
+					a = 2; b = 3;
+					pulse_mode = Pulse_Mode.CHMP_9;
+				}
+				else if (28.9 <= cv.wave_stat || (cv.free_run && sin_angle_freq >= 28.9 * M_2PI))
+				{
+					a = 2; b = 3;
+					pulse_mode = Pulse_Mode.CHMP_11;
+				}
+				else if (24.9 <= cv.wave_stat || (cv.free_run && sin_angle_freq >= 24.9 * M_2PI))
+				{
+					a = 2; b = 3;
+					pulse_mode = Pulse_Mode.CHMP_13;
+				}
+				else if (22.4 <= cv.wave_stat || (cv.free_run && sin_angle_freq >= 22.4 * M_2PI))
+				{
+					a = 2; b = 3;
+					pulse_mode = Pulse_Mode.CHMP_15;
+				}
+				else if (cv.wave_stat > 4 || (cv.free_run && sin_angle_freq > 4 * M_2PI))
+				{
+					a = 2; b = 3;
+					expect_saw_angle_freq = 2 * M_PI * 400;
+					pulse_mode = Pulse_Mode.Asyn_THI;
+				}
+				else
+				{
+					return get_Wave_Values_None();
+				}
+			}
+			double amplitude = ((k[a - 1, b - 1] * cv.wave_stat) + B[a - 1, b - 1]) >= 1.25 ? 1.25 : ((k[a - 1, b - 1] * cv.wave_stat) + B[a - 1, b - 1]);
+
+			if (cv.free_run && amplitude < 0.498) amplitude = 0;
+			if (cv.wave_stat == 0) amplitude = 0;
+			if (pulse_mode == Pulse_Mode.P_3) amplitude /= 1.25;
+
+			return calculate_two_level(pulse_mode, expect_saw_angle_freq, cv.initial_phase, amplitude);
+		}
+
+
+		public static Wave_Values calculate_keikyu_n1000_siemens_igbt_2_level(Control_Values cv)
+		{
+			int a = 2, b = 3;
+			double[,] k = new double[2, 3]
+			{
+				{0.0169963174645,0.0140366562360,0},
+				{0.0147535292756,0.0550408163265,0},
+			};
+			double[,] B = new double[2, 3]
+			{
+				{0.10000000000,0.31137934734,0},
+				{0.10000000000,-2.84023265306,0},
+			};
+			double expect_saw_angle_freq = 0;
+			Pulse_Mode pulse_mode;
+			if (!cv.brake)
+			{
+				if (80 <= cv.wave_stat)
+				{
+					a = 1; b = 2;
+					pulse_mode = Pulse_Mode.P_1;
+				}
+				else if (64.58 <= cv.wave_stat)
+				{
+					a = 1; b = 2;
+					pulse_mode = Pulse_Mode.CHMP_Wide_5;
+				}
+				else if (62.597 <= cv.wave_stat)
+				{
+					a = 1; b = 2;
+					pulse_mode = Pulse_Mode.CHMP_Wide_7;
+				}
+				else if (44.519 <= cv.wave_stat)
+				{
+					a = 1; b = 1;
+					pulse_mode = Pulse_Mode.CHMP_9;
+				}
+				else if (38.936 <= cv.wave_stat)
+				{
+					a = 1; b = 1;
+					pulse_mode = Pulse_Mode.CHMP_11;
+				}
+				else
+				{
+					a = 1; b = 1;
+					double expect_saw_freq = 600;
+					pulse_mode = Pulse_Mode.Asyn_THI;
+					if (10 <= cv.wave_stat)
+						expect_saw_freq = 14.7297098247165 * cv.wave_stat + 452.70290175284;
+					else if (37.156 <= cv.wave_stat)
+						expect_saw_freq = 1000;
+					else
+						expect_saw_freq = 600;
+
+					expect_saw_angle_freq = M_2PI * expect_saw_freq;
+				}
+			}
+			else
+			{
+				if (80 <= cv.wave_stat)
+				{
+					a = 2; b = 2;
+					pulse_mode = Pulse_Mode.P_1;
+				}
+				else if (74.355 <= cv.wave_stat)
+				{
+					a = 2; b = 2;
+					pulse_mode = Pulse_Mode.CHMP_Wide_3;
+				}
+				else if (73 <= cv.wave_stat)
+				{
+					a = 2; b = 2;
+					pulse_mode = Pulse_Mode.CHMP_Wide_5;
+				}
+				else if (64.453 <= cv.wave_stat)
+				{
+					a = 2; b = 1;
+					pulse_mode = Pulse_Mode.CHMP_7;
+				}
+				else if (44.468 <= cv.wave_stat)
+				{
+					a = 2; b = 1;
+					pulse_mode = Pulse_Mode.CHMP_9;
+				}
+				else if (39.961 <= cv.wave_stat)
+				{
+					a = 2; b = 1;
+					pulse_mode = Pulse_Mode.CHMP_11;
+				}
+				else if (cv.wave_stat > 1)
+				{
+					a = 2; b = 1;
+					double expect_saw_freq = 600;
+					pulse_mode = Pulse_Mode.Asyn_THI;
+					if (10 <= cv.wave_stat)
+						expect_saw_freq = 14.7297098247165 * cv.wave_stat + 452.70290175284;
+					else if (37.156 <= cv.wave_stat)
+						expect_saw_freq = 1000;
+					else
+						expect_saw_freq = 600;
+
+					expect_saw_angle_freq = M_2PI * expect_saw_freq;
+				}
+				else
+				{
+					return get_Wave_Values_None();
+				}
+			}
+			double amplitude = ((k[a - 1, b - 1] * cv.wave_stat) + B[a - 1, b - 1]) >= 1.25 ? 1.25 : ((k[a - 1, b - 1] * cv.wave_stat) + B[a - 1, b - 1]);//¼ÆËãµ÷ÖÆ¶È
+			return calculate_two_level(pulse_mode, expect_saw_angle_freq, cv.initial_phase, amplitude);
+		}
+
+		public static Wave_Values calculate_not_real_keikyu_n1000_siemens_gto_2_level(Control_Values cv)
 		{
 			double amplitude = get_Amplitude(cv.wave_stat, 80);
 
