@@ -546,7 +546,7 @@ namespace VVVF_Generator_Porting
 
                 String final_mode_name = (contain_wide) ? "Wide " : "" + mode_name_type[1] + " Pulse";
 
-                return new string[] { "SHE", final_mode_name };
+                return new string[] { "Selective Harmonic Elimination", final_mode_name };
             }
             else
             {
