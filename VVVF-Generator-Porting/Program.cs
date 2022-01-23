@@ -192,6 +192,7 @@ namespace VVVF_Generator_Porting
                     temp_count++;
                 }
             }
+            /*
             else if (temp_count == 1)
             {
                 if (sin_angle_freq / 2 / Math.PI < 20 && brake && do_frequency_change)
@@ -225,6 +226,7 @@ namespace VVVF_Generator_Porting
                     temp_count++;
                 }
             }
+            */
             else
             {
                 if (sin_angle_freq / 2 / Math.PI < 0 && brake && do_frequency_change) return false;
@@ -365,9 +367,34 @@ namespace VVVF_Generator_Porting
 
             VideoWriter vr = new VideoWriter(fileName, OpenCvSharp.FourCC.H264, div_freq / movie_div, new OpenCvSharp.Size(image_width, image_height));
 
+
             if (!vr.IsOpened())
             {
                 return;
+            }
+
+            Boolean START_F192_WAIT = true;
+            if (START_F192_WAIT)
+            {
+                for(int i = 0; i < 192; i++)
+                {
+                    Bitmap image = new(image_width, image_height);
+                    Graphics g = Graphics.FromImage(image);
+                    g.FillRectangle(new SolidBrush(Color.White), 0, 0, image_width, image_height);
+                    g.DrawLine(new Pen(Color.Gray), 0, image_height / 2, image_width, image_height / 2);
+                    MemoryStream ms = new MemoryStream();
+                    image.Save(ms, ImageFormat.Png);
+                    byte[] img = ms.GetBuffer();
+                    Mat mat = OpenCvSharp.Mat.FromImageData(img);
+
+                    Cv2.ImShow("Wave Form View", mat);
+                    Cv2.WaitKey(1);
+
+                    vr.Write(mat);
+
+                    g.Dispose();
+                    image.Dispose();
+                }
             }
 
             Boolean loop = true;
@@ -455,28 +482,82 @@ namespace VVVF_Generator_Porting
 
             }
 
+            Boolean END_F64_WAIT = true;
+            if (END_F64_WAIT)
+            {
+                for (int i = 0; i < 64; i++)
+                {
+                    Bitmap image = new(image_width, image_height);
+                    Graphics g = Graphics.FromImage(image);
+                    g.FillRectangle(new SolidBrush(Color.White), 0, 0, image_width, image_height);
+                    g.DrawLine(new Pen(Color.Gray), 0, image_height / 2, image_width, image_height / 2);
+                    MemoryStream ms = new MemoryStream();
+                    image.Save(ms, ImageFormat.Png);
+                    byte[] img = ms.GetBuffer();
+                    Mat mat = OpenCvSharp.Mat.FromImageData(img);
+
+                    Cv2.ImShow("Wave Form View", mat);
+                    Cv2.WaitKey(1);
+
+                    vr.Write(mat);
+
+                    g.Dispose();
+                    image.Dispose();
+                }
+            }
+
             vr.Release();
             vr.Dispose();
         }
 
 
-        private static String get_Pulse_Name(Pulse_Mode mode)
+        private static String[] get_Pulse_Name(Pulse_Mode mode)
         {
-            if (mode == Pulse_Mode.Not_In_Sync)
+            //Not in sync
+            if (mode == Pulse_Mode.Not_In_Sync || mode == Pulse_Mode.Asyn_THI)
             {
                 double saw_freq = saw_angle_freq / Math.PI / 2.0;
-                return String.Format("Async - " + saw_freq.ToString("F2")).PadLeft(6);
+                return new string[] { String.Format("Async - " + saw_freq.ToString("F2")).PadLeft(6) };
             }
-            if(mode == Pulse_Mode.P_Wide_3)
-                return "Wide 3 Pulse";
 
-            String[] mode_name_type = mode.ToString().Split("_");
-            String mode_name = "";
-            if (mode_name_type[0] == "SP") mode_name = "Shifted ";
+            //Abs
+            if (mode == Pulse_Mode.P_Wide_3)
+                return new string[] { "Wide 3 Pulse" };
 
-            mode_name += mode_name_type[1] + " Pulse";
+            if (mode.ToString().StartsWith("CHM"))
+            {
+                String mode_name = mode.ToString();
+                bool contain_wide = mode_name.Contains("Wide");
+                mode_name = mode_name.Replace("_Wide", "");
 
-            return mode_name;
+                String[] mode_name_type = mode_name.Split("_");
+
+                String final_mode_name = ((contain_wide) ? "Wide " : "") + mode_name_type[1] + " Pulse";
+
+                return new string[] { "Current Harmonic Minimum" , final_mode_name };
+            }
+            if (mode.ToString().StartsWith("SHE"))
+            {
+                String mode_name = mode.ToString();
+                bool contain_wide = mode_name.Contains("Wide");
+                mode_name = mode_name.Replace("_Wide", "");
+
+                String[] mode_name_type = mode_name.Split("_");
+
+                String final_mode_name = (contain_wide) ? "Wide " : "" + mode_name_type[1] + " Pulse";
+
+                return new string[] { "SHE", final_mode_name };
+            }
+            else
+            {
+                String[] mode_name_type = mode.ToString().Split("_");
+                String mode_name = "";
+                if (mode_name_type[0] == "SP") mode_name = "Shifted ";
+
+                mode_name += mode_name_type[1] + " Pulse";
+
+                return new string[] { mode_name };
+            }
         }
         
         private static void generate_opening(int image_width,int image_height, VideoWriter vr)
@@ -634,14 +715,32 @@ namespace VVVF_Generator_Porting
                        FontStyle.Regular,
                        GraphicsUnit.Pixel);
 
+                    FontFamily val_mini_fontFamily = new FontFamily("Arial Rounded MT Bold");
+                    Font val_mini_fnt = new Font(
+                       val_mini_fontFamily,
+                       25,
+                       FontStyle.Regular,
+                       GraphicsUnit.Pixel);
+
                     Brush title_brush = Brushes.Black;
                     Brush letter_brush = Brushes.Black;
 
                     g.FillRectangle(new SolidBrush(Color.FromArgb(200, 200, 255)), 0, 0, image_width, 68 - 0);
                     g.DrawString("Pulse Mode", title_fnt, title_brush, 17, 8);
                     g.FillRectangle(Brushes.Blue, 0, 68, image_width, 8);
-                    if(!final_show)
-                        g.DrawString(get_Pulse_Name(video_pulse_mode), val_fnt, letter_brush, 17, 100);
+                    if (!final_show)
+                    {
+                        String[] pulse_name = get_Pulse_Name(video_pulse_mode);
+
+                        g.DrawString(pulse_name[pulse_name.Length - 1], val_fnt, letter_brush, 17, 100);
+
+                        if(pulse_name.Length > 1)
+                        {
+                            g.DrawString(pulse_name[0], val_mini_fnt, letter_brush, 17, 170);
+                        }
+
+                    }
+                        
 
                     g.FillRectangle(new SolidBrush(Color.FromArgb(200, 200, 255)), 0, 226, image_width, 291 - 226);
                     g.DrawString("Sine Freq[Hz]", title_fnt, title_brush, 17, 231);

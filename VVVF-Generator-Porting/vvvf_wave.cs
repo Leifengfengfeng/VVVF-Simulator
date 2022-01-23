@@ -1044,6 +1044,20 @@ namespace VVVF_Generator_Porting
 			Pulse_Mode pulse_mode;
 			if (!cv.brake)
 			{
+				Program.mascon_off_div = 12000;
+				if (cv.free_run && !cv.mascon_on && cv.wave_stat > 80)
+				{
+					cv.wave_stat = 80;
+					Program.wave_stat = 80;
+				}
+
+				else if (cv.free_run && cv.mascon_on && cv.wave_stat > 80)
+				{
+					cv.wave_stat = sin_angle_freq * M_1_2PI;
+					Program.wave_stat = sin_angle_freq * M_1_2PI;
+				}
+
+
 				if (80 <= cv.wave_stat)
 				{
 					pulse_mode = Pulse_Mode.P_1;
@@ -1053,37 +1067,41 @@ namespace VVVF_Generator_Porting
 					a = 1; b = 2;
 					pulse_mode = Pulse_Mode.CHMP_Wide_3;
 				}
-				else if (57 <= cv.wave_stat)
+				else if (cv.free_run && sin_angle_freq >= 57 * M_2PI)
+				{
+					pulse_mode = Pulse_Mode.P_3;
+				}
+				else if (57 <= cv.wave_stat || (cv.free_run && sin_angle_freq >= 57.0 * M_2PI))
 				{
 					a = 1; b = 2;
 					pulse_mode = Pulse_Mode.CHMP_Wide_5;
 				}
-				else if (53.5 <= cv.wave_stat)
+				else if (53.5 <= cv.wave_stat || (cv.free_run && sin_angle_freq >= 53.5 * M_2PI))
 				{
 					a = 1; b = 2;
 					pulse_mode = Pulse_Mode.CHMP_Wide_7;
 				}
-				else if (43.5 <= cv.wave_stat)
+				else if (43.5 <= cv.wave_stat || (cv.free_run && sin_angle_freq >= 43.5 * M_2PI))
 				{
 					a = 1; b = 1;
 					pulse_mode = Pulse_Mode.CHMP_7;
 				}
-				else if (36.7 <= cv.wave_stat)
+				else if (36.7 <= cv.wave_stat || (cv.free_run && sin_angle_freq >= 36.7 * M_2PI))
 				{
 					a = 1; b = 1;
 					pulse_mode = Pulse_Mode.CHMP_9;
 				}
-				else if (30 <= cv.wave_stat)
+				else if (30 <= cv.wave_stat || (cv.free_run && sin_angle_freq >= 30 * M_2PI))
 				{
 					a = 1; b = 1;
 					pulse_mode = Pulse_Mode.CHMP_11;
 				}
-				else if (27 <= cv.wave_stat)
+				else if (27 <= cv.wave_stat || (cv.free_run && sin_angle_freq >= 27 * M_2PI))
 				{
 					a = 1; b = 1;
 					pulse_mode = Pulse_Mode.CHMP_13;
 				}
-				else if (24 <= cv.wave_stat)
+				else if (24 <= cv.wave_stat || (cv.free_run && sin_angle_freq >= 24 * M_2PI))
 				{
 					a = 1; b = 1;
 					pulse_mode = Pulse_Mode.CHMP_15;
@@ -1093,21 +1111,21 @@ namespace VVVF_Generator_Porting
 					a = 1; b = 1;
 					double expect_saw_freq = 400;
 					pulse_mode = Pulse_Mode.Asyn_THI;
-					if (5.6 <= cv.wave_stat)
+					if (5.6 <= cv.wave_stat || (cv.free_run && sin_angle_freq >= 5.6 * M_2PI))
 						expect_saw_freq = 400;
-					else if (5 <= cv.wave_stat)
+					else if (5 <= cv.wave_stat || (cv.free_run && sin_angle_freq >= 5.0 * M_2PI))
 						expect_saw_freq = 350;
-					else if (4.3 <= cv.wave_stat)
+					else if (4.3 <= cv.wave_stat || (cv.free_run && sin_angle_freq >= 4.3 * M_2PI))
 						expect_saw_freq = 311;
-					else if (3.4 <= cv.wave_stat)
+					else if (3.4 <= cv.wave_stat || (cv.free_run && sin_angle_freq >= 3.4 * M_2PI))
 						expect_saw_freq = 294;
-					else if (2.7 <= cv.wave_stat)
+					else if (2.7 <= cv.wave_stat || (cv.free_run && sin_angle_freq >= 2.7 * M_2PI))
 						expect_saw_freq = 262;
-					else if (2.0 <= cv.wave_stat)
+					else if (2.0 <= cv.wave_stat || (cv.free_run && sin_angle_freq >= 2.0 * M_2PI))
 						expect_saw_freq = 233;
-					else if (1.5 <= cv.wave_stat)
+					else if (1.5 <= cv.wave_stat || (cv.free_run && sin_angle_freq >= 1.5 * M_2PI))
 						expect_saw_freq = 223;
-					else if (0.5 <= cv.wave_stat)
+					else if (0.5 <= cv.wave_stat || (cv.free_run && sin_angle_freq >= 0.5 * M_2PI))
 						expect_saw_freq = 196;
 					else
 						expect_saw_freq = 175;
@@ -1117,6 +1135,20 @@ namespace VVVF_Generator_Porting
 			}
 			else
 			{
+				Program.mascon_off_div = 20000;
+
+				if (cv.free_run && !cv.mascon_on && cv.wave_stat > 79.5)
+				{
+					cv.wave_stat = 79.5;
+					Program.wave_stat = 79.5;
+				}
+
+				else if (cv.free_run && cv.mascon_on && cv.wave_stat > 79.5)
+				{
+					cv.wave_stat = sin_angle_freq * M_1_2PI;
+					Program.wave_stat = sin_angle_freq * M_1_2PI;
+				}
+
 				if (79.5 <= cv.wave_stat)
 				{
 					pulse_mode = Pulse_Mode.P_1;
@@ -1126,47 +1158,51 @@ namespace VVVF_Generator_Porting
 					a = 2; b = 2;
 					pulse_mode = Pulse_Mode.CHMP_Wide_3;
 				}
-				else if (63.35 <= cv.wave_stat)
+				else if(cv.free_run && sin_angle_freq >= 63.35 * M_2PI)
+                {
+					pulse_mode = Pulse_Mode.P_3;
+                }
+				else if (63.35 <= cv.wave_stat || (cv.free_run && sin_angle_freq >= 63.35 * M_2PI))
 				{
 					a = 2; b = 2;
 					pulse_mode = Pulse_Mode.CHMP_Wide_5;
 				}
-				else if (56.84 <= cv.wave_stat)
+				else if (56.84 <= cv.wave_stat || (cv.free_run && sin_angle_freq >= 56.84 * M_2PI))
 				{
 					a = 2; b = 2;
 					pulse_mode = Pulse_Mode.CHMP_Wide_7;
 				}
-				else if (53.5 <= cv.wave_stat)
+				else if (53.5 <= cv.wave_stat || (cv.free_run && sin_angle_freq >= 53.5 * M_2PI))
 				{
 					a = 2; b = 1;
 					pulse_mode = Pulse_Mode.CHMP_7;
 				}
-				else if (41 <= cv.wave_stat)
+				else if (41 <= cv.wave_stat || (cv.free_run && sin_angle_freq >= 41 * M_2PI))
 				{
 					a = 2; b = 3;
 					pulse_mode = Pulse_Mode.CHMP_7;
 				}
-				else if (34.5 <= cv.wave_stat)
+				else if (34.5 <= cv.wave_stat || (cv.free_run && sin_angle_freq >= 34.5 * M_2PI))
 				{
 					a = 2; b = 3;
 					pulse_mode = Pulse_Mode.CHMP_9;
 				}
-				else if (28.9 <= cv.wave_stat)
+				else if (28.9 <= cv.wave_stat || (cv.free_run && sin_angle_freq >= 28.9 * M_2PI))
 				{
 					a = 2; b = 3;
 					pulse_mode = Pulse_Mode.CHMP_11;
 				}
-				else if (24.9 <= cv.wave_stat)
+				else if (24.9 <= cv.wave_stat || (cv.free_run && sin_angle_freq >= 24.9 * M_2PI))
 				{
 					a = 2; b = 3;
 					pulse_mode = Pulse_Mode.CHMP_13;
 				}
-				else if (22.4 <= cv.wave_stat)
+				else if (22.4 <= cv.wave_stat || (cv.free_run && sin_angle_freq >= 22.4 * M_2PI))
 				{
 					a = 2; b = 3;
 					pulse_mode = Pulse_Mode.CHMP_15;
 				}
-				else if (cv.wave_stat > 4)
+				else if (cv.wave_stat > 4 || (cv.free_run && sin_angle_freq > 4 * M_2PI))
 				{
 					a = 2; b = 3;
 					expect_saw_angle_freq = 2 * M_PI * 400;
@@ -1177,7 +1213,12 @@ namespace VVVF_Generator_Porting
 					return get_Wave_Values_None();
 				}
 			}
-			double amplitude = ((k[a - 1, b - 1] * cv.wave_stat) + B[a - 1, b - 1]) >= 1.25 ? 1.25 : ((k[a - 1, b - 1] * cv.wave_stat) + B[a - 1, b - 1]);//¼ÆËãµ÷ÖÆ¶È
+			double amplitude = ((k[a - 1, b - 1] * cv.wave_stat) + B[a - 1, b - 1]) >= 1.25 ? 1.25 : ((k[a - 1, b - 1] * cv.wave_stat) + B[a - 1, b - 1]);
+
+			if (cv.free_run && amplitude < 0.498) amplitude = 0;
+			if (cv.wave_stat == 0) amplitude = 0;
+			if (pulse_mode == Pulse_Mode.P_3) amplitude /= 1.25;
+
 			return calculate_two_level(pulse_mode, expect_saw_angle_freq, cv.initial_phase, amplitude);
 		}
 
