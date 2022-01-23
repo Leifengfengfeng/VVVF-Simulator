@@ -263,7 +263,7 @@ namespace VVVF_Generator_Porting
 			return random_freq;
 		}
 
-		public static Wave_Values calculate_three_level(Pulse_Mode pulse_mode, double expect_saw_angle_freq, double initial_phase, double amplitude,bool dipolar)
+		public static Wave_Values calculate_three_level(Pulse_Mode pulse_mode, double expect_saw_angle_freq, double initial_phase, double amplitude,double dipolar)
 		{
 			//variable change for video
 			//no need in RPI zero vvvf
@@ -285,7 +285,7 @@ namespace VVVF_Generator_Porting
 			if ((int)pulse_mode > (int)Pulse_Mode.P_61)
 				saw_value = -saw_value;
 
-			double changed_saw = ((dipolar) ? 2 : 0.5) * saw_value;
+			double changed_saw = ((dipolar != -1) ? dipolar : 0.5) * saw_value;
 			int pwm_value = get_pwm_value(sin_value, changed_saw + 0.5) + get_pwm_value(sin_value, changed_saw - 0.5);
 
 			Wave_Values wv;
@@ -415,7 +415,7 @@ namespace VVVF_Generator_Porting
 					expect_saw_angle_freq = M_2PI * 114;
 				}
 			}
-			return calculate_three_level(pulse_Mode, expect_saw_angle_freq, cv.initial_phase, amplitude, false);
+			return calculate_three_level(pulse_Mode, expect_saw_angle_freq, cv.initial_phase, amplitude, -1);
 		}
 
 		public static Wave_Values calculate_jre_e231_mitsubishi_igbt_3_level(Control_Values cv)
@@ -423,7 +423,7 @@ namespace VVVF_Generator_Porting
 			double amplitude = 0;
 			double expect_saw_angle_freq = 1;
 			Pulse_Mode pulse_Mode = Pulse_Mode.P_1;
-			bool dipolar = false;
+			double dipolar = -1;
 			if (cv.brake)
 			{
 				amplitude = get_Amplitude(cv.wave_stat, 68);
@@ -494,14 +494,14 @@ namespace VVVF_Generator_Porting
 					pulse_Mode = Pulse_Mode.Not_In_Sync;
 					double expect_freq = 198 + (460 - 198) / 12.0 * (cv.wave_stat - 2);
 					expect_saw_angle_freq = M_2PI * get_random_freq((int)expect_freq, 100);
-					dipolar = true;
+					dipolar = 2;
 				}
 				else
 				{
 					amplitude *= 2;
 					pulse_Mode = Pulse_Mode.Not_In_Sync;
 					expect_saw_angle_freq = M_2PI * get_random_freq(198, 100);
-					dipolar = true;
+					dipolar = 2;
 				}
 			}
 			return calculate_three_level(pulse_Mode, expect_saw_angle_freq, cv.initial_phase, amplitude, dipolar);
