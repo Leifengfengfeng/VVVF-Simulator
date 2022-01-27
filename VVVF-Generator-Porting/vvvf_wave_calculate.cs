@@ -315,8 +315,6 @@ namespace VVVF_Generator_Porting
 			double sin_value = get_sin_value(sin_time, sin_angle_freq, initial_phase, amplitude);
 
 			double saw_value = get_saw_value(saw_time, saw_angle_freq, 0);
-			if ((int)pulse_mode > (int)Pulse_Mode.P_61)
-				saw_value = -saw_value;
 
 			double changed_saw = ((dipolar != -1) ? dipolar : 0.5) * saw_value;
 			int pwm_value = get_pwm_value(sin_value, changed_saw + 0.5) + get_pwm_value(sin_value, changed_saw - 0.5);

@@ -67,21 +67,26 @@ namespace VVVF_Generator_Porting
 			double dipolar = -1;
 			if (cv.brake)
 			{
+				Program.mascon_off_div = 24000;
 				amplitude = get_Amplitude(cv.wave_stat, 68);
-				if (cv.wave_stat > 68)
-				{
-					if (cv.wave_stat > 71) amplitude = 5;
+				if (59 <= cv.wave_stat || (cv.free_run && sin_angle_freq > 59 * M_2PI))
+                {
+					if (cv.wave_stat > 71) amplitude = 1 / 0.2;
 					else
 					{
-						if (cv.free_run) amplitude = get_Amplitude(cv.wave_stat, 71) * 5;
-						else amplitude = 5 + (0.7 - 5) / 12.0 * (59 - cv.wave_stat);
-
+						if (cv.free_run)
+						{
+							double temp = 0.2 + (-0.2 + 3) / 71 * (71 - cv.wave_stat);
+							amplitude = 1 / temp;
+						}
+						else
+						{
+							double temp = 0.2 + (-0.2 + 1.2) / 12 * (71 - cv.wave_stat);
+							amplitude = 1 / temp;
+						}
 					}
 					pulse_Mode = Pulse_Mode.P_1;
 				}
-
-				if (59 <= cv.wave_stat || (cv.free_run && sin_angle_freq > 59 * M_2PI))
-					pulse_Mode = Pulse_Mode.P_1;
 				else if (50 <= cv.wave_stat || (cv.free_run && sin_angle_freq > 50 * M_2PI))
 					pulse_Mode = Pulse_Mode.P_3;
 				else if (40 <= cv.wave_stat || (cv.free_run && sin_angle_freq > 40 * M_2PI))
@@ -103,16 +108,37 @@ namespace VVVF_Generator_Porting
 			}
 			else
 			{
-				amplitude = get_Amplitude(cv.wave_stat, 60);
+				amplitude = get_Amplitude(cv.wave_stat, 58);
+
+				Program.mascon_off_div = 20000;
+
+				if (cv.free_run && !cv.mascon_on && cv.wave_stat > 61)
+				{
+					cv.wave_stat = 61;
+					Program.wave_stat = 61;
+				}
+
+				else if (cv.free_run && cv.mascon_on && cv.wave_stat > 61)
+				{
+					cv.wave_stat = sin_angle_freq * M_1_2PI;
+					Program.wave_stat = sin_angle_freq * M_1_2PI;
+				}
 
 				if (51 <= cv.wave_stat || (cv.free_run && sin_angle_freq > 51 * M_2PI))
 				{
-					if (cv.wave_stat > 61) amplitude = 5;
+					if (cv.wave_stat > 61) amplitude = 1 / 0.2;
 					else
 					{
-						if (cv.free_run) amplitude = get_Amplitude(cv.wave_stat, 61) * 5;
-						else amplitude = 5 + (0.7 - 5) / 10.0 * (61 - cv.wave_stat);
-
+                        if (cv.free_run)
+                        {
+							double temp = 0.2 + (-0.2 + 3) / 61 * (61 - cv.wave_stat);
+							amplitude = 1 / temp;
+						}
+                        else
+                        {
+							double temp = 0.2 + (-0.2 + 1.2) / 10 * (61 - cv.wave_stat);
+							amplitude = 1 / temp;
+						}
 					}
 					pulse_Mode = Pulse_Mode.P_1;
 				}
@@ -122,26 +148,27 @@ namespace VVVF_Generator_Porting
 				else if (35 <= cv.wave_stat || (cv.free_run && sin_angle_freq > 35 * M_2PI))
 				{
 					pulse_Mode = Pulse_Mode.Not_In_Sync;
-					expect_saw_angle_freq = M_2PI * get_random_freq(880, 100);
+					expect_saw_angle_freq = M_2PI * get_random_freq(880, 140);
 				}
 				else if (14 <= cv.wave_stat || (cv.free_run && sin_angle_freq > 14 * M_2PI))
 				{
 					pulse_Mode = Pulse_Mode.Not_In_Sync;
 					double expect_freq = 460 + (880 - 460) / 21.0 * (cv.wave_stat - 14);
-					expect_saw_angle_freq = M_2PI * get_random_freq((int)expect_freq, 100);
+					expect_saw_angle_freq = M_2PI * get_random_freq((int)expect_freq, 140);
 				}
 				else if (2 <= cv.wave_stat || (cv.free_run && sin_angle_freq > 2 * M_2PI))
 				{
+					amplitude *= 2;
 					pulse_Mode = Pulse_Mode.Not_In_Sync;
 					double expect_freq = 198 + (460 - 198) / 12.0 * (cv.wave_stat - 2);
-					expect_saw_angle_freq = M_2PI * get_random_freq((int)expect_freq, 100);
+					expect_saw_angle_freq = M_2PI * get_random_freq((int)expect_freq, 140);
 					dipolar = 2;
 				}
 				else
 				{
 					amplitude *= 2;
 					pulse_Mode = Pulse_Mode.Not_In_Sync;
-					expect_saw_angle_freq = M_2PI * get_random_freq(198, 100);
+					expect_saw_angle_freq = M_2PI * get_random_freq(198, 140);
 					dipolar = 2;
 				}
 			}
