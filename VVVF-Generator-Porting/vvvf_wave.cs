@@ -107,17 +107,20 @@ namespace VVVF_Generator_Porting
 					pulse_Mode = Pulse_Mode.P_3;
 				else if (40 <= cv.wave_stat || (cv.free_run && sin_angle_freq > 40 * M_2PI))
 				{
+					amplitude = get_Amplitude(cv.wave_stat, 50);
 					pulse_Mode = Pulse_Mode.Not_In_Sync;
 					carrier_freq = new Carrier_Freq(1000, 100);
 				}
 				else if (4 <= cv.wave_stat || (cv.free_run && sin_angle_freq > 4 * M_2PI))
 				{
+					amplitude = get_Amplitude(cv.wave_stat, 50);
 					pulse_Mode = Pulse_Mode.Not_In_Sync;
 					double expect_freq = 169 + (1000 - 169) / 36.0 * (cv.wave_stat - 4);
 					carrier_freq = new Carrier_Freq(expect_freq, 100);
 				}
 				else
 				{
+					amplitude = get_Amplitude(cv.wave_stat, 50);
 					pulse_Mode = Pulse_Mode.Not_In_Sync;
 					carrier_freq = new Carrier_Freq(169, 100);
 				}
