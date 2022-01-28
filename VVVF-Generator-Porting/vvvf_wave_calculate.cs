@@ -294,6 +294,15 @@ namespace VVVF_Generator_Porting
 			return random_freq;
 		}
 
+		public static double get_changing_carrier_freq(double starting_freq, double starting_carrier_freq, double ending_freq, double ending_carrier_freq, double current_frequency)
+		{
+
+			double current_carrier_freq = starting_carrier_freq + (ending_carrier_freq - starting_carrier_freq) / (ending_freq - starting_freq) * (current_frequency - starting_freq);
+
+			return current_carrier_freq;
+
+		}
+
 		public static double get_pattern_random(int lowest, int highest, int interval_count)
 		{
 			double random_freq = 0;

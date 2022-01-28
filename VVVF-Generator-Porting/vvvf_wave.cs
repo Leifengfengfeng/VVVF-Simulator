@@ -115,7 +115,7 @@ namespace VVVF_Generator_Porting
 				{
 					amplitude = get_Amplitude(cv.wave_stat, 50);
 					pulse_Mode = Pulse_Mode.Not_In_Sync;
-					double expect_freq = 169 + (1000 - 169) / 36.0 * (cv.wave_stat - 4);
+					double expect_freq = get_changing_carrier_freq(4, 169, 40, 1000, cv.wave_stat);
 					carrier_freq = new Carrier_Freq(expect_freq, 100);
 				}
 				else
@@ -175,7 +175,7 @@ namespace VVVF_Generator_Porting
 				{
 					amplitude = get_Amplitude(cv.wave_stat, 50);
 					pulse_Mode = Pulse_Mode.Not_In_Sync;
-					double expect_freq = 460 + (880 - 460) / 21.0 * (cv.wave_stat - 14);
+					double expect_freq = get_changing_carrier_freq(14, 460, 35, 880, cv.wave_stat);
 					carrier_freq = new Carrier_Freq(expect_freq, 100);
 				}
 				else if (2 <= cv.wave_stat || (cv.free_run && sin_angle_freq > 2 * M_2PI))
@@ -183,7 +183,7 @@ namespace VVVF_Generator_Porting
 					amplitude = get_Amplitude(cv.wave_stat, 50);
 					amplitude *= 2;
 					pulse_Mode = Pulse_Mode.Not_In_Sync;
-					double expect_freq = 198 + (460 - 198) / 12.0 * (cv.wave_stat - 2);
+					double expect_freq = get_changing_carrier_freq(2, 198, 14, 460, cv.wave_stat);
 					carrier_freq = new Carrier_Freq(expect_freq, 100);
 					dipolar = 2;
 				}
