@@ -5,7 +5,7 @@ Simulates VVVF inverter sound on a PC.
 This program is for the C# console app on VisualStudio.<br>
 
 # Term of use
-You are **free** to use the code in this program.
+You are **free** to use the code in this program.<br>
 Please:<br>
  - Post the URL of this GitHub page<br>
 Don’t:<br>
