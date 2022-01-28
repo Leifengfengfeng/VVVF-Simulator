@@ -67,7 +67,7 @@ namespace VVVF_Generator_Porting
 
             if (temp_count == 0)
             {
-                if (sin_angle_freq / 2 / Math.PI > 100 && !brake && do_frequency_change)
+                if (sin_angle_freq / 2 / Math.PI > 115 && !brake && do_frequency_change)
                 {
                     do_frequency_change = false;
                     mascon_off = true;
