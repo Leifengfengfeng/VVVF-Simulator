@@ -316,8 +316,9 @@ namespace VVVF_Generator_Porting
 
 			if (pulse_mode == Pulse_Mode.Not_In_Sync)
             {
-				saw_angle_freq = (data.range == 0) ? data.base_freq : get_random_freq(data) * M_2PI;
-				saw_time = saw_angle_freq / saw_angle_freq * saw_time;
+				double desire_saw_angle_freq = (data.range == 0) ? data.base_freq * M_2PI : get_random_freq(data) * M_2PI;
+				saw_time = saw_angle_freq / desire_saw_angle_freq * saw_time;
+				saw_angle_freq = desire_saw_angle_freq;
 
 			}
 			else
@@ -457,8 +458,9 @@ namespace VVVF_Generator_Porting
 
 			if (pulse_mode == Pulse_Mode.Not_In_Sync || pulse_mode == Pulse_Mode.Asyn_THI)
 			{
-				saw_angle_freq = (carrier_freq_data.range == 0) ? carrier_freq_data.base_freq : get_random_freq(carrier_freq_data);
-				saw_time = saw_angle_freq / saw_angle_freq * saw_time;
+				double desire_saw_angle_freq = (carrier_freq_data.range == 0) ? carrier_freq_data.base_freq * M_2PI : get_random_freq(carrier_freq_data) * M_2PI;
+				saw_time = saw_angle_freq / desire_saw_angle_freq * saw_time;
+				saw_angle_freq = desire_saw_angle_freq;
 			}
 			else
 			{
