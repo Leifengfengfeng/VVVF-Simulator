@@ -350,8 +350,7 @@ namespace VVVF_Generator_Porting
         public static class Video_Generate_Values {
             public static Pulse_Mode pulse_mode = Pulse_Mode.P_1;
             public static double sine_amplitude = 0.0;
-            public static double base_saw_freq = 0;
-            public static double saw_freq_random_range = 0;
+            public static Carrier_Freq carrier_freq_data;
         }
 
         static void generate_video(String output_path,VVVF_Sound_Names sound_name)

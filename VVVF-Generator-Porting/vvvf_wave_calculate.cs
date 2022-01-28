@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static VVVF_Generator_Porting.Program;
+﻿using static VVVF_Generator_Porting.Program;
 
 namespace VVVF_Generator_Porting
 {
@@ -239,7 +234,7 @@ namespace VVVF_Generator_Porting
 		//saw value definitions
 		public static double saw_angle_freq = 1050;
 		public static double saw_time = 0;
-		public static int pre_saw_random_freq = 0;
+		public static double pre_saw_random_freq = 0;
 
 
 		public static int random_freq_move_count = 0;
@@ -258,16 +253,28 @@ namespace VVVF_Generator_Porting
 		}
 
 		// random range => -range ~ range
-		public static int get_random_freq(int base_freq, int range)
+		public class Carrier_Freq
+        {
+			public Carrier_Freq( double base_freq_a , double range_b)
+            {
+				base_freq = base_freq_a;
+				range = range_b;
+			}
+
+			public double base_freq;
+			public double range;
+        }
+
+		private static double get_random_freq(Carrier_Freq data)
 		{
-			int random_freq = 0;
+			double random_freq = 0;
 			if (random_freq_move_count == 0 || pre_saw_random_freq == 0)
 			{
 				int random_v = my_math.my_random();
-				int diff_freq = my_math.mod_i(random_v, range);
+				double diff_freq = my_math.mod_d(random_v, data.range);
 				if ((random_v & 0x01) == 1)
 					diff_freq = -diff_freq;
-				int silent_random_freq = base_freq + diff_freq;
+				double silent_random_freq = data.base_freq + diff_freq;
 				random_freq = silent_random_freq;
 				pre_saw_random_freq = silent_random_freq;
 			}
@@ -293,21 +300,25 @@ namespace VVVF_Generator_Porting
 			return random_freq;
 		}
 
-		public static Wave_Values calculate_three_level(Pulse_Mode pulse_mode, double expect_saw_angle_freq, double initial_phase, double amplitude, double dipolar)
+		public static Wave_Values calculate_three_level(Pulse_Mode pulse_mode, Carrier_Freq data, double initial_phase, double amplitude, double dipolar)
 		{
 			//variable change for video
 			//no need in RPI zero vvvf
 			Video_Generate_Values.pulse_mode = pulse_mode;
 			Video_Generate_Values.sine_amplitude = amplitude;
+			Video_Generate_Values.carrier_freq_data = data;
 
 			if (pulse_mode == Pulse_Mode.Not_In_Sync)
-				saw_time = saw_angle_freq / expect_saw_angle_freq * saw_time;
+            {
+				saw_angle_freq = (data.range == 0) ? data.base_freq : get_random_freq(data) * M_2PI;
+				saw_time = saw_angle_freq / saw_angle_freq * saw_time;
+
+			}
 			else
 			{
-				expect_saw_angle_freq = sin_angle_freq * get_Pulse_Num(pulse_mode);
+				saw_angle_freq = sin_angle_freq * get_Pulse_Num(pulse_mode);
 				saw_time = sin_time;
 			}
-			saw_angle_freq = expect_saw_angle_freq;
 
 			double sin_value = get_sin_value(sin_time, sin_angle_freq, initial_phase, amplitude);
 
@@ -323,10 +334,11 @@ namespace VVVF_Generator_Porting
 			return wv;
 		}
 
-		public static Wave_Values calculate_two_level(Pulse_Mode pulse_mode, double expect_saw_angle_freq, double initial_phase, double amplitude)
+		public static Wave_Values calculate_two_level(Pulse_Mode pulse_mode, Carrier_Freq carrier_freq_data, double initial_phase, double amplitude)
 		{
 			Video_Generate_Values.pulse_mode = pulse_mode;
 			Video_Generate_Values.sine_amplitude = amplitude;
+			Video_Generate_Values.carrier_freq_data = carrier_freq_data;
 
 			if (pulse_mode == Pulse_Mode.P_Wide_3)
 				return get_Wide_P_3(sin_time, sin_angle_freq, initial_phase, amplitude, false);
@@ -438,13 +450,16 @@ namespace VVVF_Generator_Porting
 				   'B', sin_time, sin_angle_freq, initial_phase);
 
 			if (pulse_mode == Pulse_Mode.Not_In_Sync || pulse_mode == Pulse_Mode.Asyn_THI)
-				saw_time = saw_angle_freq / expect_saw_angle_freq * saw_time;
+			{
+				saw_angle_freq = (carrier_freq_data.range == 0) ? carrier_freq_data.base_freq : get_random_freq(carrier_freq_data);
+				saw_time = saw_angle_freq / saw_angle_freq * saw_time;
+			}
 			else
 			{
-				expect_saw_angle_freq = sin_angle_freq * get_Pulse_Num(pulse_mode);
+				saw_angle_freq = sin_angle_freq * get_Pulse_Num(pulse_mode);
 				saw_time = sin_time;
 			}
-			saw_angle_freq = expect_saw_angle_freq;
+
 
 			double sin_value = pulse_mode == Pulse_Mode.Asyn_THI ?
 			get_sin_value(sin_time, sin_angle_freq, initial_phase, amplitude) + 0.2 * get_sin_value(sin_time, 3 * sin_angle_freq, 3 * initial_phase, amplitude) :
