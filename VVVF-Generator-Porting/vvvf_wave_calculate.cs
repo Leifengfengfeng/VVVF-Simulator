@@ -252,6 +252,12 @@ namespace VVVF_Generator_Porting
 			random_freq_move_count = 0;
 		}
 
+		public static double get_Rolling_Angle_Frequency()
+        {
+			return sin_angle_freq;
+
+		}
+
 		// random range => -range ~ range
 		public class Carrier_Freq
         {

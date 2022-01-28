@@ -1,4 +1,5 @@
 ﻿using static VVVF_Generator_Porting.vvvf_wave_calculate;
+using static VVVF_Generator_Porting.Program;
 
 namespace VVVF_Generator_Porting
 {
@@ -69,7 +70,7 @@ namespace VVVF_Generator_Porting
 
 			if (cv.brake)
 			{
-				Program.mascon_off_div = 24000;
+				set_Mascon_Off_Div(24000);
 				amplitude = get_Amplitude(cv.wave_stat, 68);
 				if (59 <= cv.wave_stat || (cv.free_run && sin_angle_freq > 59 * M_2PI))
                 {
@@ -111,19 +112,19 @@ namespace VVVF_Generator_Porting
 			else
 			{
 				amplitude = get_Amplitude(cv.wave_stat, 58);
-
-				Program.mascon_off_div = 20000;
+				set_Mascon_Off_Div(20000);
 
 				if (cv.free_run && !cv.mascon_on && cv.wave_stat > 61)
 				{
 					cv.wave_stat = 61;
-					Program.wave_stat = 61;
+					set_Control_Frequency(61);
 				}
 
 				else if (cv.free_run && cv.mascon_on && cv.wave_stat > 61)
 				{
-					cv.wave_stat = sin_angle_freq * M_1_2PI;
-					Program.wave_stat = sin_angle_freq * M_1_2PI;
+					double rolling_freq = get_Rolling_Angle_Frequency() * M_1_2PI;
+					cv.wave_stat = rolling_freq;
+					set_Control_Frequency(rolling_freq);
 				}
 
 				if (51 <= cv.wave_stat || (cv.free_run && sin_angle_freq > 51 * M_2PI))
@@ -185,18 +186,20 @@ namespace VVVF_Generator_Porting
 
 			if (cv.brake)
             {
-				Program.mascon_off_div = 24000;
+				set_Mascon_Off_Div(24000);
+
 				amplitude = get_Amplitude(cv.wave_stat, 73);
 				if (cv.free_run && !cv.mascon_on && cv.wave_stat > 73)
 				{
 					cv.wave_stat = 73;
-					Program.wave_stat = 73;
+					set_Control_Frequency(73);
 				}
 
 				else if (cv.free_run && cv.mascon_on && cv.wave_stat > 73)
 				{
-					cv.wave_stat = sin_angle_freq * M_1_2PI;
-					Program.wave_stat = sin_angle_freq * M_1_2PI;
+					double rolling_freq = get_Rolling_Angle_Frequency() * M_1_2PI;
+					cv.wave_stat = rolling_freq;
+					set_Control_Frequency(rolling_freq);
 				}
 
 				if (cv.wave_stat > 73)
@@ -226,19 +229,21 @@ namespace VVVF_Generator_Porting
 			}
             else
             {
-				Program.mascon_off_div = 12000;
+				set_Mascon_Off_Div(12000);
+
 				amplitude = get_Amplitude(cv.wave_stat, 65);
 
 				if (cv.free_run && !cv.mascon_on && cv.wave_stat > 67)
 				{
 					cv.wave_stat = 67;
-					Program.wave_stat = 67;
+					set_Control_Frequency(67);
 				}
 
 				else if (cv.free_run && cv.mascon_on && cv.wave_stat > 67)
 				{
-					cv.wave_stat = sin_angle_freq * M_1_2PI;
-					Program.wave_stat = sin_angle_freq * M_1_2PI;
+					double rolling_freq = get_Rolling_Angle_Frequency() * M_1_2PI;
+					cv.wave_stat = rolling_freq;
+					set_Control_Frequency(rolling_freq);
 				}
 
 				if (cv.wave_stat > 67)
@@ -312,7 +317,7 @@ namespace VVVF_Generator_Porting
 
 		public static Wave_Values calculate_jre_e233_3000_hitachi_igbt_2_level(Control_Values cv)
 		{
-			Program.mascon_off_div = 10000;
+			set_Mascon_Off_Div(10000);
 
 			double amplitude;
 			Pulse_Mode pulse_mode;
@@ -460,7 +465,7 @@ namespace VVVF_Generator_Porting
 
 			if (!cv.brake)
 			{
-				Program.mascon_off_div = 15000;
+				set_Mascon_Off_Div(15000);
 				amplitude = get_Amplitude(cv.wave_stat, 60);
 				if (60 <= cv.wave_stat)
 					pulse_mode = Pulse_Mode.P_1;
@@ -484,7 +489,7 @@ namespace VVVF_Generator_Porting
 			}
 			else
 			{
-				Program.mascon_off_div = 15000;
+				set_Mascon_Off_Div(15000);
 				amplitude = get_Amplitude(cv.wave_stat, 80);
 				if (80 <= cv.wave_stat)
 					pulse_mode = Pulse_Mode.P_1;
@@ -1076,17 +1081,18 @@ namespace VVVF_Generator_Porting
 
 			if (!cv.brake)
 			{
-				Program.mascon_off_div = 12000;
+				set_Mascon_Off_Div(12000);
 				if (cv.free_run && !cv.mascon_on && cv.wave_stat > 80)
 				{
 					cv.wave_stat = 80;
-					Program.wave_stat = 80;
+					set_Control_Frequency(80);
 				}
 
 				else if (cv.free_run && cv.mascon_on && cv.wave_stat > 80)
 				{
-					cv.wave_stat = sin_angle_freq * M_1_2PI;
-					Program.wave_stat = sin_angle_freq * M_1_2PI;
+					double rolling_freq = get_Rolling_Angle_Frequency() * M_1_2PI;
+					cv.wave_stat = rolling_freq;
+					set_Control_Frequency(rolling_freq);
 				}
 
 
@@ -1167,18 +1173,19 @@ namespace VVVF_Generator_Porting
 			}
 			else
 			{
-				Program.mascon_off_div = 20000;
+				set_Mascon_Off_Div(20000);
 
 				if (cv.free_run && !cv.mascon_on && cv.wave_stat > 79.5)
 				{
 					cv.wave_stat = 79.5;
-					Program.wave_stat = 79.5;
+					set_Control_Frequency(79.5);
 				}
 
 				else if (cv.free_run && cv.mascon_on && cv.wave_stat > 79.5)
 				{
-					cv.wave_stat = sin_angle_freq * M_1_2PI;
-					Program.wave_stat = sin_angle_freq * M_1_2PI;
+					double rolling_freq = get_Rolling_Angle_Frequency() * M_1_2PI;
+					cv.wave_stat = rolling_freq;
+					set_Control_Frequency(rolling_freq);
 				}
 
 				if (79.5 <= cv.wave_stat)
@@ -1669,7 +1676,7 @@ namespace VVVF_Generator_Porting
 		//WMATA
 		public static Wave_Values calculate_wmata_6000_alstom_igbt_2_level(Control_Values cv)
 		{
-			Program.mascon_off_div = 5000;
+			set_Mascon_Off_Div(5000);
 
 			double amplitude;
 			Pulse_Mode pulse_mode;
@@ -1724,7 +1731,7 @@ namespace VVVF_Generator_Porting
 
 		public static Wave_Values calculate_wmata_7000_toshiba_igbt_2_level(Control_Values cv)
 		{
-			Program.mascon_off_div = 10000;
+			set_Mascon_Off_Div(10000);
 
 			double amplitude;
 			Pulse_Mode pulse_mode;
