@@ -240,6 +240,7 @@ namespace VVVF_Generator_Porting
             public static Pulse_Mode pulse_mode = Pulse_Mode.P_1;
             public static double sine_amplitude = 0.0;
             public static Carrier_Freq carrier_freq_data;
+            public static double dipolar = -1;
         }
 
         static void generate_video(String output_path,VVVF_Sound_Names sound_name)
@@ -411,8 +412,25 @@ namespace VVVF_Generator_Porting
             //Not in sync
             if (mode == Pulse_Mode.Not_In_Sync || mode == Pulse_Mode.Asyn_THI)
             {
-                double saw_freq = saw_angle_freq / Math.PI / 2.0;
-                return new string[] { String.Format("Async - " + saw_freq.ToString("F2")).PadLeft(6) };
+                string[] names = new string[3];
+                int count = 0;
+
+                names[count] = String.Format("Async - " + Video_Generate_Values.carrier_freq_data.base_freq.ToString("F2")).PadLeft(6);
+                count++;
+
+                if (Video_Generate_Values.carrier_freq_data.range != 0)
+                {
+                    names[count] = String.Format("Random ± " + Video_Generate_Values.carrier_freq_data.range.ToString("F2")).PadLeft(6);
+                    count++;
+                }
+                
+                if(Video_Generate_Values.dipolar != -1)
+                {
+                    names[count] = String.Format("Dipolar : " + Video_Generate_Values.dipolar.ToString("F0")).PadLeft(6);
+                    count++;
+                }
+                return names;
+                
             }
 
             //Abs
@@ -429,7 +447,7 @@ namespace VVVF_Generator_Porting
 
                 String final_mode_name = ((contain_wide) ? "Wide " : "") + mode_name_type[1] + " Pulse";
 
-                return new string[] { "Current Harmonic Minimum" , final_mode_name };
+                return new string[] { final_mode_name, "Current Harmonic Minimum" };
             }
             if (mode.ToString().StartsWith("SHE"))
             {
@@ -441,7 +459,7 @@ namespace VVVF_Generator_Porting
 
                 String final_mode_name = (contain_wide) ? "Wide " : "" + mode_name_type[1] + " Pulse";
 
-                return new string[] { "Selective Harmonic Elimination", final_mode_name };
+                return new string[] { final_mode_name ,"Selective Harmonic Elimination" };
             }
             else
             {
@@ -451,7 +469,8 @@ namespace VVVF_Generator_Porting
 
                 mode_name += mode_name_type[1] + " Pulse";
 
-                return new string[] { mode_name };
+                if(Video_Generate_Values.dipolar == -1) return new string[] { mode_name };
+                else return new string[] {mode_name, "Dipolar : " + Video_Generate_Values.dipolar.ToString("F1")};
             }
         }
         
@@ -627,11 +646,18 @@ namespace VVVF_Generator_Porting
                     {
                         String[] pulse_name = get_Pulse_Name(Video_Generate_Values.pulse_mode);
 
-                        g.DrawString(pulse_name[pulse_name.Length - 1], val_fnt, letter_brush, 17, 100);
+                        g.DrawString(pulse_name[0], val_fnt, letter_brush, 17, 100);
 
                         if(pulse_name.Length > 1)
                         {
-                            g.DrawString(pulse_name[0], val_mini_fnt, letter_brush, 17, 170);
+                            if(pulse_name.Length == 2)
+                            {
+                                g.DrawString(pulse_name[1], val_mini_fnt, letter_brush, 17, 170);
+                            }else if(pulse_name.Length == 3)
+                            {
+                                g.DrawString(pulse_name[1], val_mini_fnt, letter_brush, 17, 160);
+                                g.DrawString(pulse_name[2], val_mini_fnt, letter_brush, 17, 180);
+                            }
                         }
 
                     }

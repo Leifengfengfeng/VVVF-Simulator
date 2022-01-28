@@ -313,6 +313,7 @@ namespace VVVF_Generator_Porting
 			Video_Generate_Values.pulse_mode = pulse_mode;
 			Video_Generate_Values.sine_amplitude = amplitude;
 			Video_Generate_Values.carrier_freq_data = data;
+			Video_Generate_Values.dipolar = dipolar;
 
 			if (pulse_mode == Pulse_Mode.Not_In_Sync)
             {
