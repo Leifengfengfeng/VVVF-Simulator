@@ -347,6 +347,13 @@ namespace VVVF_Generator_Porting
         }
 
         //only works with windows
+        public static class Video_Generate_Values {
+            public static Pulse_Mode pulse_mode = Pulse_Mode.P_1;
+            public static double sine_amplitude = 0.0;
+            public static double base_saw_freq = 0;
+            public static double saw_freq_random_range = 0;
+        }
+
         static void generate_video(String output_path,VVVF_Sound_Names sound_name)
         {
             reset_control_variables();
@@ -730,7 +737,7 @@ namespace VVVF_Generator_Porting
                     g.FillRectangle(Brushes.Blue, 0, 68, image_width, 8);
                     if (!final_show)
                     {
-                        String[] pulse_name = get_Pulse_Name(video_pulse_mode);
+                        String[] pulse_name = get_Pulse_Name(Video_Generate_Values.pulse_mode);
 
                         g.DrawString(pulse_name[pulse_name.Length - 1], val_fnt, letter_brush, 17, 100);
 
@@ -753,7 +760,7 @@ namespace VVVF_Generator_Porting
                     g.DrawString("Sine Amplitude[%]", title_fnt, title_brush, 17, 452);
                     g.FillRectangle(Brushes.Blue, 0, 513, image_width, 8);
                     if (!final_show)
-                        g.DrawString(String.Format("{0:f2}", video_sine_amplitude*100).PadLeft(6), val_fnt, letter_brush, 17, 548);
+                        g.DrawString(String.Format("{0:f2}", Video_Generate_Values.sine_amplitude*100).PadLeft(6), val_fnt, letter_brush, 17, 548);
 
                     g.FillRectangle(new SolidBrush(Color.FromArgb(240, 240, 240)), 0, 669, image_width, 735- 669);
                     g.DrawString("Freerun", title_fnt, title_brush, 17, 674);

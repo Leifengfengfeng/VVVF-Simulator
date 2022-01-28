@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static VVVF_Generator_Porting.Program;
 
 namespace VVVF_Generator_Porting
 {
@@ -243,10 +244,6 @@ namespace VVVF_Generator_Porting
 
 		public static int random_freq_move_count = 0;
 
-		//Video variables
-		//no need in RPI zero vvvf
-		public static Pulse_Mode video_pulse_mode = Pulse_Mode.P_1;
-		public static double video_sine_amplitude = 0.0;
 
 		public static void reset_all_variables()
 		{
@@ -300,8 +297,8 @@ namespace VVVF_Generator_Porting
 		{
 			//variable change for video
 			//no need in RPI zero vvvf
-			video_pulse_mode = pulse_mode;
-			video_sine_amplitude = amplitude;
+			Video_Generate_Values.pulse_mode = pulse_mode;
+			Video_Generate_Values.sine_amplitude = amplitude;
 
 			if (pulse_mode == Pulse_Mode.Not_In_Sync)
 				saw_time = saw_angle_freq / expect_saw_angle_freq * saw_time;
@@ -328,8 +325,8 @@ namespace VVVF_Generator_Porting
 
 		public static Wave_Values calculate_two_level(Pulse_Mode pulse_mode, double expect_saw_angle_freq, double initial_phase, double amplitude)
 		{
-			video_pulse_mode = pulse_mode;
-			video_sine_amplitude = amplitude;
+			Video_Generate_Values.pulse_mode = pulse_mode;
+			Video_Generate_Values.sine_amplitude = amplitude;
 
 			if (pulse_mode == Pulse_Mode.P_Wide_3)
 				return get_Wide_P_3(sin_time, sin_angle_freq, initial_phase, amplitude, false);
