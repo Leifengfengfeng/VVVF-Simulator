@@ -4,6 +4,15 @@ Simulates VVVF inverter sound on a PC.
 # Description
 This program is for the C# console app on VisualStudio.<br>
 
+# Term of use
+We welcome the work with this program.<br>
+Please make sure do next thing<br>
+- Post the URL of this GitHub.
+
+Don't do next thing.<br>
+- Release modified code in other place. (Except VVVF sound code)
+- Give this code to others with not downloading from here.
+
 # Dependencies
 ## Generating Video
 ・OpenCV - You can get from NuGet<br>
