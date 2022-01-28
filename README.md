@@ -6,9 +6,9 @@ This program is for the C# console app on VisualStudio.<br>
 
 # Term of use
 You are **free** to use the code in this program.
-Please:
+Please:<br>
  - Post the URL of this GitHub page
-Don’t:
+Don’t:<br>
  - Release modified code without referencing this page.
  - Distribute this code without downloading it from this page.
 
