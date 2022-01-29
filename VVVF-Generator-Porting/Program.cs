@@ -243,7 +243,7 @@ namespace VVVF_Generator_Porting
             public static double dipolar = -1;
         }
 
-        static void generate_video(String output_path,VVVF_Sound_Names sound_name)
+        public static void generate_wave_U_V(String output_path,VVVF_Sound_Names sound_name)
         {
             reset_control_variables();
             reset_all_variables();
@@ -406,6 +406,409 @@ namespace VVVF_Generator_Porting
             vr.Dispose();
         }
 
+        public static void generate_wave_UVW(String output_path,VVVF_Sound_Names sound_name)
+        {
+            reset_control_variables();
+            reset_all_variables();
+
+            DateTime dt = DateTime.Now;
+            String gen_time = dt.ToString("yyyy-MM-dd_HH-mm-ss");
+            String appear_sound_name = get_Sound_Name(sound_name);
+            String fileName = output_path + "\\" + appear_sound_name + "-" + gen_time + ".avi";
+
+            bool temp = true;
+            Int32 sound_block_count = 0;
+
+            int image_width = 1500;
+            int image_height = 1000;
+            int movie_div = 3000;
+
+            VideoWriter vr = new VideoWriter(fileName, OpenCvSharp.FourCC.H264, div_freq / movie_div, new OpenCvSharp.Size(image_width, image_height));
+
+
+            if (!vr.IsOpened())
+            {
+                return;
+            }
+
+            Boolean START_F192_WAIT = true;
+            if (START_F192_WAIT)
+            {
+                for (int i = 0; i < 192; i++)
+                {
+                    Bitmap image = new(image_width, image_height);
+                    Graphics g = Graphics.FromImage(image);
+                    g.FillRectangle(new SolidBrush(Color.White), 0, 0, image_width, image_height);
+                    MemoryStream ms = new MemoryStream();
+                    image.Save(ms, ImageFormat.Png);
+                    byte[] img = ms.GetBuffer();
+                    Mat mat = OpenCvSharp.Mat.FromImageData(img);
+
+                    Cv2.ImShow("Wave Form View", mat);
+                    Cv2.WaitKey(1);
+
+                    vr.Write(mat);
+
+                    g.Dispose();
+                    image.Dispose();
+                }
+            }
+
+            Boolean loop = true;
+            while (loop)
+            {
+
+
+                if (sound_block_count % movie_div == 0 && temp)
+                {
+                    sin_time = 0;
+                    saw_time = 0;
+                    Bitmap image = new(image_width, image_height);
+                    Graphics g = Graphics.FromImage(image);
+                    g.FillRectangle(new SolidBrush(Color.White), 0, 0, image_width, image_height);
+
+                    int[] points_U = new int[image_width];
+                    int[] points_V = new int[image_width];
+                    int[] points_W = new int[image_width];
+
+
+                    for (int i = 0; i < image_width; i++)
+                    {
+                        sin_time += Math.PI / 25000.0;
+                        saw_time += Math.PI / 25000.0;
+
+                        Control_Values cv_U = new Control_Values
+                        {
+                            brake = brake,
+                            mascon_on = !mascon_off,
+                            free_run = free_run,
+                            initial_phase = Math.PI * 2.0 / 3.0 * 0,
+                            wave_stat = wave_stat
+                        };
+                        Wave_Values wv_U = get_Calculated_Value(sound_name, cv_U);
+                        points_U[i] = wv_U.pwm_value;
+
+                        Control_Values cv_V = new Control_Values
+                        {
+                            brake = brake,
+                            mascon_on = !mascon_off,
+                            free_run = free_run,
+                            initial_phase = Math.PI * 2.0 / 3.0 * 1,
+                            wave_stat = wave_stat
+                        };
+                        Wave_Values wv_V = get_Calculated_Value(sound_name, cv_V);
+                        points_V[i] = wv_V.pwm_value;
+
+                        Control_Values cv_W = new Control_Values
+                        {
+                            brake = brake,
+                            mascon_on = !mascon_off,
+                            free_run = free_run,
+                            initial_phase = Math.PI * 2.0 / 3.0 * 2,
+                            wave_stat = wave_stat
+                        };
+                        Wave_Values wv_W = get_Calculated_Value(sound_name, cv_W);
+                        points_W[i] = wv_W.pwm_value;
+
+                    }
+
+                    for (int i = 0; i < image_width - 1; i++)
+                    {
+
+                        for (int ix = 0; ix < 3; ix++)
+                        {
+                            int curr_val = 0;
+                            int next_val = 0;
+                            if(ix == 0)
+                            {
+                                curr_val = points_U[i];
+                                next_val = points_U[i + 1];
+                            }else if(ix == 1)
+                            {
+                                curr_val = points_V[i];
+                                next_val = points_V[i + 1];
+                            }
+                            else
+                            {
+                                curr_val = points_W[i];
+                                next_val = points_W[i + 1];
+                            }
+
+                            curr_val *= -100;
+                            next_val *= -100;
+
+                            curr_val += 300 * (ix + 1);
+                            next_val += 300 * (ix + 1);
+
+                            g.DrawLine(new Pen(Color.Black), i, curr_val, ((curr_val != next_val) ? i : i + 1), next_val);
+                        }
+                        
+
+                        //g.DrawLine(new Pen(Color.Gray), i, (int)(points_U[i] * wave_height + image_height / 2.0), i + 1, (int)(points_U[i+1] * wave_height + image_height / 2.0));
+                        //g.DrawLine(new Pen(Color.Gray), i, (int)(points_V[i] * wave_height + image_height / 2.0), i + 1, (int)(points_V[i + 1] * wave_height + image_height / 2.0));
+                    }
+
+
+                    MemoryStream ms = new MemoryStream();
+                    image.Save(ms, ImageFormat.Png);
+                    byte[] img = ms.GetBuffer();
+                    Mat mat = OpenCvSharp.Mat.FromImageData(img);
+
+                    Cv2.ImShow("Wave Form View", mat);
+                    Cv2.WaitKey(1);
+
+                    vr.Write(mat);
+
+                    g.Dispose();
+                    image.Dispose();
+
+                    temp = false;
+                }
+                else if (sound_block_count % movie_div != 0)
+                {
+                    temp = true;
+                }
+
+                sound_block_count++;
+
+                loop = check_for_freq_change();
+
+            }
+
+            Boolean END_F64_WAIT = true;
+            if (END_F64_WAIT)
+            {
+                for (int i = 0; i < 64; i++)
+                {
+                    Bitmap image = new(image_width, image_height);
+                    Graphics g = Graphics.FromImage(image);
+                    g.FillRectangle(new SolidBrush(Color.White), 0, 0, image_width, image_height);
+                    MemoryStream ms = new MemoryStream();
+                    image.Save(ms, ImageFormat.Png);
+                    byte[] img = ms.GetBuffer();
+                    Mat mat = OpenCvSharp.Mat.FromImageData(img);
+
+                    Cv2.ImShow("Wave Form View", mat);
+                    Cv2.WaitKey(1);
+
+                    vr.Write(mat);
+
+                    g.Dispose();
+                    image.Dispose();
+                }
+            }
+
+            vr.Release();
+            vr.Dispose();
+        }
+        public static void generate_wave_hexagon(String output_path, VVVF_Sound_Names sound_name)
+        {
+            reset_control_variables();
+            reset_all_variables();
+
+            DateTime dt = DateTime.Now;
+            String gen_time = dt.ToString("yyyy-MM-dd_HH-mm-ss");
+            String appear_sound_name = get_Sound_Name(sound_name);
+            String fileName = output_path + "\\" + appear_sound_name + "-" + gen_time + ".avi";
+
+            bool temp = true;
+            Int32 sound_block_count = 0;
+
+            
+            int image_width = 1000;
+            int image_height = 1000;
+
+            int hex_div_seed = 5000;
+            int hex_div = 6 * hex_div_seed;
+
+            // around 60fps
+            int movie_div = 3000;
+
+            VideoWriter vr = new VideoWriter(fileName, OpenCvSharp.FourCC.H264, div_freq / movie_div, new OpenCvSharp.Size(image_width, image_height));
+
+
+            if (!vr.IsOpened())
+            {
+                return;
+            }
+
+            Boolean START_F192_WAIT = false;
+            if (START_F192_WAIT)
+            {
+                for (int i = 0; i < 192; i++)
+                {
+                    Bitmap image = new(image_width, image_height);
+                    Graphics g = Graphics.FromImage(image);
+                    g.FillRectangle(new SolidBrush(Color.White), 0, 0, image_width, image_height);
+                    MemoryStream ms = new MemoryStream();
+                    image.Save(ms, ImageFormat.Png);
+                    byte[] img = ms.GetBuffer();
+                    Mat mat = OpenCvSharp.Mat.FromImageData(img);
+
+                    Cv2.ImShow("Wave Form View", mat);
+                    Cv2.WaitKey(1);
+
+                    vr.Write(mat);
+
+                    g.Dispose();
+                    image.Dispose();
+                }
+            }
+
+            Boolean loop = true;
+            while (loop)
+            {
+
+
+                if (sound_block_count % movie_div == 0 && temp)
+                {
+                    sin_time = 0;
+                    saw_time = 0;
+                    Bitmap image = new(image_width, image_height);
+                    Graphics g = Graphics.FromImage(image);
+                    g.FillRectangle(new SolidBrush(Color.White), 0, 0, image_width, image_height);
+
+                    double[] points_U = new double[hex_div];
+                    double[] points_V = new double[hex_div];
+                    double[] points_W = new double[hex_div];
+
+
+                    for (int i = 0; i < hex_div; i++)
+                    {
+                        sin_time += 1.0 / (hex_div) * ((wave_stat == 0) ? 0 : 1 / wave_stat);
+                        saw_time += 1.0 / (hex_div) * ((wave_stat == 0) ? 0 : 1 / wave_stat);
+
+                        Control_Values cv_U = new Control_Values
+                        {
+                            brake = brake,
+                            mascon_on = !mascon_off,
+                            free_run = free_run,
+                            initial_phase = Math.PI * 2.0 / 3.0 * 0,
+                            wave_stat = wave_stat
+                        };
+                        Wave_Values wv_U = get_Calculated_Value(sound_name, cv_U);
+                        points_U[i] = wv_U.pwm_value;
+
+                        Control_Values cv_V = new Control_Values
+                        {
+                            brake = brake,
+                            mascon_on = !mascon_off,
+                            free_run = free_run,
+                            initial_phase = Math.PI * 2.0 / 3.0 * 1,
+                            wave_stat = wave_stat
+                        };
+                        Wave_Values wv_V = get_Calculated_Value(sound_name, cv_V);
+                        points_V[i] = wv_V.pwm_value;
+
+                        Control_Values cv_W = new Control_Values
+                        {
+                            brake = brake,
+                            mascon_on = !mascon_off,
+                            free_run = free_run,
+                            initial_phase = Math.PI * 2.0 / 3.0 * 2,
+                            wave_stat = wave_stat
+                        };
+                        Wave_Values wv_W = get_Calculated_Value(sound_name, cv_W);
+                        points_W[i] = wv_W.pwm_value;
+
+                    }
+
+                    FontFamily val_mini_fontFamily = new FontFamily("Arial Rounded MT Bold");
+                    Font val_mini_fnt = new Font(
+                       val_mini_fontFamily,
+                       25,
+                       FontStyle.Regular,
+                       GraphicsUnit.Pixel);
+
+                    Brush title_brush = Brushes.Black;
+
+                    g.FillRectangle(new SolidBrush(Color.FromArgb(200, 200, 255)), 0, 0, image_width, 68 - 0);
+                    g.DrawString("FREQ : " + wave_stat.ToString("F2"), val_mini_fnt, title_brush, 17, 8);
+
+                    double[] hexagon_coordinate = new double[] { 0, 500 };
+
+                    for (int i = 0; i < hex_div; i++)
+                    {
+
+                        double move_x = 0;
+                        double move_y = 0;
+                        if(!(points_U[i] == 1 && points_V[i] == 1 && points_W[i] == 1))
+                        {
+                            move_x = -0.5 * points_W[i]  -0.5 * points_V[i] + points_U[i];
+                            move_y = -0.866025403784438646763 * points_W[i] +0.866025403784438646763 * points_V[i];
+                        }
+
+                        double int_move_x = 250 * move_x / (double)hex_div_seed;
+                        double int_move_y = 250 * move_y / (double)hex_div_seed;
+                        
+
+                        g.DrawLine(new Pen(Color.Black), 
+                            (int)hexagon_coordinate[0], 
+                            (int)hexagon_coordinate[1], 
+                            (int)(hexagon_coordinate[0] + int_move_x),
+                            (int)(hexagon_coordinate[1] + int_move_y)
+                        );
+
+                        hexagon_coordinate[0] = hexagon_coordinate[0] + int_move_x;
+                        hexagon_coordinate[1] = hexagon_coordinate[1] + int_move_y;
+
+                        //Console.WriteLine(hexagon_coordinate[0] + "," + hexagon_coordinate[1]);
+                        //g.DrawLine(new Pen(Color.Gray), i, (int)(points_V[i] * wave_height + image_height / 2.0), i + 1, (int)(points_V[i + 1] * wave_height + image_height / 2.0));
+                    }
+
+
+                    MemoryStream ms = new MemoryStream();
+                    image.Save(ms, ImageFormat.Png);
+                    byte[] img = ms.GetBuffer();
+                    Mat mat = OpenCvSharp.Mat.FromImageData(img);
+
+                    Cv2.ImShow("Wave Form View", mat);
+                    Cv2.WaitKey(1);
+
+                    vr.Write(mat);
+
+                    g.Dispose();
+                    image.Dispose();
+
+                    temp = false;
+                }
+                else if (sound_block_count % movie_div != 0)
+                {
+                    temp = true;
+                }
+
+                sound_block_count++;
+
+                loop = check_for_freq_change();
+
+            }
+
+            Boolean END_F64_WAIT = true;
+            if (END_F64_WAIT)
+            {
+                for (int i = 0; i < 64; i++)
+                {
+                    Bitmap image = new(image_width, image_height);
+                    Graphics g = Graphics.FromImage(image);
+                    g.FillRectangle(new SolidBrush(Color.White), 0, 0, image_width, image_height);
+                    MemoryStream ms = new MemoryStream();
+                    image.Save(ms, ImageFormat.Png);
+                    byte[] img = ms.GetBuffer();
+                    Mat mat = OpenCvSharp.Mat.FromImageData(img);
+
+                    Cv2.ImShow("Wave Form View", mat);
+                    Cv2.WaitKey(1);
+
+                    vr.Write(mat);
+
+                    g.Dispose();
+                    image.Dispose();
+                }
+            }
+
+            vr.Release();
+            vr.Dispose();
+        }
 
         private static String[] get_Pulse_Name(Pulse_Mode mode)
         {
@@ -935,31 +1338,37 @@ namespace VVVF_Generator_Porting
 
             Console.WriteLine("1 : Generate Sound");
             Console.WriteLine("2 : Generate Wave form Video");
-            Console.WriteLine("3 : Generate Mascon Video");
-            Console.WriteLine("4 : Realtime VVVF Sound generation");
+            Console.WriteLine("3 : Generate U V W Wave form Video");
+            Console.WriteLine("4 : Generate hexagon");
+            Console.WriteLine("5 : Generate Mascon Video");
+            Console.WriteLine("6 : Realtime VVVF Sound generation");
 
             String line = Console.ReadLine();
 
             String[] split = line.Split(",");
 
-            bool gen_audio = false, gen_video = false, gen_mascon_video = false, realtime = false;
+            bool gen_audio = false, gen_U_V = false, gen_UVW = false, gen_hexagon = false , gen_mascon_video = false, realtime = false;
 
             for(int i = 0; i < split.Length; i++)
             {
                 if (split[i] == "1") gen_audio = true;
-                if (split[i] == "2") gen_video = true;
-                if (split[i] == "3") gen_mascon_video = true;
-                if (split[i] == "4") realtime = true;
+                if (split[i] == "2") gen_U_V = true;
+                if (split[i] == "3") gen_UVW = true;
+                if (split[i] == "4") gen_hexagon = true;
+                if (split[i] == "5") gen_mascon_video = true;
+                if (split[i] == "6") realtime = true;
             }
 
             
-            if(gen_audio || gen_video || gen_mascon_video)
+            if(gen_audio || gen_U_V || gen_mascon_video || gen_UVW || gen_hexagon)
             {
                 VVVF_Sound_Names sound_name = get_Choosed_Sound();
                 String output_path = get_Path();
 
                 if (gen_audio) generate_sound(output_path, sound_name);
-                if (gen_video) generate_video(output_path, sound_name);
+                if (gen_U_V) generate_wave_U_V(output_path, sound_name);
+                if (gen_UVW) generate_wave_UVW(output_path, sound_name);
+                if (gen_hexagon) generate_wave_hexagon(output_path, sound_name);
                 if (gen_mascon_video) generate_status_video(output_path, sound_name);
             }
 
