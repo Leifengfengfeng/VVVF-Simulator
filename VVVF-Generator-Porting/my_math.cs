@@ -131,5 +131,9 @@ namespace VVVF_Generator_Porting
                 return (int)x;
         }
 
+        static public double exponential(double x, double y)
+        {
+            return Math.Pow(x, y);
+        }
     }
 }

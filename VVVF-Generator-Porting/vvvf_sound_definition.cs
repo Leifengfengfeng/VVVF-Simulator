@@ -16,10 +16,12 @@ namespace VVVF_Generator_Porting
             if (name == VVVF_Sound_Names.SOUND_JRE_E233_MITSUBISHI_IGBT_2_LEVEL) return calculate_jre_e233_mitsubishi_igbt_2_level(cv);
             if (name == VVVF_Sound_Names.SOUND_JRE_E233_3000_HITACHI_IGBT_2_LEVEL) return calculate_jre_e233_3000_hitachi_igbt_2_level(cv);
             if (name == VVVF_Sound_Names.SOUND_JRE_E235_TOSHIBA_SIC_2_LEVEL) return calculate_jre_e235_toshiba_sic_2_level(cv);
+            if (name == VVVF_Sound_Names.SOUND_JRE_E235_MITSUBISHI_SIC_2_LEVEL) return calculate_jre_e235_mitsubishi_sic_2_level(cv);
 
             //JR WEST
             if (name == VVVF_Sound_Names.SOUND_JRW_207_TOSHIBA_GTO_2_LEVEL) return calculate_jrw_207_toshiba_gto_2_level(cv);
             if (name == VVVF_Sound_Names.SOUND_JRW_207_UPDATE_TOSHIBA_IGBT_2_LEVEL) return calculate_jrw_207_update_toshiba_igbt_2_level(cv);
+            if (name == VVVF_Sound_Names.SOUND_JRW_223_2000_HITACHI_IGBT_3_LEVEL) return calculate_jrw_223_2000_hitachi_igbt_3_level(cv);
             if (name == VVVF_Sound_Names.SOUND_JRW_321_HITACHI_IGBT_2_LEVEL) return calculate_jrw_321_hitachi_igbt_2_level(cv);
             if (name == VVVF_Sound_Names.SOUND_JRW_225_5100_MITSUBISHI_IGBT_2_LEVEL) return calculate_jrw_225_5100_mitsubishi_igbt_2_level(cv);
 
@@ -29,6 +31,7 @@ namespace VVVF_Generator_Porting
             if (name == VVVF_Sound_Names.SOUND_TOKYUU_1000_1500_UPDATE_TOSHIBA_IGBT_2_LEVEL) return calculate_tokyuu_1000_1500_update_toshiba_igbt_2_level(cv);
 
             //KINTETSU
+            if (name == VVVF_Sound_Names.SOUND_KINTETSU_5800_MITSUBISHI_GTO_2_LEVEL) return calculate_kintetsu_5800_mitsubishi_gto_2_level(cv);
             if (name == VVVF_Sound_Names.SOUND_KINTETSU_9820_MITSUBISHI_IGBT_2_LEVEL) return calculate_kintetsu_9820_mitsubishi_igbt_2_level(cv);
             if (name == VVVF_Sound_Names.SOUND_KINTETSU_9820_HITACHI_IGBT_2_LEVEL) return calculate_kintetsu_9820_hitachi_igbt_2_level(cv);
 
@@ -45,6 +48,9 @@ namespace VVVF_Generator_Porting
             //KYOTO SUBWAY
             if (name == VVVF_Sound_Names.SOUND_KYOTO_SUBWAY_50_MITSUBISHI_GTO_2_LEVEL) return calculate_kyoto_subway_50_mitsubishi_gto_2_level(cv);
 
+            //NAGOYA SUBWAY
+            if (name == VVVF_Sound_Names.SOUND_NAGOYA_SUBWAY_2000_UPDATE_HITACHI_GTO_2_LEVEL) return calculate_nagoya_subway_2000_update_hitachi_gto_2_level(cv);
+           
             //KEIHAN
             if (name == VVVF_Sound_Names.SOUND_KEIHAN_13000_TOYO_IGBT_2_LEVEL) return calculate_keihan_13000_toyo_igbt_2_level(cv);
 
@@ -63,7 +69,6 @@ namespace VVVF_Generator_Porting
             if (name == VVVF_Sound_Names.SOUND_X_FAMINA_2_LEVEL) return calculate_famina_2_level(cv);
             if (name == VVVF_Sound_Names.SOUND_X_REAL_DOREMI_2_LEVEL) return calculate_real_doremi_2_level(cv);
             if (name == VVVF_Sound_Names.SOUND_KEIKYU_NOT_REAL_N1000_SIEMENS_GTO_2_LEVEL) return calculate_not_real_keikyu_n1000_siemens_gto_2_level(cv);
-
             return calculate_silent_2_level(cv);
         }
 
