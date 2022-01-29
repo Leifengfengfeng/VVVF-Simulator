@@ -2,8 +2,8 @@
 
 namespace VVVF_Generator_Porting
 {
-    public class vvvf_wave_calculate
-    {
+	public class vvvf_wave_calculate
+	{
 		public static double M_2PI = 6.283185307179586476925286766559;
 		public static double M_PI = 3.1415926535897932384626433832795;
 		public static double M_PI_2 = 1.5707963267948966192313216916398;
@@ -15,7 +15,6 @@ namespace VVVF_Generator_Porting
 
 		public struct Wave_Values
 		{
-
 			public double sin_value;
 			public double saw_value;
 			public int pwm_value;
@@ -29,7 +28,6 @@ namespace VVVF_Generator_Porting
 			wv.pwm_value = 0;
 			return wv;
 		}
-
 		public struct Control_Values
 		{
 			public bool brake;
@@ -38,8 +36,6 @@ namespace VVVF_Generator_Porting
 			public double initial_phase;
 			public double wave_stat;
 		};
-
-
 		public enum Pulse_Mode
 		{
 			Not_In_Sync, P_1, P_Wide_3, P_10, P_12, P_18,
@@ -65,9 +61,11 @@ namespace VVVF_Generator_Porting
 			SOUND_JRE_E233_MITSUBISHI_IGBT_2_LEVEL,
 			SOUND_JRE_E233_3000_HITACHI_IGBT_2_LEVEL,
 			SOUND_JRE_E235_TOSHIBA_SIC_2_LEVEL,
+			SOUND_JRE_E235_MITSUBISHI_SIC_2_LEVEL,
 
 			SOUND_JRW_207_TOSHIBA_GTO_2_LEVEL,
 			SOUND_JRW_207_UPDATE_TOSHIBA_IGBT_2_LEVEL,
+			SOUND_JRW_223_2000_HITACHI_IGBT_3_LEVEL,
 			SOUND_JRW_321_HITACHI_IGBT_2_LEVEL,
 			SOUND_JRW_225_5100_MITSUBISHI_IGBT_2_LEVEL,
 
@@ -75,6 +73,7 @@ namespace VVVF_Generator_Porting
 			SOUND_TOKYUU_5000_HITACHI_IGBT_2_LEVEL,
 			SOUND_TOKYUU_1000_1500_UPDATE_TOSHIBA_IGBT_2_LEVEL,
 
+			SOUND_KINTETSU_5800_MITSUBISHI_GTO_2_LEVEL,
 			SOUND_KINTETSU_9820_MITSUBISHI_IGBT_2_LEVEL,
 			SOUND_KINTETSU_9820_HITACHI_IGBT_2_LEVEL,
 
@@ -86,6 +85,8 @@ namespace VVVF_Generator_Porting
 			SOUND_TOUBU_50050_HITACHI_IGBT_2_LEVEL,
 
 			SOUND_KYOTO_SUBWAY_50_MITSUBISHI_GTO_2_LEVEL,
+
+			SOUND_NAGOYA_SUBWAY_2000_UPDATE_HITACHI_GTO_2_LEVEL,
 
 			SOUND_KEIHAN_13000_TOYO_IGBT_2_LEVEL,
 
@@ -101,7 +102,6 @@ namespace VVVF_Generator_Porting
 			SOUND_X_FAMINA_2_LEVEL,
 			SOUND_X_REAL_DOREMI_2_LEVEL,
 			SOUND_KEIKYU_NOT_REAL_N1000_SIEMENS_GTO_2_LEVEL,
-
 		}
 
 
@@ -150,7 +150,6 @@ namespace VVVF_Generator_Porting
 			wv.pwm_value = gate;
 			return wv;
 		}
-
 		public static Wave_Values get_P_with_saw(double time, double sin_angle_frequency, double initial_phase, double voltage, double carrier_mul, bool saw_oppose)
 		{
 			double carrier_saw = -get_saw_value(time, carrier_mul * sin_angle_frequency, carrier_mul * initial_phase);
@@ -188,17 +187,22 @@ namespace VVVF_Generator_Porting
 			return wv;
 
 		}
-
 		public static double get_Amplitude(double freq, double max_freq)
 		{
-
 			double rate = 0.99, init = 0.01;
-			if (freq > max_freq)
-				return 1.0;
-			if (freq <= 0.1)
-				return 0.0;
-
+			if (freq > max_freq) return 1.0;
+			if (freq <= 0.1) return 0.0;
 			return rate / max_freq * freq + init;
+		}
+		public static double get_overmodulation_amplitude(double min_freq, double max_freq, double max_amplitude, double freq)
+		{
+			if (freq > max_freq) return max_amplitude;
+			if (freq <= 0.1) return 0.0;
+			else return my_math.exponential(max_amplitude , (freq - min_freq) * ((max_amplitude - 1) / (max_freq - min_freq)) / (max_amplitude - 1));
+		}
+		public static double get_wide_3_pulse_amplitude(double min_freq, double min_amplitude, double max_freq, double max_amplitude, double freq)
+		{
+			return (0.2 * ((freq - min_freq) * ((max_amplitude - min_amplitude) / (max_freq - min_freq)) + min_amplitude)) + 0.8;
 		}
 
 		public static int get_Pulse_Num(Pulse_Mode mode)
@@ -255,7 +259,6 @@ namespace VVVF_Generator_Porting
 		public static double get_Rolling_Angle_Frequency()
         {
 			return sin_angle_freq;
-
 		}
 
 		// random range => -range ~ range
@@ -296,11 +299,7 @@ namespace VVVF_Generator_Porting
 
 		public static double get_changing_carrier_freq(double starting_freq, double starting_carrier_freq, double ending_freq, double ending_carrier_freq, double current_frequency)
 		{
-
-			double current_carrier_freq = starting_carrier_freq + (ending_carrier_freq - starting_carrier_freq) / (ending_freq - starting_freq) * (current_frequency - starting_freq);
-
-			return current_carrier_freq;
-
+			return starting_carrier_freq + (ending_carrier_freq - starting_carrier_freq) / (ending_freq - starting_freq) * (current_frequency - starting_freq);
 		}
 
 		public static double get_pattern_random(int lowest, int highest, int interval_count)
