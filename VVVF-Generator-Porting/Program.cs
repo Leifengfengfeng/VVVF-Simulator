@@ -602,7 +602,7 @@ namespace VVVF_Generator_Porting
             vr.Dispose();
         }
         
-        public static void generate_wave_hexagon_exaplin(String output_path, VVVF_Sound_Names sound_name)
+        public static void generate_wave_hexagon_explain(String output_path, VVVF_Sound_Names sound_name)
         {
             reset_control_variables();
             reset_all_variables();
@@ -726,7 +726,7 @@ namespace VVVF_Generator_Porting
 
                 double move_x = 0;
                 double move_y = 0;
-                if (!(wv_U.pwm_value == 1 && wv_V.pwm_value == 1 && wv_W.pwm_value == 1))
+                if (!(wv_U.pwm_value == wv_V.pwm_value && wv_V.pwm_value == wv_W.pwm_value))
                 {
                     move_x = -0.5 * wv_W.pwm_value - 0.5 * wv_V.pwm_value + wv_U.pwm_value;
                     move_y = -0.866025403784438646763 * wv_W.pwm_value + 0.866025403784438646763 * wv_V.pwm_value;
@@ -819,7 +819,7 @@ namespace VVVF_Generator_Porting
 
                 double move_x = 0;
                 double move_y = 0;
-                if (!(pwm_U == 1 && pwm_V == 1 && pwm_W == 1))
+                if (!(pwm_U == pwm_V && pwm_V == pwm_W))
                 {
                     move_x = -0.5 * pwm_W - 0.5 * pwm_V + pwm_U;
                     move_y = -0.866025403784438646763 * pwm_W + 0.866025403784438646763 * pwm_V;
@@ -848,7 +848,7 @@ namespace VVVF_Generator_Porting
                 hexagon_coordinate[0] = hexagon_coordinate[0] + int_move_x;
                 hexagon_coordinate[1] = hexagon_coordinate[1] + int_move_y;
 
-                if (i % 10 == 0)
+                if (i % 10 == 0 || i + 1 == hex_div)
                 {
                     Bitmap resized_hexagon = new Bitmap(450, 450);
                     Graphics resized_hexagon_g = Graphics.FromImage(resized_hexagon);
@@ -1012,7 +1012,7 @@ namespace VVVF_Generator_Porting
 
                         double move_x = 0;
                         double move_y = 0;
-                        if (!(wv_U.pwm_value == 1 && wv_V.pwm_value == 1 && wv_W.pwm_value == 1))
+                        if (!(wv_U.pwm_value == wv_V.pwm_value && wv_V.pwm_value == wv_W.pwm_value))
                         {
                             move_x = -0.5 * wv_W.pwm_value - 0.5 * wv_V.pwm_value + wv_U.pwm_value;
                             move_y = -0.866025403784438646763 * wv_W.pwm_value + 0.866025403784438646763 * wv_V.pwm_value;
@@ -1658,7 +1658,7 @@ namespace VVVF_Generator_Porting
                 if (gen_U_V) generate_wave_U_V(output_path, sound_name);
                 if (gen_UVW) generate_wave_UVW(output_path, sound_name);
                 if (gen_hexagon) generate_wave_hexagon(output_path, sound_name);
-                if (gen_hexagon_explain) generate_wave_hexagon_exaplin(output_path, sound_name);
+                if (gen_hexagon_explain) generate_wave_hexagon_explain(output_path, sound_name);
                 if (gen_mascon_video) generate_status_video(output_path, sound_name);
             }
 
