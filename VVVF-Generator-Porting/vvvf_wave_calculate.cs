@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using static VVVF_Generator_Porting.Program;
 
 namespace VVVF_Generator_Porting
 {
-    public class vvvf_wave_calculate
-    {
+	public class vvvf_wave_calculate
+	{
 		public static double M_2PI = 6.283185307179586476925286766559;
 		public static double M_PI = 3.1415926535897932384626433832795;
 		public static double M_PI_2 = 1.5707963267948966192313216916398;
@@ -19,7 +15,6 @@ namespace VVVF_Generator_Porting
 
 		public struct Wave_Values
 		{
-
 			public double sin_value;
 			public double saw_value;
 			public int pwm_value;
@@ -33,7 +28,6 @@ namespace VVVF_Generator_Porting
 			wv.pwm_value = 0;
 			return wv;
 		}
-
 		public struct Control_Values
 		{
 			public bool brake;
@@ -42,8 +36,6 @@ namespace VVVF_Generator_Porting
 			public double initial_phase;
 			public double wave_stat;
 		};
-
-
 		public enum Pulse_Mode
 		{
 			Not_In_Sync, P_1, P_Wide_3, P_10, P_12, P_18,
@@ -69,9 +61,11 @@ namespace VVVF_Generator_Porting
 			SOUND_JRE_E233_MITSUBISHI_IGBT_2_LEVEL,
 			SOUND_JRE_E233_3000_HITACHI_IGBT_2_LEVEL,
 			SOUND_JRE_E235_TOSHIBA_SIC_2_LEVEL,
+			SOUND_JRE_E235_MITSUBISHI_SIC_2_LEVEL,
 
 			SOUND_JRW_207_TOSHIBA_GTO_2_LEVEL,
 			SOUND_JRW_207_UPDATE_TOSHIBA_IGBT_2_LEVEL,
+			SOUND_JRW_223_2000_HITACHI_IGBT_3_LEVEL,
 			SOUND_JRW_321_HITACHI_IGBT_2_LEVEL,
 			SOUND_JRW_225_5100_MITSUBISHI_IGBT_2_LEVEL,
 
@@ -79,6 +73,7 @@ namespace VVVF_Generator_Porting
 			SOUND_TOKYUU_5000_HITACHI_IGBT_2_LEVEL,
 			SOUND_TOKYUU_1000_1500_UPDATE_TOSHIBA_IGBT_2_LEVEL,
 
+			SOUND_KINTETSU_5800_MITSUBISHI_GTO_2_LEVEL,
 			SOUND_KINTETSU_9820_MITSUBISHI_IGBT_2_LEVEL,
 			SOUND_KINTETSU_9820_HITACHI_IGBT_2_LEVEL,
 
@@ -90,6 +85,8 @@ namespace VVVF_Generator_Porting
 			SOUND_TOUBU_50050_HITACHI_IGBT_2_LEVEL,
 
 			SOUND_KYOTO_SUBWAY_50_MITSUBISHI_GTO_2_LEVEL,
+
+			SOUND_NAGOYA_SUBWAY_2000_UPDATE_HITACHI_GTO_2_LEVEL,
 
 			SOUND_KEIHAN_13000_TOYO_IGBT_2_LEVEL,
 
@@ -105,7 +102,6 @@ namespace VVVF_Generator_Porting
 			SOUND_X_FAMINA_2_LEVEL,
 			SOUND_X_REAL_DOREMI_2_LEVEL,
 			SOUND_KEIKYU_NOT_REAL_N1000_SIEMENS_GTO_2_LEVEL,
-
 		}
 
 
@@ -154,7 +150,6 @@ namespace VVVF_Generator_Porting
 			wv.pwm_value = gate;
 			return wv;
 		}
-
 		public static Wave_Values get_P_with_saw(double time, double sin_angle_frequency, double initial_phase, double voltage, double carrier_mul, bool saw_oppose)
 		{
 			double carrier_saw = -get_saw_value(time, carrier_mul * sin_angle_frequency, carrier_mul * initial_phase);
@@ -192,17 +187,22 @@ namespace VVVF_Generator_Porting
 			return wv;
 
 		}
-
 		public static double get_Amplitude(double freq, double max_freq)
 		{
-
 			double rate = 0.99, init = 0.01;
-			if (freq > max_freq)
-				return 1.0;
-			if (freq <= 0.1)
-				return 0.0;
-
+			if (freq > max_freq) return 1.0;
+			if (freq <= 0.1) return 0.0;
 			return rate / max_freq * freq + init;
+		}
+		public static double get_overmodulation_amplitude(double min_freq, double max_freq, double max_amplitude, double freq)
+		{
+			if (freq > max_freq) return max_amplitude;
+			if (freq <= 0.1) return 0.0;
+			else return my_math.exponential(max_amplitude , (freq - min_freq) * ((max_amplitude - 1) / (max_freq - min_freq)) / (max_amplitude - 1));
+		}
+		public static double get_wide_3_pulse_amplitude(double min_freq, double min_amplitude, double max_freq, double max_amplitude, double freq)
+		{
+			return (0.2 * ((freq - min_freq) * ((max_amplitude - min_amplitude) / (max_freq - min_freq)) + min_amplitude)) + 0.8;
 		}
 
 		public static int get_Pulse_Num(Pulse_Mode mode)
@@ -238,15 +238,11 @@ namespace VVVF_Generator_Porting
 		//saw value definitions
 		public static double saw_angle_freq = 1050;
 		public static double saw_time = 0;
-		public static int pre_saw_random_freq = 0;
+		public static double pre_saw_random_freq = 0;
 
 
 		public static int random_freq_move_count = 0;
 
-		//Video variables
-		//no need in RPI zero vvvf
-		public static Pulse_Mode video_pulse_mode = Pulse_Mode.P_1;
-		public static double video_sine_amplitude = 0.0;
 
 		public static void reset_all_variables()
 		{
@@ -260,17 +256,34 @@ namespace VVVF_Generator_Porting
 			random_freq_move_count = 0;
 		}
 
+		public static double get_Rolling_Angle_Frequency()
+        {
+			return sin_angle_freq;
+		}
+
 		// random range => -range ~ range
-		public static int get_random_freq(int base_freq, int range)
+		public class Carrier_Freq
+        {
+			public Carrier_Freq( double base_freq_a , double range_b)
+            {
+				base_freq = base_freq_a;
+				range = range_b;
+			}
+
+			public double base_freq;
+			public double range;
+        }
+
+		private static double get_random_freq(Carrier_Freq data)
 		{
-			int random_freq = 0;
+			double random_freq = 0;
 			if (random_freq_move_count == 0 || pre_saw_random_freq == 0)
 			{
 				int random_v = my_math.my_random();
-				int diff_freq = my_math.mod_i(random_v, range);
+				double diff_freq = my_math.mod_d(random_v, data.range);
 				if ((random_v & 0x01) == 1)
 					diff_freq = -diff_freq;
-				int silent_random_freq = base_freq + diff_freq;
+				double silent_random_freq = data.base_freq + diff_freq;
 				random_freq = silent_random_freq;
 				pre_saw_random_freq = silent_random_freq;
 			}
@@ -282,6 +295,11 @@ namespace VVVF_Generator_Porting
 			if (random_freq_move_count == 100)
 				random_freq_move_count = 0;
 			return random_freq;
+		}
+
+		public static double get_changing_carrier_freq(double starting_freq, double starting_carrier_freq, double ending_freq, double ending_carrier_freq, double current_frequency)
+		{
+			return starting_carrier_freq + (ending_carrier_freq - starting_carrier_freq) / (ending_freq - starting_freq) * (current_frequency - starting_freq);
 		}
 
 		public static double get_pattern_random(int lowest, int highest, int interval_count)
@@ -296,27 +314,31 @@ namespace VVVF_Generator_Porting
 			return random_freq;
 		}
 
-		public static Wave_Values calculate_three_level(Pulse_Mode pulse_mode, double expect_saw_angle_freq, double initial_phase, double amplitude, double dipolar)
+		public static Wave_Values calculate_three_level(Pulse_Mode pulse_mode, Carrier_Freq data, double initial_phase, double amplitude, double dipolar)
 		{
 			//variable change for video
 			//no need in RPI zero vvvf
-			video_pulse_mode = pulse_mode;
-			video_sine_amplitude = amplitude;
+			Video_Generate_Values.pulse_mode = pulse_mode;
+			Video_Generate_Values.sine_amplitude = amplitude;
+			Video_Generate_Values.carrier_freq_data = data;
+			Video_Generate_Values.dipolar = dipolar;
 
 			if (pulse_mode == Pulse_Mode.Not_In_Sync)
-				saw_time = saw_angle_freq / expect_saw_angle_freq * saw_time;
+            {
+				double desire_saw_angle_freq = (data.range == 0) ? data.base_freq * M_2PI : get_random_freq(data) * M_2PI;
+				saw_time = saw_angle_freq / desire_saw_angle_freq * saw_time;
+				saw_angle_freq = desire_saw_angle_freq;
+
+			}
 			else
 			{
-				expect_saw_angle_freq = sin_angle_freq * get_Pulse_Num(pulse_mode);
+				saw_angle_freq = sin_angle_freq * get_Pulse_Num(pulse_mode);
 				saw_time = sin_time;
 			}
-			saw_angle_freq = expect_saw_angle_freq;
 
 			double sin_value = get_sin_value(sin_time, sin_angle_freq, initial_phase, amplitude);
 
 			double saw_value = get_saw_value(saw_time, saw_angle_freq, 0);
-			if ((int)pulse_mode > (int)Pulse_Mode.P_61)
-				saw_value = -saw_value;
 
 			double changed_saw = ((dipolar != -1) ? dipolar : 0.5) * saw_value;
 			int pwm_value = get_pwm_value(sin_value, changed_saw + 0.5) + get_pwm_value(sin_value, changed_saw - 0.5);
@@ -328,10 +350,11 @@ namespace VVVF_Generator_Porting
 			return wv;
 		}
 
-		public static Wave_Values calculate_two_level(Pulse_Mode pulse_mode, double expect_saw_angle_freq, double initial_phase, double amplitude)
+		public static Wave_Values calculate_two_level(Pulse_Mode pulse_mode, Carrier_Freq carrier_freq_data, double initial_phase, double amplitude)
 		{
-			video_pulse_mode = pulse_mode;
-			video_sine_amplitude = amplitude;
+			Video_Generate_Values.pulse_mode = pulse_mode;
+			Video_Generate_Values.sine_amplitude = amplitude;
+			Video_Generate_Values.carrier_freq_data = carrier_freq_data;
 
 			if (pulse_mode == Pulse_Mode.P_Wide_3)
 				return get_Wide_P_3(sin_time, sin_angle_freq, initial_phase, amplitude, false);
@@ -443,13 +466,17 @@ namespace VVVF_Generator_Porting
 				   'B', sin_time, sin_angle_freq, initial_phase);
 
 			if (pulse_mode == Pulse_Mode.Not_In_Sync || pulse_mode == Pulse_Mode.Asyn_THI)
-				saw_time = saw_angle_freq / expect_saw_angle_freq * saw_time;
+			{
+				double desire_saw_angle_freq = (carrier_freq_data.range == 0) ? carrier_freq_data.base_freq * M_2PI : get_random_freq(carrier_freq_data) * M_2PI;
+				saw_time = saw_angle_freq / desire_saw_angle_freq * saw_time;
+				saw_angle_freq = desire_saw_angle_freq;
+			}
 			else
 			{
-				expect_saw_angle_freq = sin_angle_freq * get_Pulse_Num(pulse_mode);
+				saw_angle_freq = sin_angle_freq * get_Pulse_Num(pulse_mode);
 				saw_time = sin_time;
 			}
-			saw_angle_freq = expect_saw_angle_freq;
+
 
 			double sin_value = pulse_mode == Pulse_Mode.Asyn_THI ?
 			get_sin_value(sin_time, sin_angle_freq, initial_phase, amplitude) + 0.2 * get_sin_value(sin_time, 3 * sin_angle_freq, 3 * initial_phase, amplitude) :
