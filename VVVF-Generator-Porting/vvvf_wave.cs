@@ -528,6 +528,20 @@ namespace VVVF_Generator_Porting
 			{
 				set_Mascon_Off_Div(15000);
 				amplitude = get_Amplitude(cv.wave_stat, 60);
+
+				if (cv.free_run && !cv.mascon_on && cv.wave_stat > 60)
+				{
+					cv.wave_stat = 60;
+					set_Control_Frequency(60);
+				}
+
+				else if (cv.free_run && cv.mascon_on && cv.wave_stat > 60)
+				{
+					double rolling_freq = get_Rolling_Angle_Frequency() * M_1_2PI;
+					cv.wave_stat = rolling_freq;
+					set_Control_Frequency(rolling_freq);
+				}
+
 				if (60 <= cv.wave_stat)
 					pulse_mode = Pulse_Mode.P_1;
 				else if (53 <= cv.wave_stat || (cv.free_run && sin_angle_freq > 53 * M_2PI))
@@ -551,6 +565,20 @@ namespace VVVF_Generator_Porting
 			else
 			{
 				set_Mascon_Off_Div(15000);
+
+				if (cv.free_run && !cv.mascon_on && cv.wave_stat > 80)
+				{
+					cv.wave_stat = 80;
+					set_Control_Frequency(80);
+				}
+
+				else if (cv.free_run && cv.mascon_on && cv.wave_stat > 80)
+				{
+					double rolling_freq = get_Rolling_Angle_Frequency() * M_1_2PI;
+					cv.wave_stat = rolling_freq;
+					set_Control_Frequency(rolling_freq);
+				}
+
 				amplitude = get_Amplitude(cv.wave_stat, 80);
 				if (80 <= cv.wave_stat)
 					pulse_mode = Pulse_Mode.P_1;
