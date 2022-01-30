@@ -726,7 +726,7 @@ namespace VVVF_Generator_Porting
 
                 double move_x = 0;
                 double move_y = 0;
-                if (!(wv_U.pwm_value == 1 && wv_V.pwm_value == 1 && wv_W.pwm_value == 1))
+                if (!(wv_U.pwm_value == wv_V.pwm_value && wv_V.pwm_value == wv_W.pwm_value))
                 {
                     move_x = -0.5 * wv_W.pwm_value - 0.5 * wv_V.pwm_value + wv_U.pwm_value;
                     move_y = -0.866025403784438646763 * wv_W.pwm_value + 0.866025403784438646763 * wv_V.pwm_value;
@@ -819,7 +819,7 @@ namespace VVVF_Generator_Porting
 
                 double move_x = 0;
                 double move_y = 0;
-                if (!(pwm_U == 1 && pwm_V == 1 && pwm_W == 1))
+                if (!(pwm_U == pwm_V && pwm_V == pwm_W))
                 {
                     move_x = -0.5 * pwm_W - 0.5 * pwm_V + pwm_U;
                     move_y = -0.866025403784438646763 * pwm_W + 0.866025403784438646763 * pwm_V;
@@ -1012,7 +1012,7 @@ namespace VVVF_Generator_Porting
 
                         double move_x = 0;
                         double move_y = 0;
-                        if (!(wv_U.pwm_value == 1 && wv_V.pwm_value == 1 && wv_W.pwm_value == 1))
+                        if (!(wv_U.pwm_value == wv_V.pwm_value && wv_V.pwm_value == wv_W.pwm_value))
                         {
                             move_x = -0.5 * wv_W.pwm_value - 0.5 * wv_V.pwm_value + wv_U.pwm_value;
                             move_y = -0.866025403784438646763 * wv_W.pwm_value + 0.866025403784438646763 * wv_V.pwm_value;
