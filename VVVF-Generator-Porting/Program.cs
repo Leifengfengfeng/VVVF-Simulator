@@ -67,7 +67,7 @@ namespace VVVF_Generator_Porting
 
             if (temp_count == 0)
             {
-                if (sin_angle_freq / 2 / Math.PI > 115 && !brake && do_frequency_change)
+                if (sin_angle_freq / 2 / Math.PI > 90 && !brake && do_frequency_change)
                 {
                     do_frequency_change = false;
                     mascon_off = true;
@@ -601,6 +601,312 @@ namespace VVVF_Generator_Porting
             vr.Release();
             vr.Dispose();
         }
+        
+        public static void generate_wave_hexagon_exaplin(String output_path, VVVF_Sound_Names sound_name)
+        {
+            reset_control_variables();
+            reset_all_variables();
+
+            DateTime dt = DateTime.Now;
+            String gen_time = dt.ToString("yyyy-MM-dd_HH-mm-ss");
+            String appear_sound_name = get_Sound_Name(sound_name);
+            String fileName = output_path + "\\" + appear_sound_name + "-" + gen_time + ".avi";
+
+            int movie_div = 3000;
+
+            int image_width = 1980;
+            int image_height = 500;
+
+            int pwm_image_width = 750;
+            int pwm_image_height = 500;
+
+            int hexagon_image_size = 1000;
+
+            int hex_div_seed = 10000;
+            int hex_div = 6 * hex_div_seed;
+
+            VideoWriter vr = new VideoWriter(fileName, OpenCvSharp.FourCC.H264, div_freq / movie_div, new OpenCvSharp.Size(image_width, image_height));
+            if (!vr.IsOpened())
+            {
+                return;
+            }
+
+            Boolean START_F192_WAIT = false;
+            if (START_F192_WAIT)
+            {
+                Bitmap free_image = new(image_width, image_height);
+                Graphics free_g = Graphics.FromImage(free_image);
+                free_g.FillRectangle(new SolidBrush(Color.White), 0, 0, image_width, image_height);
+                MemoryStream free_ms = new MemoryStream();
+                free_image.Save(free_ms, ImageFormat.Png);
+                byte[] free_img = free_ms.GetBuffer();
+                Mat free_mat = OpenCvSharp.Mat.FromImageData(free_img);
+
+                for (int i = 0; i < 192; i++)
+                {
+                    vr.Write(free_mat);
+                }
+                free_g.Dispose();
+                free_image.Dispose();
+            }
+
+            sin_time = 0;
+            saw_time = 0;
+
+            while (true)
+            {
+                try
+                {
+                    Console.WriteLine("Enter the Freq.");
+                    wave_stat = Int32.Parse(Console.ReadLine());
+                    break;
+                }catch(Exception e)
+                {
+                    Console.WriteLine("Invalid value.");
+                }
+            }
+            sin_angle_freq = wave_stat * M_2PI;
+
+            Bitmap PWM_wave_image = new(pwm_image_width, pwm_image_height);
+            Graphics PWM_wave_g = Graphics.FromImage(PWM_wave_image);
+            PWM_wave_g.FillRectangle(new SolidBrush(Color.White), 0, 0, pwm_image_width, pwm_image_height);
+
+            Bitmap whole_image = new(image_width, image_height);
+            Graphics whole_g = Graphics.FromImage(whole_image);
+            whole_g.FillRectangle(new SolidBrush(Color.White), 0, 0, image_width, image_height);
+
+            Bitmap hexagon_image = new(hexagon_image_size, hexagon_image_size);
+            Graphics hexagon_g = Graphics.FromImage(hexagon_image);
+            hexagon_g.FillRectangle(new SolidBrush(Color.White), 0, 0, hexagon_image_size, hexagon_image_size);
+
+            int[] points_U = new int[hex_div];
+            int[] points_V = new int[hex_div];
+            int[] points_W = new int[hex_div];
+
+            double[] x_min_max = new double[] { 500, 0 };
+            double[] hexagon_coordinate = new double[] { 100, 500 };
+
+            for (int i = 0; i < hex_div; i++)
+            {
+                sin_time += 1.0 / (hex_div) * ((wave_stat == 0) ? 0 : 1 / wave_stat);
+                saw_time += 1.0 / (hex_div) * ((wave_stat == 0) ? 0 : 1 / wave_stat);
+
+                Control_Values cv_U = new Control_Values
+                {
+                    brake = brake,
+                    mascon_on = !mascon_off,
+                    free_run = free_run,
+                    initial_phase = Math.PI * 2.0 / 3.0 * 0,
+                    wave_stat = wave_stat
+                };
+                Wave_Values wv_U = get_Calculated_Value(sound_name, cv_U);
+                points_U[i] = wv_U.pwm_value;
+
+                Control_Values cv_V = new Control_Values
+                {
+                    brake = brake,
+                    mascon_on = !mascon_off,
+                    free_run = free_run,
+                    initial_phase = Math.PI * 2.0 / 3.0 * 1,
+                    wave_stat = wave_stat
+                };
+                Wave_Values wv_V = get_Calculated_Value(sound_name, cv_V);
+                points_V[i] = wv_V.pwm_value;
+
+                Control_Values cv_W = new Control_Values
+                {
+                    brake = brake,
+                    mascon_on = !mascon_off,
+                    free_run = free_run,
+                    initial_phase = Math.PI * 2.0 / 3.0 * 2,
+                    wave_stat = wave_stat
+                };
+                Wave_Values wv_W = get_Calculated_Value(sound_name, cv_W);
+                points_W[i] = wv_W.pwm_value;
+
+                double move_x = 0;
+                double move_y = 0;
+                if (!(wv_U.pwm_value == 1 && wv_V.pwm_value == 1 && wv_W.pwm_value == 1))
+                {
+                    move_x = -0.5 * wv_W.pwm_value - 0.5 * wv_V.pwm_value + wv_U.pwm_value;
+                    move_y = -0.866025403784438646763 * wv_W.pwm_value + 0.866025403784438646763 * wv_V.pwm_value;
+                }
+                double int_move_x = 200 * move_x / (double)hex_div_seed;
+                double int_move_y = 200 * move_y / (double)hex_div_seed;
+                hexagon_coordinate[0] = hexagon_coordinate[0] + int_move_x;
+                hexagon_coordinate[1] = hexagon_coordinate[1] + int_move_y;
+
+                if (x_min_max[0] > hexagon_coordinate[0]) x_min_max[0] = hexagon_coordinate[0];
+                if (x_min_max[1] < hexagon_coordinate[0]) x_min_max[1] = hexagon_coordinate[0];
+
+            }
+
+            hexagon_coordinate = new double[] { 100, 500 };
+            double moved_x = (1000 - (x_min_max[1] - x_min_max[0])) / 2.0 - 100;
+
+            int jump_add = hex_div / pwm_image_width;
+            for(int i = 0; i < pwm_image_width - 1; i++)
+            {
+                for (int ix = 0; ix < 3; ix++)
+                {
+                    int curr_val = 0;
+                    int next_val = 0;
+                    if (ix == 0)
+                    {
+                        curr_val = points_U[i * jump_add];
+                        next_val = points_U[(i + 1) * jump_add];
+                    }
+                    else if (ix == 1)
+                    {
+                        curr_val = points_V[i * jump_add];
+                        next_val = points_V[(i + 1) * jump_add];
+                    }
+                    else
+                    {
+                        curr_val = points_W[i * jump_add];
+                        next_val = points_W[(i + 1) * jump_add];
+                    }
+
+                    curr_val *= -50;
+                    next_val *= -50;
+
+                    curr_val += 150 * (ix + 1);
+                    next_val += 150 * (ix + 1);
+
+                    PWM_wave_g.DrawLine(new Pen(Color.Black), i, curr_val, ((curr_val != next_val) ? i : i + 1), next_val);
+                }
+            }
+
+            whole_g.DrawImage(PWM_wave_image, 0, 0);
+
+            bool only_wave_show = true;
+            if (only_wave_show)
+            {
+                MemoryStream ms = new MemoryStream();
+                whole_image.Save(ms, ImageFormat.Png);
+                byte[] img = ms.GetBuffer();
+                Mat mat = OpenCvSharp.Mat.FromImageData(img);
+
+                Cv2.ImShow("Wave Form View", mat);
+                
+
+                for (int i = 0; i < 60; i++)
+                {
+                    vr.Write(mat);
+                    Cv2.WaitKey(5);
+                }
+            }
+
+            Font text_font = new Font(
+                new FontFamily("Fugaz One"),
+                40,
+                FontStyle.Bold,
+                GraphicsUnit.Pixel);
+
+            for (int i = 0; i < hex_div; i++)
+            {
+                whole_g.FillRectangle(new SolidBrush(Color.White), 0, 0, image_width, image_height);
+                whole_g.DrawImage(PWM_wave_image, 0, 0);
+                whole_g.DrawLine(new Pen(Color.Red), (int)Math.Round((double)i / (double)hex_div * (double)pwm_image_width), 0, (int)Math.Round((double)i / (double)hex_div * (double)pwm_image_width), pwm_image_height);
+
+                int pwm_U = points_U[i];
+                int pwm_V = points_V[i];
+                int pwm_W = points_W[i];
+
+                whole_g.DrawString(pwm_U.ToString(), text_font, (pwm_U > 0) ? new SolidBrush(Color.Blue) : new SolidBrush(Color.Red), pwm_image_width + 5, 75); ;
+                whole_g.DrawString(pwm_V.ToString(), text_font, (pwm_V > 0) ? new SolidBrush(Color.Blue) : new SolidBrush(Color.Red), pwm_image_width + 5, 225);
+                whole_g.DrawString(pwm_W.ToString(), text_font, (pwm_W > 0) ? new SolidBrush(Color.Blue) : new SolidBrush(Color.Red), pwm_image_width + 5, 375);
+
+                double move_x = 0;
+                double move_y = 0;
+                if (!(pwm_U == 1 && pwm_V == 1 && pwm_W == 1))
+                {
+                    move_x = -0.5 * pwm_W - 0.5 * pwm_V + pwm_U;
+                    move_y = -0.866025403784438646763 * pwm_W + 0.866025403784438646763 * pwm_V;
+                }
+
+                double int_move_x = 200 * move_x / (double)hex_div_seed;
+                double int_move_y = 200 * move_y / (double)hex_div_seed;
+
+                hexagon_g.DrawLine(new Pen(Color.Black),
+                    (int)(hexagon_coordinate[0] + moved_x),
+                    (int)(hexagon_coordinate[1] ),
+                    (int)(hexagon_coordinate[0] + moved_x + int_move_x),
+                    (int)(hexagon_coordinate[1] + int_move_y)
+                );
+
+                Bitmap hexagon_image_with_dot = new(hexagon_image_size, hexagon_image_size);
+                Graphics hexagon_g_with_dot = Graphics.FromImage(hexagon_image_with_dot);
+                //hexagon_g_with_dot.FillRectangle(new SolidBrush(Color.White), 0, 0, hexagon_image_size, hexagon_image_size);
+                hexagon_g_with_dot.FillRectangle(new SolidBrush(Color.Red),
+                    (int)(hexagon_coordinate[0] + moved_x - 5),
+                    (int)(hexagon_coordinate[1] - 5),
+                    (int)(10),
+                    (int)(10)
+                );
+
+                hexagon_coordinate[0] = hexagon_coordinate[0] + int_move_x;
+                hexagon_coordinate[1] = hexagon_coordinate[1] + int_move_y;
+
+                if (i % 10 == 0)
+                {
+                    Bitmap resized_hexagon = new Bitmap(450, 450);
+                    Graphics resized_hexagon_g = Graphics.FromImage(resized_hexagon);
+                    resized_hexagon_g.FillRectangle(new SolidBrush(Color.White), 0, 0, 450, 450);
+                    resized_hexagon_g.DrawImage(new Bitmap(hexagon_image, 450, 450), 0, 0);
+                    resized_hexagon_g.DrawImage(new Bitmap(hexagon_image_with_dot, 450, 450), 0, 0);
+
+                    whole_g.DrawImage(resized_hexagon, 820, 25);
+
+                    MemoryStream ms = new MemoryStream();
+                    whole_image.Save(ms, ImageFormat.Png);
+                    byte[] img = ms.GetBuffer();
+                    Mat mat = OpenCvSharp.Mat.FromImageData(img);
+
+                    Cv2.ImShow("Wave Form View", mat);
+
+
+                    for (int frame = 0; frame < 1; frame++)
+                    {
+                        vr.Write(mat);
+                        Cv2.WaitKey(1);
+                    }
+
+                    resized_hexagon_g.Dispose();
+                    resized_hexagon.Dispose();
+                }
+
+                hexagon_g_with_dot.Dispose();
+                hexagon_image_with_dot.Dispose();
+                
+            }
+
+                        
+
+            Boolean END_F64_WAIT = true;
+            if (END_F64_WAIT)
+            {
+                MemoryStream free_ms = new MemoryStream();
+                whole_image.Save(free_ms, ImageFormat.Png);
+                byte[] free_img = free_ms.GetBuffer();
+                Mat free_mat = OpenCvSharp.Mat.FromImageData(free_img);
+
+                for (int i = 0; i < 64; i++)
+                {
+                    vr.Write(free_mat);
+                }
+            }
+
+            PWM_wave_g.Dispose();
+            PWM_wave_image.Dispose();
+            whole_g.Dispose();
+            whole_image.Dispose();
+            hexagon_g.Dispose();
+            hexagon_image.Dispose();
+
+            vr.Release();
+            vr.Dispose();
+        }
         public static void generate_wave_hexagon(String output_path, VVVF_Sound_Names sound_name)
         {
             reset_control_variables();
@@ -618,7 +924,7 @@ namespace VVVF_Generator_Porting
             int image_width = 1000;
             int image_height = 1000;
 
-            int hex_div_seed = 5000;
+            int hex_div_seed = 10000;
             int hex_div = 6 * hex_div_seed;
 
             // around 60fps
@@ -635,24 +941,22 @@ namespace VVVF_Generator_Porting
             Boolean START_F192_WAIT = false;
             if (START_F192_WAIT)
             {
+                Bitmap image = new(image_width, image_height);
+                Graphics g = Graphics.FromImage(image);
+                g.FillRectangle(new SolidBrush(Color.White), 0, 0, image_width, image_height);
+                MemoryStream ms = new MemoryStream();
+                image.Save(ms, ImageFormat.Png);
+                byte[] img = ms.GetBuffer();
+                Mat mat = OpenCvSharp.Mat.FromImageData(img);
+
+                Cv2.ImShow("Wave Form View", mat);
+                Cv2.WaitKey(1);
                 for (int i = 0; i < 192; i++)
                 {
-                    Bitmap image = new(image_width, image_height);
-                    Graphics g = Graphics.FromImage(image);
-                    g.FillRectangle(new SolidBrush(Color.White), 0, 0, image_width, image_height);
-                    MemoryStream ms = new MemoryStream();
-                    image.Save(ms, ImageFormat.Png);
-                    byte[] img = ms.GetBuffer();
-                    Mat mat = OpenCvSharp.Mat.FromImageData(img);
-
-                    Cv2.ImShow("Wave Form View", mat);
-                    Cv2.WaitKey(1);
-
                     vr.Write(mat);
-
-                    g.Dispose();
-                    image.Dispose();
                 }
+                g.Dispose();
+                image.Dispose();
             }
 
             Boolean loop = true;
@@ -668,10 +972,8 @@ namespace VVVF_Generator_Porting
                     Graphics g = Graphics.FromImage(image);
                     g.FillRectangle(new SolidBrush(Color.White), 0, 0, image_width, image_height);
 
-                    double[] points_U = new double[hex_div];
-                    double[] points_V = new double[hex_div];
-                    double[] points_W = new double[hex_div];
-
+                    double[] hexagon_coordinate = new double[] { 100, 500 };
+                    double[] x_min_max = new double[2] {500 , 0};
 
                     for (int i = 0; i < hex_div; i++)
                     {
@@ -687,7 +989,6 @@ namespace VVVF_Generator_Porting
                             wave_stat = wave_stat
                         };
                         Wave_Values wv_U = get_Calculated_Value(sound_name, cv_U);
-                        points_U[i] = wv_U.pwm_value;
 
                         Control_Values cv_V = new Control_Values
                         {
@@ -698,7 +999,6 @@ namespace VVVF_Generator_Porting
                             wave_stat = wave_stat
                         };
                         Wave_Values wv_V = get_Calculated_Value(sound_name, cv_V);
-                        points_V[i] = wv_V.pwm_value;
 
                         Control_Values cv_W = new Control_Values
                         {
@@ -709,42 +1009,22 @@ namespace VVVF_Generator_Porting
                             wave_stat = wave_stat
                         };
                         Wave_Values wv_W = get_Calculated_Value(sound_name, cv_W);
-                        points_W[i] = wv_W.pwm_value;
-
-                    }
-
-                    FontFamily val_mini_fontFamily = new FontFamily("Arial Rounded MT Bold");
-                    Font val_mini_fnt = new Font(
-                       val_mini_fontFamily,
-                       25,
-                       FontStyle.Regular,
-                       GraphicsUnit.Pixel);
-
-                    Brush title_brush = Brushes.Black;
-
-                    g.FillRectangle(new SolidBrush(Color.FromArgb(200, 200, 255)), 0, 0, image_width, 68 - 0);
-                    g.DrawString("FREQ : " + wave_stat.ToString("F2"), val_mini_fnt, title_brush, 17, 8);
-
-                    double[] hexagon_coordinate = new double[] { 0, 500 };
-
-                    for (int i = 0; i < hex_div; i++)
-                    {
 
                         double move_x = 0;
                         double move_y = 0;
-                        if(!(points_U[i] == 1 && points_V[i] == 1 && points_W[i] == 1))
+                        if (!(wv_U.pwm_value == 1 && wv_V.pwm_value == 1 && wv_W.pwm_value == 1))
                         {
-                            move_x = -0.5 * points_W[i]  -0.5 * points_V[i] + points_U[i];
-                            move_y = -0.866025403784438646763 * points_W[i] +0.866025403784438646763 * points_V[i];
+                            move_x = -0.5 * wv_W.pwm_value - 0.5 * wv_V.pwm_value + wv_U.pwm_value;
+                            move_y = -0.866025403784438646763 * wv_W.pwm_value + 0.866025403784438646763 * wv_V.pwm_value;
                         }
 
-                        double int_move_x = 250 * move_x / (double)hex_div_seed;
-                        double int_move_y = 250 * move_y / (double)hex_div_seed;
-                        
+                        double int_move_x = 200 * move_x / (double)hex_div_seed;
+                        double int_move_y = 200 * move_y / (double)hex_div_seed;
 
-                        g.DrawLine(new Pen(Color.Black), 
-                            (int)hexagon_coordinate[0], 
-                            (int)hexagon_coordinate[1], 
+
+                        g.DrawLine(new Pen(Color.Black),
+                            (int)hexagon_coordinate[0],
+                            (int)hexagon_coordinate[1],
                             (int)(hexagon_coordinate[0] + int_move_x),
                             (int)(hexagon_coordinate[1] + int_move_y)
                         );
@@ -752,15 +1032,22 @@ namespace VVVF_Generator_Porting
                         hexagon_coordinate[0] = hexagon_coordinate[0] + int_move_x;
                         hexagon_coordinate[1] = hexagon_coordinate[1] + int_move_y;
 
-                        //Console.WriteLine(hexagon_coordinate[0] + "," + hexagon_coordinate[1]);
-                        //g.DrawLine(new Pen(Color.Gray), i, (int)(points_V[i] * wave_height + image_height / 2.0), i + 1, (int)(points_V[i + 1] * wave_height + image_height / 2.0));
+                        if (x_min_max[0] > hexagon_coordinate[0]) x_min_max[0] = hexagon_coordinate[0];
+                        if (x_min_max[1] < hexagon_coordinate[0]) x_min_max[1] = hexagon_coordinate[0];
+
                     }
 
+                    Bitmap final_image = new(image_width, image_height);
+                    Graphics final_g = Graphics.FromImage(final_image);
+                    final_g.FillRectangle(new SolidBrush(Color.White), 0, 0, image_width, image_height);
+
+                    double moved_x = (1000 - (x_min_max[1] - x_min_max[0])) / 2.0;
+                    final_g.DrawImage(image, (int)moved_x - 100, 0);
 
                     MemoryStream ms = new MemoryStream();
-                    image.Save(ms, ImageFormat.Png);
+                    final_image.Save(ms, ImageFormat.Png);
                     byte[] img = ms.GetBuffer();
-                    Mat mat = OpenCvSharp.Mat.FromImageData(img);
+                    Mat mat = Mat.FromImageData(img);
 
                     Cv2.ImShow("Wave Form View", mat);
                     Cv2.WaitKey(1);
@@ -769,6 +1056,8 @@ namespace VVVF_Generator_Porting
 
                     g.Dispose();
                     image.Dispose();
+                    final_g.Dispose();
+                    final_image.Dispose();
 
                     temp = false;
                 }
@@ -786,24 +1075,22 @@ namespace VVVF_Generator_Porting
             Boolean END_F64_WAIT = true;
             if (END_F64_WAIT)
             {
+                Bitmap image = new(image_width, image_height);
+                Graphics g = Graphics.FromImage(image);
+                g.FillRectangle(new SolidBrush(Color.White), 0, 0, image_width, image_height);
+                MemoryStream ms = new MemoryStream();
+                image.Save(ms, ImageFormat.Png);
+                byte[] img = ms.GetBuffer();
+                Mat mat = OpenCvSharp.Mat.FromImageData(img);
+
+                Cv2.ImShow("Wave Form View", mat);
+                Cv2.WaitKey(1);
                 for (int i = 0; i < 64; i++)
                 {
-                    Bitmap image = new(image_width, image_height);
-                    Graphics g = Graphics.FromImage(image);
-                    g.FillRectangle(new SolidBrush(Color.White), 0, 0, image_width, image_height);
-                    MemoryStream ms = new MemoryStream();
-                    image.Save(ms, ImageFormat.Png);
-                    byte[] img = ms.GetBuffer();
-                    Mat mat = OpenCvSharp.Mat.FromImageData(img);
-
-                    Cv2.ImShow("Wave Form View", mat);
-                    Cv2.WaitKey(1);
-
-                    vr.Write(mat);
-
-                    g.Dispose();
-                    image.Dispose();
+                    vr.Write(mat);                  
                 }
+                g.Dispose();
+                image.Dispose();
             }
 
             vr.Release();
@@ -1275,7 +1562,7 @@ namespace VVVF_Generator_Porting
                     else if (voltage_stat > 0) d = 0xC0;
                     else d = 0x40;
                     */
-            add[i] = sound_byte;
+                    add[i] = sound_byte;
                 }
 
 
@@ -1323,7 +1610,7 @@ namespace VVVF_Generator_Porting
             String output_path = "";
             while (output_path.Length == 0)
             {
-                Console.Write("Enter the export path for vvvf sound : ");
+                Console.Write("Enter the export path : ");
                 output_path = Console.ReadLine();
                 if (output_path.Length == 0)
                 {
@@ -1339,15 +1626,16 @@ namespace VVVF_Generator_Porting
             Console.WriteLine("1 : Generate Sound");
             Console.WriteLine("2 : Generate Wave form Video");
             Console.WriteLine("3 : Generate U V W Wave form Video");
-            Console.WriteLine("4 : Generate hexagon");
-            Console.WriteLine("5 : Generate Mascon Video");
-            Console.WriteLine("6 : Realtime VVVF Sound generation");
+            Console.WriteLine("4 : Generate Hexagon");
+            Console.WriteLine("5 : Generate Hexagon Explain");
+            Console.WriteLine("6 : Generate Mascon Video");
+            Console.WriteLine("7 : Realtime VVVF Sound generation");
 
             String line = Console.ReadLine();
 
             String[] split = line.Split(",");
 
-            bool gen_audio = false, gen_U_V = false, gen_UVW = false, gen_hexagon = false , gen_mascon_video = false, realtime = false;
+            bool gen_audio = false, gen_U_V = false, gen_UVW = false, gen_hexagon = false , gen_hexagon_explain = false, gen_mascon_video = false, realtime = false;
 
             for(int i = 0; i < split.Length; i++)
             {
@@ -1355,12 +1643,13 @@ namespace VVVF_Generator_Porting
                 if (split[i] == "2") gen_U_V = true;
                 if (split[i] == "3") gen_UVW = true;
                 if (split[i] == "4") gen_hexagon = true;
-                if (split[i] == "5") gen_mascon_video = true;
-                if (split[i] == "6") realtime = true;
+                if (split[i] == "5") gen_hexagon_explain = true;
+                if (split[i] == "6") gen_mascon_video = true;
+                if (split[i] == "7") realtime = true;
             }
 
             
-            if(gen_audio || gen_U_V || gen_mascon_video || gen_UVW || gen_hexagon)
+            if(gen_audio || gen_U_V || gen_mascon_video || gen_UVW || gen_hexagon || gen_hexagon_explain)
             {
                 VVVF_Sound_Names sound_name = get_Choosed_Sound();
                 String output_path = get_Path();
@@ -1369,6 +1658,7 @@ namespace VVVF_Generator_Porting
                 if (gen_U_V) generate_wave_U_V(output_path, sound_name);
                 if (gen_UVW) generate_wave_UVW(output_path, sound_name);
                 if (gen_hexagon) generate_wave_hexagon(output_path, sound_name);
+                if (gen_hexagon_explain) generate_wave_hexagon_exaplin(output_path, sound_name);
                 if (gen_mascon_video) generate_status_video(output_path, sound_name);
             }
 
