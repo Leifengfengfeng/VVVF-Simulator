@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace VVVF_Generator_Porting
+﻿namespace VVVF_Generator_Porting
 {
     public class my_switchingangles
     {
