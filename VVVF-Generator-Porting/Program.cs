@@ -614,7 +614,7 @@ namespace VVVF_Generator_Porting
 
             int movie_div = 3000;
 
-            int image_width = 1980;
+            int image_width = 1300;
             int image_height = 500;
 
             int pwm_image_width = 750;
@@ -624,6 +624,21 @@ namespace VVVF_Generator_Porting
 
             int hex_div_seed = 10000;
             int hex_div = 6 * hex_div_seed;
+
+            Boolean draw_zero_vector_circle = true;
+            while (true)
+            {
+                try
+                {
+                    Console.WriteLine("Draw a circle which shows zero vector? ( true / false )");
+                    draw_zero_vector_circle = Boolean.Parse(Console.ReadLine());
+                    break;
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine("Invalid value.");
+                }
+            }
 
             VideoWriter vr = new VideoWriter(fileName, OpenCvSharp.FourCC.H264, div_freq / movie_div, new OpenCvSharp.Size(image_width, image_height));
             if (!vr.IsOpened())
@@ -678,6 +693,10 @@ namespace VVVF_Generator_Porting
             Bitmap hexagon_image = new(hexagon_image_size, hexagon_image_size);
             Graphics hexagon_g = Graphics.FromImage(hexagon_image);
             hexagon_g.FillRectangle(new SolidBrush(Color.White), 0, 0, hexagon_image_size, hexagon_image_size);
+
+            Boolean drawn_circle = false;
+            Bitmap zero_circle_image = new(hexagon_image_size, hexagon_image_size);
+            Graphics zero_circle_g = Graphics.FromImage(zero_circle_image);
 
             int[] points_U = new int[hex_div];
             int[] points_V = new int[hex_div];
@@ -835,6 +854,29 @@ namespace VVVF_Generator_Porting
                     (int)(hexagon_coordinate[1] + int_move_y)
                 );
 
+                if (move_x == 0 && move_y == 0 && draw_zero_vector_circle)
+                {
+                    if (!drawn_circle)
+                    {
+                        drawn_circle = true;
+                        zero_circle_g.FillEllipse(new SolidBrush(Color.White),
+                            (int)(hexagon_coordinate[0] - 2 + moved_x),
+                            (int)hexagon_coordinate[1] - 2,
+                            4,
+                            4
+                        );
+                        zero_circle_g.DrawEllipse(new Pen(Color.Black),
+                            (int)(hexagon_coordinate[0] - 2 + moved_x),
+                            (int)hexagon_coordinate[1] - 2,
+                            4,
+                            4
+                        );
+                    }
+
+                }
+                else
+                    drawn_circle = false;
+
                 Bitmap hexagon_image_with_dot = new(hexagon_image_size, hexagon_image_size);
                 Graphics hexagon_g_with_dot = Graphics.FromImage(hexagon_image_with_dot);
                 //hexagon_g_with_dot.FillRectangle(new SolidBrush(Color.White), 0, 0, hexagon_image_size, hexagon_image_size);
@@ -855,6 +897,7 @@ namespace VVVF_Generator_Porting
                     resized_hexagon_g.FillRectangle(new SolidBrush(Color.White), 0, 0, 450, 450);
                     resized_hexagon_g.DrawImage(new Bitmap(hexagon_image, 450, 450), 0, 0);
                     resized_hexagon_g.DrawImage(new Bitmap(hexagon_image_with_dot, 450, 450), 0, 0);
+                    resized_hexagon_g.DrawImage(new Bitmap(zero_circle_image, 450, 450), 0, 0);
 
                     whole_g.DrawImage(resized_hexagon, 820, 25);
 
@@ -903,6 +946,8 @@ namespace VVVF_Generator_Porting
             whole_image.Dispose();
             hexagon_g.Dispose();
             hexagon_image.Dispose();
+            zero_circle_g.Dispose();
+            zero_circle_image.Dispose();
 
             vr.Release();
             vr.Dispose();
