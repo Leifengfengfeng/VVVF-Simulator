@@ -968,9 +968,9 @@ namespace VVVF_Generator_Porting
                 {
                     sin_time = 0;
                     saw_time = 0;
-                    Bitmap image = new(image_width, image_height);
-                    Graphics g = Graphics.FromImage(image);
-                    g.FillRectangle(new SolidBrush(Color.White), 0, 0, image_width, image_height);
+
+                    Bitmap hexagon_image = new(image_width, image_height);
+                    Graphics hexagon_g = Graphics.FromImage(hexagon_image);
 
                     double[] hexagon_coordinate = new double[] { 100, 500 };
                     double[] x_min_max = new double[2] {500 , 0};
@@ -1010,19 +1010,14 @@ namespace VVVF_Generator_Porting
                         };
                         Wave_Values wv_W = get_Calculated_Value(sound_name, cv_W);
 
-                        double move_x = 0;
-                        double move_y = 0;
-                        if (!(wv_U.pwm_value == wv_V.pwm_value && wv_V.pwm_value == wv_W.pwm_value))
-                        {
-                            move_x = -0.5 * wv_W.pwm_value - 0.5 * wv_V.pwm_value + wv_U.pwm_value;
-                            move_y = -0.866025403784438646763 * wv_W.pwm_value + 0.866025403784438646763 * wv_V.pwm_value;
-                        }
+                        double move_x = -0.5 * wv_W.pwm_value - 0.5 * wv_V.pwm_value + wv_U.pwm_value;
+                        double move_y = -0.866025403784438646763 * wv_W.pwm_value + 0.866025403784438646763 * wv_V.pwm_value;
 
                         double int_move_x = 200 * move_x / (double)hex_div_seed;
                         double int_move_y = 200 * move_y / (double)hex_div_seed;
 
 
-                        g.DrawLine(new Pen(Color.Black),
+                        hexagon_g.DrawLine(new Pen(Color.Black),
                             (int)hexagon_coordinate[0],
                             (int)hexagon_coordinate[1],
                             (int)(hexagon_coordinate[0] + int_move_x),
@@ -1042,7 +1037,7 @@ namespace VVVF_Generator_Porting
                     final_g.FillRectangle(new SolidBrush(Color.White), 0, 0, image_width, image_height);
 
                     double moved_x = (1000 - (x_min_max[1] - x_min_max[0])) / 2.0;
-                    final_g.DrawImage(image, (int)moved_x - 100, 0);
+                    final_g.DrawImage(hexagon_image, (int)moved_x - 100, 0);
 
                     MemoryStream ms = new MemoryStream();
                     final_image.Save(ms, ImageFormat.Png);
@@ -1054,9 +1049,10 @@ namespace VVVF_Generator_Porting
 
                     vr.Write(mat);
 
-                    g.Dispose();
-                    image.Dispose();
+                    hexagon_g.Dispose();
                     final_g.Dispose();
+
+                    hexagon_image.Dispose();
                     final_image.Dispose();
 
                     temp = false;
