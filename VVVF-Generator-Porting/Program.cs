@@ -917,6 +917,20 @@ namespace VVVF_Generator_Porting
             String appear_sound_name = get_Sound_Name(sound_name);
             String fileName = output_path + "\\" + appear_sound_name + "-" + gen_time + ".avi";
 
+            Boolean draw_zero_vector_circle = true;
+            while (true)
+            {
+                try
+                {
+                    Console.WriteLine("Draw a circle which shows zero vector? ( true / false )");
+                    draw_zero_vector_circle = Boolean.Parse(Console.ReadLine());
+                    break;
+                }catch(Exception e)
+                {
+                    Console.WriteLine("Invalid value.");
+                }
+            }
+
             bool temp = true;
             Int32 sound_block_count = 0;
 
@@ -968,9 +982,13 @@ namespace VVVF_Generator_Porting
                 {
                     sin_time = 0;
                     saw_time = 0;
-                    Bitmap image = new(image_width, image_height);
-                    Graphics g = Graphics.FromImage(image);
-                    g.FillRectangle(new SolidBrush(Color.White), 0, 0, image_width, image_height);
+
+                    Bitmap hexagon_image = new(image_width, image_height);
+                    Graphics hexagon_g = Graphics.FromImage(hexagon_image);
+
+                    Boolean drawn_circle = false;
+                    Bitmap zero_circle_image = new(image_width, image_height);
+                    Graphics zero_circle_g = Graphics.FromImage(zero_circle_image);
 
                     double[] hexagon_coordinate = new double[] { 100, 500 };
                     double[] x_min_max = new double[2] {500 , 0};
@@ -1010,24 +1028,41 @@ namespace VVVF_Generator_Porting
                         };
                         Wave_Values wv_W = get_Calculated_Value(sound_name, cv_W);
 
-                        double move_x = 0;
-                        double move_y = 0;
-                        if (!(wv_U.pwm_value == wv_V.pwm_value && wv_V.pwm_value == wv_W.pwm_value))
-                        {
-                            move_x = -0.5 * wv_W.pwm_value - 0.5 * wv_V.pwm_value + wv_U.pwm_value;
-                            move_y = -0.866025403784438646763 * wv_W.pwm_value + 0.866025403784438646763 * wv_V.pwm_value;
-                        }
+                        double move_x = -0.5 * wv_W.pwm_value - 0.5 * wv_V.pwm_value + wv_U.pwm_value;
+                        double move_y = -0.866025403784438646763 * wv_W.pwm_value + 0.866025403784438646763 * wv_V.pwm_value;
 
                         double int_move_x = 200 * move_x / (double)hex_div_seed;
                         double int_move_y = 200 * move_y / (double)hex_div_seed;
 
 
-                        g.DrawLine(new Pen(Color.Black),
+                        hexagon_g.DrawLine(new Pen(Color.Black),
                             (int)hexagon_coordinate[0],
                             (int)hexagon_coordinate[1],
                             (int)(hexagon_coordinate[0] + int_move_x),
                             (int)(hexagon_coordinate[1] + int_move_y)
                         );
+
+                        if(move_x == 0 && move_y == 0 && draw_zero_vector_circle)
+                        {
+                            if (!drawn_circle)
+                            {
+                                drawn_circle = true;
+                                zero_circle_g.FillEllipse(new SolidBrush(Color.White),
+                                    (int)hexagon_coordinate[0] - 2,
+                                    (int)hexagon_coordinate[1] - 2,
+                                    4,
+                                    4
+                                );
+                                zero_circle_g.DrawEllipse(new Pen(Color.Black),
+                                    (int)hexagon_coordinate[0] - 2,
+                                    (int)hexagon_coordinate[1] - 2,
+                                    4,
+                                    4
+                                );
+                            }
+                            
+                        }else
+                            drawn_circle = false;
 
                         hexagon_coordinate[0] = hexagon_coordinate[0] + int_move_x;
                         hexagon_coordinate[1] = hexagon_coordinate[1] + int_move_y;
@@ -1042,7 +1077,8 @@ namespace VVVF_Generator_Porting
                     final_g.FillRectangle(new SolidBrush(Color.White), 0, 0, image_width, image_height);
 
                     double moved_x = (1000 - (x_min_max[1] - x_min_max[0])) / 2.0;
-                    final_g.DrawImage(image, (int)moved_x - 100, 0);
+                    final_g.DrawImage(hexagon_image, (int)moved_x - 100, 0);
+                    final_g.DrawImage(zero_circle_image, (int)moved_x - 100, 0);
 
                     MemoryStream ms = new MemoryStream();
                     final_image.Save(ms, ImageFormat.Png);
@@ -1054,10 +1090,13 @@ namespace VVVF_Generator_Porting
 
                     vr.Write(mat);
 
-                    g.Dispose();
-                    image.Dispose();
+                    hexagon_g.Dispose();
                     final_g.Dispose();
+                    zero_circle_g.Dispose();
+
+                    hexagon_image.Dispose();
                     final_image.Dispose();
+                    zero_circle_image.Dispose();
 
                     temp = false;
                 }
