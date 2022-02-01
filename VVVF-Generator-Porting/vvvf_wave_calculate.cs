@@ -1,4 +1,5 @@
-﻿using static VVVF_Generator_Porting.Program;
+﻿using static VVVF_Generator_Porting.Generation.Generate_Common;
+using static VVVF_Generator_Porting.vvvf_wave_control;
 
 namespace VVVF_Generator_Porting
 {
@@ -38,7 +39,7 @@ namespace VVVF_Generator_Porting
 		};
 		public enum Pulse_Mode
 		{
-			Not_In_Sync, P_1, P_Wide_3, P_10, P_12, P_18,
+			Async, P_1, P_Wide_3, P_10, P_12, P_18,
 			P_3, P_5, P_7, P_9, P_11, P_13, P_15, P_17, P_19,
 			P_21, P_23, P_25, P_27, P_29, P_31, P_33, P_35, P_37, P_39, P_41
 			, P_43, P_45, P_47, P_49, P_51, P_53, P_55, P_57, P_59, P_61,
@@ -155,7 +156,7 @@ namespace VVVF_Generator_Porting
 
 		public static int get_Pulse_Num(Pulse_Mode mode)
 		{
-			if (mode == Pulse_Mode.Not_In_Sync || mode == Pulse_Mode.Asyn_THI)
+			if (mode == Pulse_Mode.Async || mode == Pulse_Mode.Asyn_THI)
 				return -1;
 			if (mode == Pulse_Mode.P_1)
 				return 0;
@@ -179,36 +180,6 @@ namespace VVVF_Generator_Porting
 			return get_Pulse_Num((Pulse_Mode)((int)mode - 35));
 		}
 
-		//sin value definitions
-		public static double sin_angle_freq = 0;
-		public static double sin_time = 0;
-
-		//saw value definitions
-		public static double saw_angle_freq = 1050;
-		public static double saw_time = 0;
-		public static double pre_saw_random_freq = 0;
-
-
-		public static int random_freq_move_count = 0;
-
-
-		public static void reset_all_variables()
-		{
-			sin_angle_freq = 0;
-			sin_time = 0;
-
-			//saw value definitions
-			saw_angle_freq = 1050;
-			saw_time = 0;
-
-			random_freq_move_count = 0;
-		}
-
-		public static double get_Rolling_Angle_Frequency()
-        {
-			return sin_angle_freq;
-		}
-
 		// random range => -range ~ range
 		public class Carrier_Freq
         {
@@ -225,7 +196,7 @@ namespace VVVF_Generator_Porting
 		private static double get_random_freq(Carrier_Freq data)
 		{
 			double random_freq = 0;
-			if (random_freq_move_count == 0 || pre_saw_random_freq == 0)
+			if (get_Random_Freq_Move_Count() == 0 || get_Pre_Saw_Random_Freq() == 0)
 			{
 				int random_v = my_math.my_random();
 				double diff_freq = my_math.mod_d(random_v, data.range);
@@ -233,15 +204,17 @@ namespace VVVF_Generator_Porting
 					diff_freq = -diff_freq;
 				double silent_random_freq = data.base_freq + diff_freq;
 				random_freq = silent_random_freq;
-				pre_saw_random_freq = silent_random_freq;
+				set_Pre_Saw_Random_Freq(silent_random_freq);
 			}
 			else
 			{
-				random_freq = pre_saw_random_freq;
+				random_freq = get_Pre_Saw_Random_Freq();
 			}
-			random_freq_move_count++;
-			if (random_freq_move_count == 100)
-				random_freq_move_count = 0;
+
+			add_Random_Freq_Move_Count(1);
+			if (get_Random_Freq_Move_Count() == 100)
+				set_Random_Freq_Move_Count(0);
+
 			return random_freq;
 		}
 
@@ -253,12 +226,14 @@ namespace VVVF_Generator_Porting
 		public static double get_pattern_random(int lowest, int highest, int interval_count)
 		{
 			double random_freq = 0;
-			if (random_freq_move_count < interval_count / 2.0)
-				random_freq = lowest + (highest - lowest) / (interval_count / 2.0) * random_freq_move_count;
+			if (get_Random_Freq_Move_Count() < interval_count / 2.0)
+				random_freq = lowest + (highest - lowest) / (interval_count / 2.0) * get_Random_Freq_Move_Count();
 			else
-				random_freq = highest + (lowest - highest) / (interval_count / 2.0) * (random_freq_move_count - interval_count / 2.0);
-			if (++random_freq_move_count > interval_count)
-				random_freq_move_count = 0;
+				random_freq = highest + (lowest - highest) / (interval_count / 2.0) * (get_Random_Freq_Move_Count() - interval_count / 2.0);
+
+			add_Random_Freq_Move_Count(1);
+			if (get_Random_Freq_Move_Count() > interval_count)
+				set_Random_Freq_Move_Count(0);
 			return random_freq;
 		}
 
@@ -271,22 +246,23 @@ namespace VVVF_Generator_Porting
 			Video_Generate_Values.carrier_freq_data = data;
 			Video_Generate_Values.dipolar = dipolar;
 
-			if (pulse_mode == Pulse_Mode.Not_In_Sync)
+			if (pulse_mode == Pulse_Mode.Async)
             {
 				double desire_saw_angle_freq = (data.range == 0) ? data.base_freq * M_2PI : get_random_freq(data) * M_2PI;
-				saw_time = saw_angle_freq / desire_saw_angle_freq * saw_time;
-				saw_angle_freq = desire_saw_angle_freq;
+
+				set_Saw_Time(get_Saw_Angle_Freq() / desire_saw_angle_freq * get_Saw_Time());
+				set_Saw_Angle_Freq(desire_saw_angle_freq);
 
 			}
 			else
 			{
-				saw_angle_freq = sin_angle_freq * get_Pulse_Num(pulse_mode);
-				saw_time = sin_time;
+				set_Saw_Angle_Freq(get_Sine_Angle_Freq() * get_Pulse_Num(pulse_mode));
+				set_Saw_Time(get_Sine_Time());
 			}
 
-			double sin_value = get_sin_value(sin_time, sin_angle_freq, initial_phase, amplitude);
+			double sin_value = get_sin_value(get_Sine_Time(), get_Sine_Angle_Freq(), initial_phase, amplitude);
 
-			double saw_value = get_saw_value(saw_time, saw_angle_freq, 0);
+			double saw_value = get_saw_value(get_Saw_Time(), get_Saw_Angle_Freq(), 0);
 
 			double changed_saw = ((dipolar != -1) ? dipolar : 0.5) * saw_value;
 			int pwm_value = get_pwm_value(sin_value, changed_saw + 0.5) + get_pwm_value(sin_value, changed_saw - 0.5);
@@ -303,6 +279,12 @@ namespace VVVF_Generator_Porting
 			Video_Generate_Values.pulse_mode = pulse_mode;
 			Video_Generate_Values.sine_amplitude = amplitude;
 			Video_Generate_Values.carrier_freq_data = carrier_freq_data;
+
+			double sin_time = get_Sine_Time();
+			double sin_angle_freq = get_Sine_Angle_Freq();
+
+			double saw_time = get_Saw_Time();
+			double saw_angle_freq = get_Saw_Angle_Freq();
 
 			if (pulse_mode == Pulse_Mode.P_Wide_3)
 				return get_Wide_P_3(sin_time, sin_angle_freq, initial_phase, amplitude, false);
@@ -413,7 +395,7 @@ namespace VVVF_Generator_Porting
 				   M_PI_2,
 				   'B', sin_time, sin_angle_freq, initial_phase);
 
-			if (pulse_mode == Pulse_Mode.Not_In_Sync || pulse_mode == Pulse_Mode.Asyn_THI)
+			if (pulse_mode == Pulse_Mode.Async || pulse_mode == Pulse_Mode.Asyn_THI)
 			{
 				double desire_saw_angle_freq = (carrier_freq_data.range == 0) ? carrier_freq_data.base_freq * M_2PI : get_random_freq(carrier_freq_data) * M_2PI;
 				saw_time = saw_angle_freq / desire_saw_angle_freq * saw_time;
@@ -436,6 +418,12 @@ namespace VVVF_Generator_Porting
 
 			int pwm_value = get_pwm_value(sin_value, saw_value) * 2;
 			//Console.WriteLine(pwm_value);
+
+			set_Sine_Angle_Freq(sin_angle_freq);
+			set_Sine_Time(sin_time);
+
+			set_Saw_Angle_Freq(saw_angle_freq);
+			set_Saw_Time(saw_time);
 
 			Wave_Values wv;
 			wv.sin_value = sin_value;
