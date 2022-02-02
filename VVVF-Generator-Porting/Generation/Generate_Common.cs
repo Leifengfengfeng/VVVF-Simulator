@@ -235,8 +235,10 @@ namespace VVVF_Generator_Porting.Generation
 
             int image_width = 2000;
             int image_height = 500;
+
             int movie_div = 3000;
-            int wave_height = 50;
+            int wave_height = 100;
+            int calculate_div = 10;
 
             VideoWriter vr = new VideoWriter(fileName, OpenCvSharp.FourCC.H264, div_freq / movie_div, new OpenCvSharp.Size(image_width, image_height));
 
@@ -285,50 +287,46 @@ namespace VVVF_Generator_Porting.Generation
                     g.FillRectangle(new SolidBrush(Color.White), 0, 0, image_width, image_height);
                     g.DrawLine(new Pen(Color.Gray), 0, image_height / 2, image_width, image_height / 2);
 
-                    double[] points_U = new double[image_width];
-                    double[] points_V = new double[image_width];
-
-
-                    for (int i = 0; i < image_width; i++)
+                    for (int i = 0; i < image_width * calculate_div; i++)
                     {
-                        add_Saw_Time(Math.PI / 250000.0);
-                        add_Sine_Time(Math.PI / 250000.0);
+                        Wave_Values[] values = new Wave_Values[4];
 
-                        Control_Values cv_U = new Control_Values
+                        for(int j = 0; j < 2; j++)
                         {
-                            brake = is_Braking(),
-                            mascon_on = !is_Mascon_Off(),
-                            free_run = is_Free_Running(),
-                            initial_phase = Math.PI * 2.0 / 3.0 * 0,
-                            wave_stat = get_Control_Frequency()
-                        };
-                        Wave_Values wv_U = get_Calculated_Value(sound_name, cv_U);
-                        Control_Values cv_V = new Control_Values
-                        {
-                            brake = is_Braking(),
-                            mascon_on = !is_Mascon_Off(),
-                            free_run = is_Free_Running(),
-                            initial_phase = Math.PI * 2.0 / 3.0 * 1,
-                            wave_stat = get_Control_Frequency()
-                        };
-                        Wave_Values wv_V = get_Calculated_Value(sound_name, cv_V);
+                            Control_Values cv_U = new Control_Values
+                            {
+                                brake = is_Braking(),
+                                mascon_on = !is_Mascon_Off(),
+                                free_run = is_Free_Running(),
+                                initial_phase = Math.PI * 2.0 / 3.0 * 0,
+                                wave_stat = get_Control_Frequency()
+                            };
+                            Wave_Values wv_U = get_Calculated_Value(sound_name, cv_U);
+                            Control_Values cv_V = new Control_Values
+                            {
+                                brake = is_Braking(),
+                                mascon_on = !is_Mascon_Off(),
+                                free_run = is_Free_Running(),
+                                initial_phase = Math.PI * 2.0 / 3.0 * 1,
+                                wave_stat = get_Control_Frequency()
+                            };
+                            Wave_Values wv_V = get_Calculated_Value(sound_name, cv_V);
 
-                        double voltage_stat = (double)(wv_U.pwm_value - wv_V.pwm_value);
-                        points_U[i] = wv_U.pwm_value;
-                        points_V[i] = wv_V.pwm_value;
+                            if (j == 0)
+                            {
+                                add_Saw_Time(Math.PI / (120000.0 * calculate_div));
+                                add_Sine_Time(Math.PI / (120000.0 * calculate_div));
+                            }
+
+                            values[j * 2] = wv_U;
+                            values[j * 2 + 1] = wv_V;
+                        }
+
+
+                        int curr_val = (int)(-(values[0].pwm_value - values[1].pwm_value) * wave_height + image_height / 2.0);
+                        int next_val = (int)(-(values[2].pwm_value - values[3].pwm_value) * wave_height + image_height / 2.0);
+                        g.DrawLine(new Pen(Color.Black), (int)(i / (double)calculate_div), curr_val, (int)(((curr_val != next_val) ? i : i + 1) / (double)calculate_div), next_val);
                     }
-
-                    for (int i = 0; i < image_width - 1; i++)
-                    {
-
-                        int curr_val = (int)(-(points_U[i] - points_V[i]) * wave_height + image_height / 2.0);
-                        int next_val = (int)(-(points_U[i + 1] - points_V[i + 1]) * wave_height + image_height / 2.0);
-                        g.DrawLine(new Pen(Color.Black), i, curr_val, ((curr_val != next_val) ? i : i + 1), next_val);
-
-                        //g.DrawLine(new Pen(Color.Gray), i, (int)(points_U[i] * wave_height + image_height / 2.0), i + 1, (int)(points_U[i+1] * wave_height + image_height / 2.0));
-                        //g.DrawLine(new Pen(Color.Gray), i, (int)(points_V[i] * wave_height + image_height / 2.0), i + 1, (int)(points_V[i + 1] * wave_height + image_height / 2.0));
-                    }
-
 
                     MemoryStream ms = new MemoryStream();
                     image.Save(ms, ImageFormat.Png);
