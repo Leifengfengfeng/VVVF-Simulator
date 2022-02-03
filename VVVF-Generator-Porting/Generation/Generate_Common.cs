@@ -1570,7 +1570,7 @@ namespace VVVF_Generator_Porting.Generation
                 }
                 else
                 {
-                    add_Control_Frequency((Math.PI * 2) / (double)(get_Mascon_Off_Div() / 12.0));
+                    add_Control_Frequency(- (Math.PI * 2) / (double)(get_Mascon_Off_Div() / 12.0));
                     if (get_Control_Frequency() < 0) set_Control_Frequency(0);
                     set_Free_Running(true);
                 }
