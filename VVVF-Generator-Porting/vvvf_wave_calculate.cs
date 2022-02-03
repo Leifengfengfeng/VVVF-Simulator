@@ -55,20 +55,18 @@ namespace VVVF_Generator_Porting
 		};
 
 		//function calculation
-		public static double get_saw_value_simple(double x)
-		{
-			double fixed_x = x - (double)((int)(x * M_1_2PI) * M_2PI);
-			if (0 <= fixed_x && fixed_x < M_PI_2)
-				return M_2_PI * fixed_x;
-			else if (M_PI_2 <= fixed_x && fixed_x < 3.0 * M_PI_2)
-				return -M_2_PI * fixed_x + 2;
-			else
-				return M_2_PI * fixed_x - 4;
-		}
-
 		public static double get_saw_value(double time, double angle_frequency, double initial_phase)
 		{
-			return -get_saw_value_simple(time * angle_frequency + initial_phase);
+			double val,x = time * angle_frequency + initial_phase;
+			double fixed_x = x - (double)((int)(x * M_1_2PI) * M_2PI);
+			if (0 <= fixed_x && fixed_x < M_PI_2)
+				val = M_2_PI * fixed_x;
+			else if (M_PI_2 <= fixed_x && fixed_x < 3.0 * M_PI_2)
+				val = -M_2_PI * fixed_x + 2;
+			else
+				val = M_2_PI * fixed_x - 4;
+
+			return -val;
 		}
 
 		public static double get_sin_value(double time, double angle_frequency, double initial_phase, double amplitude)
@@ -136,22 +134,56 @@ namespace VVVF_Generator_Porting
 			return wv;
 
 		}
-		public static double get_Amplitude(double freq, double max_freq)
-		{
-			double rate = 0.99, init = 0.01;
-			if (freq > max_freq) return 1.0;
-			if (freq <= 0.1) return 0.0;
-			return rate / max_freq * freq + init;
+		
+		public enum Amplitude_Mode
+        {
+			Linear, Wide_3_Pulse, Level_3_1P
 		}
+
+		public class Amplitude_Argument
+        {
+			public double min_freq = 0;
+			public double min_amp = 0;
+			public double max_freq = 0;
+			public double max_amp = 0;
+			public bool do_not_go_than_max = true;
+
+			public double current = 0;
+
+			public Amplitude_Argument(double Minimum_Freq, double Minimum_Amplitude, double Maximum_Freq, double Maximum_Amplitude, double Current, bool Over_Modulate)
+            {
+				min_freq = Minimum_Freq;
+				max_freq = Maximum_Freq;
+
+				min_amp = Minimum_Amplitude;
+				max_amp = Maximum_Amplitude;
+
+				do_not_go_than_max = Over_Modulate;
+
+				current = Current;
+			}
+		}
+		
+		public static double get_Amplitude(Amplitude_Mode mode , Amplitude_Argument arg)
+        {
+			double val = 0;
+
+			if (mode == Amplitude_Mode.Linear)
+				val = (arg.max_amp - arg.min_amp) / (arg.max_freq - arg.min_freq) * (arg.current - arg.min_freq) + arg.min_amp;
+			else if(mode == Amplitude_Mode.Wide_3_Pulse)
+				val = (0.2 * ((arg.current - arg.min_freq) * ((arg.max_amp - arg.min_amp) / (arg.max_freq - arg.min_freq)) + arg.min_amp)) + 0.8;
+			else if(mode == Amplitude_Mode.Level_3_1P)
+				return 1 / get_Amplitude(Amplitude_Mode.Linear, new Amplitude_Argument(arg.min_freq, 1 / arg.min_amp, arg.max_freq, 1 / arg.max_amp, arg.current, arg.do_not_go_than_max));
+
+			if (arg.do_not_go_than_max && val > arg.max_amp) return arg.max_amp;
+			return val;
+		}
+
 		public static double get_overmodulation_amplitude(double min_freq, double max_freq, double max_amplitude, double freq)
 		{
 			if (freq > max_freq) return max_amplitude;
 			if (freq <= 0.1) return 0.0;
-			else return my_math.exponential(max_amplitude , (freq - min_freq) * ((max_amplitude - 1) / (max_freq - min_freq)) / (max_amplitude - 1));
-		}
-		public static double get_wide_3_pulse_amplitude(double min_freq, double min_amplitude, double max_freq, double max_amplitude, double freq)
-		{
-			return (0.2 * ((freq - min_freq) * ((max_amplitude - min_amplitude) / (max_freq - min_freq)) + min_amplitude)) + 0.8;
+			else return my_math.exponential(max_amplitude, (freq - min_freq) * ((max_amplitude - 1) / (max_freq - min_freq)) / (max_amplitude - 1));
 		}
 
 		public static int get_Pulse_Num(Pulse_Mode mode)
@@ -218,12 +250,12 @@ namespace VVVF_Generator_Porting
 			return random_freq;
 		}
 
-		public static double get_changing_carrier_freq(double starting_freq, double starting_carrier_freq, double ending_freq, double ending_carrier_freq, double current_frequency)
+		public static double get_changing_freq(double starting_freq, double starting_carrier_freq, double ending_freq, double ending_carrier_freq, double current_frequency)
 		{
 			return starting_carrier_freq + (ending_carrier_freq - starting_carrier_freq) / (ending_freq - starting_freq) * (current_frequency - starting_freq);
 		}
 
-		public static double get_pattern_random(int lowest, int highest, int interval_count)
+		public static double get_pattern_random_freq(int lowest, int highest, int interval_count)
 		{
 			double random_freq = 0;
 			if (get_Random_Freq_Move_Count() < interval_count / 2.0)
@@ -246,6 +278,8 @@ namespace VVVF_Generator_Porting
 			Video_Generate_Values.carrier_freq_data = data;
 			Video_Generate_Values.dipolar = dipolar;
 
+			double sin_angle_freq = get_Sine_Angle_Freq();
+
 			if (pulse_mode == Pulse_Mode.Async)
             {
 				double desire_saw_angle_freq = (data.range == 0) ? data.base_freq * M_2PI : get_random_freq(data) * M_2PI;
@@ -256,11 +290,11 @@ namespace VVVF_Generator_Porting
 			}
 			else
 			{
-				set_Saw_Angle_Freq(get_Sine_Angle_Freq() * get_Pulse_Num(pulse_mode));
+				set_Saw_Angle_Freq(sin_angle_freq * get_Pulse_Num(pulse_mode));
 				set_Saw_Time(get_Sine_Time());
 			}
 
-			double sin_value = get_sin_value(get_Sine_Time(), get_Sine_Angle_Freq(), initial_phase, amplitude);
+			double sin_value = get_sin_value(get_Sine_Time(), sin_angle_freq, initial_phase, amplitude);
 
 			double saw_value = get_saw_value(get_Saw_Time(), get_Saw_Angle_Freq(), 0);
 

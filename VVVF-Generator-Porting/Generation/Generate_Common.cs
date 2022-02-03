@@ -612,7 +612,7 @@ namespace VVVF_Generator_Porting.Generation
                     draw_zero_vector_circle = Boolean.Parse(Console.ReadLine());
                     break;
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
                     Console.WriteLine("Invalid value.");
                 }
@@ -658,7 +658,7 @@ namespace VVVF_Generator_Porting.Generation
 
                     break;
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
                     Console.WriteLine("Invalid value.");
                 }
@@ -953,7 +953,7 @@ namespace VVVF_Generator_Porting.Generation
                     draw_zero_vector_circle = Boolean.Parse(Console.ReadLine());
                     break;
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
                     Console.WriteLine("Invalid value.");
                 }
