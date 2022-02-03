@@ -30,6 +30,7 @@ namespace VVVF_Generator_Porting.Generation
             public static double sine_amplitude = 0.0;
             public static Carrier_Freq carrier_freq_data;
             public static double dipolar = -1;
+            public static double sine_angle_freq = 0.0;
         }
 
         // giajeoigae
@@ -46,7 +47,9 @@ namespace VVVF_Generator_Porting.Generation
                 double amp = get_Sine_Angle_Freq() / sin_new_angle_freq;
 
                 set_Sine_Angle_Freq(sin_new_angle_freq);
-                multi_Sine_Time(amp);
+
+                if (is_Allowed_Sine_Time_Change())
+                    multi_Sine_Time(amp);
             }
 
             if (get_Temp_Count() == 0)
@@ -612,7 +615,7 @@ namespace VVVF_Generator_Porting.Generation
                     draw_zero_vector_circle = Boolean.Parse(Console.ReadLine());
                     break;
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
                     Console.WriteLine("Invalid value.");
                 }
@@ -658,7 +661,7 @@ namespace VVVF_Generator_Porting.Generation
 
                     break;
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
                     Console.WriteLine("Invalid value.");
                 }
@@ -953,7 +956,7 @@ namespace VVVF_Generator_Porting.Generation
                     draw_zero_vector_circle = Boolean.Parse(Console.ReadLine());
                     break;
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
                     Console.WriteLine("Invalid value.");
                 }
@@ -1428,7 +1431,7 @@ namespace VVVF_Generator_Porting.Generation
                     g.FillRectangle(new SolidBrush(Color.FromArgb(200, 200, 255)), 0, 226, image_width, 291 - 226);
                     g.DrawString("Sine Freq[Hz]", title_fnt, title_brush, 17, 231);
                     g.FillRectangle(Brushes.Blue, 0, 291, image_width, 8);
-                    double sine_freq = get_Sine_Angle_Freq() / Math.PI / 2;
+                    double sine_freq = Video_Generate_Values.sine_angle_freq / Math.PI / 2;
                     if (!final_show)
                         g.DrawString(String.Format("{0:f2}", sine_freq).PadLeft(6), val_fnt, letter_brush, 17, 323);
 
@@ -1533,7 +1536,8 @@ namespace VVVF_Generator_Porting.Generation
                         if (sin_new_angle_freq < 0) sin_new_angle_freq = 0;
 
                         set_Sine_Angle_Freq(sin_new_angle_freq);
-                        multi_Sine_Time(amp);
+                        if(is_Allowed_Sine_Time_Change())
+                            multi_Sine_Time(amp);
 
                         if (!is_Mascon_Off())
                             set_Control_Frequency(get_Sine_Angle_Freq() / (M_2PI));

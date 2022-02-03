@@ -11,6 +11,8 @@
         private static bool mascon_off = false;
         private static int temp_count = 0;
 
+        private static bool allow_sine_time_change = true;
+
         public static void reset_control_variables()
         {
             do_frequency_change = true;
@@ -19,6 +21,7 @@
             wave_stat = 0;
             mascon_off = false;
             temp_count = 0;
+            allow_sine_time_change = true;
         }
 
         public static double get_Control_Frequency() { return wave_stat; }
@@ -46,6 +49,9 @@
 
         public static int get_Temp_Count() { return temp_count; }
         public static void set_Temp_Count(int v) { temp_count = v; }
+
+        public static bool is_Allowed_Sine_Time_Change() { return allow_sine_time_change; }
+        public static void set_Allowed_Sine_Time_Change(bool b) { allow_sine_time_change = b; }
 
 
         //--- from vvvf wave calculate
