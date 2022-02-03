@@ -20,7 +20,9 @@ namespace VVVF_Generator_Porting
 				if (53 <= cv.wave_stat || (cv.free_run && get_Sine_Angle_Freq() > 53 * M_2PI))
 				{
 					pulse_mode = Pulse_Mode.P_1;
-					amplitude = get_overmodulation_amplitude(53, 66, 3, cv.wave_stat);
+					if (cv.free_run) amplitude = get_Amplitude(Amplitude_Mode.Level_3_1P, new Amplitude_Argument(0, 0.5, 66, 4.6, cv.wave_stat, false));
+					else amplitude = get_Amplitude(Amplitude_Mode.Level_3_1P, new Amplitude_Argument(53, 0.83, 66, 4.6, cv.wave_stat, false));
+					//get_overmodulation_amplitude(53, 66, 3, cv.wave_stat);
 				}
 				else if (45 <= cv.wave_stat || (cv.free_run && get_Sine_Angle_Freq() > 45 * M_2PI)) pulse_mode = Pulse_Mode.P_3;
 				else if (29 <= cv.wave_stat || (cv.free_run && get_Sine_Angle_Freq() > 29 * M_2PI)) pulse_mode = Pulse_Mode.P_9;
@@ -78,12 +80,8 @@ namespace VVVF_Generator_Porting
 				amplitude = get_Amplitude(Amplitude_Mode.Linear, new Amplitude_Argument(0, 0, 68, 1, cv.wave_stat, false));
 				if (59 <= cv.wave_stat || (cv.free_run && get_Sine_Angle_Freq() > 59 * M_2PI))
                 {
-					if (cv.wave_stat > 71) amplitude = 1 / 0.2;
-					else
-					{
-						if (cv.free_run) amplitude = get_Amplitude(Amplitude_Mode.Level_3_1P, new Amplitude_Argument(0, 0.5, 71, 5, cv.wave_stat, false));
-						else amplitude = get_Amplitude(Amplitude_Mode.Level_3_1P, new Amplitude_Argument(59, 0.83, 71, 5, cv.wave_stat, false));
-					}
+					if (cv.free_run) amplitude = get_Amplitude(Amplitude_Mode.Level_3_1P, new Amplitude_Argument(0, 0.5, 71, 5, cv.wave_stat, false));
+					else amplitude = get_Amplitude(Amplitude_Mode.Level_3_1P, new Amplitude_Argument(59, 0.83, 71, 5, cv.wave_stat, false));
 					pulse_Mode = Pulse_Mode.P_1;
 				}
 				else if (50 <= cv.wave_stat || (cv.free_run && get_Sine_Angle_Freq() > 50 * M_2PI))
@@ -128,12 +126,8 @@ namespace VVVF_Generator_Porting
 
 				if (51 <= cv.wave_stat || (cv.free_run && get_Sine_Angle_Freq() > 51 * M_2PI))
 				{
-					if (cv.wave_stat > 61) amplitude = 5;
-					else
-					{
-						if (cv.free_run) amplitude = get_Amplitude(Amplitude_Mode.Level_3_1P, new Amplitude_Argument(0, 0.5, 61, 5, cv.wave_stat, false));
-						else amplitude = get_Amplitude(Amplitude_Mode.Level_3_1P, new Amplitude_Argument(51, 0.83, 61, 5, cv.wave_stat, false));
-					}
+					if (cv.free_run) amplitude = get_Amplitude(Amplitude_Mode.Level_3_1P, new Amplitude_Argument(0, 0.5, 61, 5, cv.wave_stat, false));
+					else amplitude = get_Amplitude(Amplitude_Mode.Level_3_1P, new Amplitude_Argument(51, 0.83, 61, 5, cv.wave_stat, false));
 					pulse_Mode = Pulse_Mode.P_1;
 				}
 

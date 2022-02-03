@@ -100,5 +100,10 @@ namespace VVVF_Generator_Porting
         {
             return Math.Pow(x, y);
         }
+
+        public static double max(double a,double b)
+        {
+            return (a > b) ? a : b;
+        }
     }
 }

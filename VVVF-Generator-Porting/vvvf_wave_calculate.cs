@@ -146,11 +146,11 @@ namespace VVVF_Generator_Porting
 			public double min_amp = 0;
 			public double max_freq = 0;
 			public double max_amp = 0;
-			public bool do_not_go_than_max = true;
+			public bool disable_range_limit = true;
 
 			public double current = 0;
 
-			public Amplitude_Argument(double Minimum_Freq, double Minimum_Amplitude, double Maximum_Freq, double Maximum_Amplitude, double Current, bool Over_Modulate)
+			public Amplitude_Argument(double Minimum_Freq, double Minimum_Amplitude, double Maximum_Freq, double Maximum_Amplitude, double Current, bool Disable_Range_Limit)
             {
 				min_freq = Minimum_Freq;
 				max_freq = Maximum_Freq;
@@ -158,24 +158,33 @@ namespace VVVF_Generator_Porting
 				min_amp = Minimum_Amplitude;
 				max_amp = Maximum_Amplitude;
 
-				do_not_go_than_max = Over_Modulate;
+				disable_range_limit = Disable_Range_Limit;
 
 				current = Current;
 			}
+
 		}
 		
 		public static double get_Amplitude(Amplitude_Mode mode , Amplitude_Argument arg)
         {
 			double val = 0;
 
+			if (!arg.disable_range_limit)
+			{
+				if (arg.current < arg.min_freq) arg.current = arg.min_freq;
+				if (arg.current > arg.max_freq) arg.current = arg.max_freq;
+			}
+
 			if (mode == Amplitude_Mode.Linear)
 				val = (arg.max_amp - arg.min_amp) / (arg.max_freq - arg.min_freq) * (arg.current - arg.min_freq) + arg.min_amp;
 			else if(mode == Amplitude_Mode.Wide_3_Pulse)
 				val = (0.2 * ((arg.current - arg.min_freq) * ((arg.max_amp - arg.min_amp) / (arg.max_freq - arg.min_freq)) + arg.min_amp)) + 0.8;
 			else if(mode == Amplitude_Mode.Level_3_1P)
-				return 1 / get_Amplitude(Amplitude_Mode.Linear, new Amplitude_Argument(arg.min_freq, 1 / arg.min_amp, arg.max_freq, 1 / arg.max_amp, arg.current, arg.do_not_go_than_max));
+            {
+				val = 1 / get_Amplitude(Amplitude_Mode.Linear, new Amplitude_Argument(arg.min_freq, 1 / arg.min_amp, arg.max_freq, 1 / arg.max_amp, arg.current, arg.disable_range_limit));
+			}
 
-			if (arg.do_not_go_than_max && val > arg.max_amp) return arg.max_amp;
+            
 			return val;
 		}
 
