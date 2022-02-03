@@ -137,7 +137,7 @@ namespace VVVF_Generator_Porting
 		
 		public enum Amplitude_Mode
         {
-			Linear, Wide_3_Pulse, Level_3_1P
+			Linear, Wide_3_Pulse, Level_3_1P, Exponential
 		}
 
 		public class Amplitude_Argument
@@ -182,17 +182,13 @@ namespace VVVF_Generator_Porting
 			else if(mode == Amplitude_Mode.Level_3_1P)
             {
 				val = 1 / get_Amplitude(Amplitude_Mode.Linear, new Amplitude_Argument(arg.min_freq, 1 / arg.min_amp, arg.max_freq, 1 / arg.max_amp, arg.current, arg.disable_range_limit));
+			}else if(mode == Amplitude_Mode.Exponential)
+            {
+				val = my_math.exponential(arg.max_amp + 1, (arg.current - arg.min_freq) / (arg.max_freq - arg.min_freq)) - 1;//(arg.current - arg.min_freq) / (arg.max_freq - arg.min_freq) + arg.min_amp;
 			}
 
             
 			return val;
-		}
-
-		public static double get_overmodulation_amplitude(double min_freq, double max_freq, double max_amplitude, double freq)
-		{
-			if (freq > max_freq) return max_amplitude;
-			if (freq <= 0.1) return 0.0;
-			else return my_math.exponential(max_amplitude, (freq - min_freq) * ((max_amplitude - 1) / (max_freq - min_freq)) / (max_amplitude - 1));
 		}
 
 		public static int get_Pulse_Num(Pulse_Mode mode)

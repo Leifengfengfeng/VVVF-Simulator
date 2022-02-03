@@ -8,21 +8,35 @@ namespace VVVF_Generator_Porting
 		//JR East
 		public static Wave_Values calculate_jre_209_mitsubishi_gto_3_level(Control_Values cv)
 		{
-
-			double amplitude = 0;
+			double amplitude;
 			Pulse_Mode pulse_mode = Pulse_Mode.Async;
 			Carrier_Freq carrier_freq = new Carrier_Freq(0, 0);
-			set_Mascon_Off_Div(24000);
 
 			if (!cv.brake)
 			{
+				set_Mascon_Off_Div(18000);
 				amplitude = get_Amplitude(Amplitude_Mode.Linear, new Amplitude_Argument(0, 0, 59, 1, cv.wave_stat, false));
+
+				if (cv.free_run && !cv.mascon_on && cv.wave_stat > 66)
+				{
+					cv.wave_stat = 66;
+					set_Control_Frequency(66);
+				}
+
+				else if (cv.free_run && cv.mascon_on && cv.wave_stat > 66)
+				{
+					double rolling_freq = get_Sine_Angle_Freq() * M_1_2PI;
+					cv.wave_stat = rolling_freq;
+					set_Control_Frequency(rolling_freq);
+				}
+
 				if (53 <= cv.wave_stat || (cv.free_run && get_Sine_Angle_Freq() > 53 * M_2PI))
 				{
 					pulse_mode = Pulse_Mode.P_1;
-					if (cv.free_run) amplitude = get_Amplitude(Amplitude_Mode.Level_3_1P, new Amplitude_Argument(0, 0.5, 66, 4.6, cv.wave_stat, false));
-					else amplitude = get_Amplitude(Amplitude_Mode.Level_3_1P, new Amplitude_Argument(53, 0.83, 66, 4.6, cv.wave_stat, false));
-					//get_overmodulation_amplitude(53, 66, 3, cv.wave_stat);
+
+					//if (cv.free_run) amplitude = get_Amplitude(Amplitude_Mode.Exponential, new Amplitude_Argument(0, -1, 66, 3, cv.wave_stat, false));
+					if (cv.free_run) amplitude = get_Amplitude(Amplitude_Mode.Level_3_1P, new Amplitude_Argument(0, 0.5, 66, 3, cv.wave_stat, false));
+					else amplitude = get_Amplitude(Amplitude_Mode.Level_3_1P, new Amplitude_Argument(53, 0.83, 66, 3, cv.wave_stat, false));
 				}
 				else if (45 <= cv.wave_stat || (cv.free_run && get_Sine_Angle_Freq() > 45 * M_2PI)) pulse_mode = Pulse_Mode.P_3;
 				else if (29 <= cv.wave_stat || (cv.free_run && get_Sine_Angle_Freq() > 29 * M_2PI)) pulse_mode = Pulse_Mode.P_9;
@@ -38,11 +52,16 @@ namespace VVVF_Generator_Porting
 
 			else
 			{
+				set_Mascon_Off_Div(24000);
 				amplitude = get_Amplitude(Amplitude_Mode.Linear, new Amplitude_Argument(0, 0, 66, 1, cv.wave_stat, false));
 				if (60 <= cv.wave_stat || (cv.free_run && get_Sine_Angle_Freq() > 60 * M_2PI))
 				{
 					pulse_mode = Pulse_Mode.P_1;
-					amplitude = get_overmodulation_amplitude(60, 72, 3, cv.wave_stat);
+
+					//if (cv.free_run) amplitude = get_Amplitude(Amplitude_Mode.Exponential, new Amplitude_Argument(0, -1, 72, 3, cv.wave_stat, false));
+					if (cv.free_run) amplitude = get_Amplitude(Amplitude_Mode.Level_3_1P, new Amplitude_Argument(0, 0.5, 72, 3, cv.wave_stat, false));
+					else amplitude = get_Amplitude(Amplitude_Mode.Level_3_1P, new Amplitude_Argument(60, 0.83, 72, 3, cv.wave_stat, false));
+					//get_overmodulation_amplitude(60, 72, 3, cv.wave_stat);
 				}
 				else if (49 <= cv.wave_stat || (cv.free_run && get_Sine_Angle_Freq() > 49 * M_2PI)) pulse_mode = Pulse_Mode.P_3;
 				else if (40 <= cv.wave_stat || (cv.free_run && get_Sine_Angle_Freq() > 40 * M_2PI)) pulse_mode = Pulse_Mode.P_9;
