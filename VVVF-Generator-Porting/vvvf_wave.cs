@@ -69,7 +69,7 @@ namespace VVVF_Generator_Porting
 				else if (7 <= cv.wave_stat || (cv.free_run && get_Sine_Angle_Freq() > 7 * M_2PI)) pulse_mode = Pulse_Mode.P_33;
 				else get_Wave_Values_None();
 			}
-			return calculate_three_level(pulse_mode, carrier_freq, cv.initial_phase, amplitude, -1);
+			return calculate_three_level(pulse_mode, carrier_freq, new Sine_Control_Data(cv.initial_phase, amplitude,0), -1);
 		}
 
 		public static Wave_Values calculate_jre_e231_mitsubishi_igbt_3_level(Control_Values cv)
@@ -79,6 +79,8 @@ namespace VVVF_Generator_Porting
 			Carrier_Freq carrier_freq = new Carrier_Freq(0, 0);
 
 			double dipolar = -1;
+
+			if (cv.wave_stat > 0 && cv.wave_stat < 2 && !cv.free_run) cv.wave_stat = 2;
 
 			if (cv.brake)
 			{
@@ -183,7 +185,7 @@ namespace VVVF_Generator_Porting
 					dipolar = 2;
 				}
 			}
-			return calculate_three_level(pulse_Mode, carrier_freq, cv.initial_phase, amplitude, dipolar);
+			return calculate_three_level(pulse_Mode, carrier_freq, new Sine_Control_Data(cv.initial_phase, amplitude, 2), dipolar);
 		}
 		public static Wave_Values calculate_jre_e231_1000_hitachi_igbt_2_level(Control_Values cv)
 		{
@@ -280,7 +282,7 @@ namespace VVVF_Generator_Porting
 				}
 			}
 
-			return calculate_two_level(pulse_mode, carrier_freq, cv.initial_phase, amplitude);
+			return calculate_two_level(pulse_mode, carrier_freq, new Sine_Control_Data(cv.initial_phase, amplitude, 0));
 		}
 
 		public static Wave_Values calculate_jre_e233_mitsubishi_igbt_2_level(Control_Values cv)
@@ -320,7 +322,7 @@ namespace VVVF_Generator_Porting
 				}
 			}
 
-			return calculate_two_level(pulse_mode, carrier_freq, cv.initial_phase, amplitude);
+			return calculate_two_level(pulse_mode, carrier_freq, new Sine_Control_Data(cv.initial_phase, amplitude, 0));
 		}
 
 		public static Wave_Values calculate_jre_e233_3000_hitachi_igbt_2_level(Control_Values cv)
@@ -399,7 +401,7 @@ namespace VVVF_Generator_Porting
 				}
 			}
 
-			return calculate_two_level(pulse_mode, carrier_freq, cv.initial_phase, amplitude);
+			return calculate_two_level(pulse_mode, carrier_freq, new Sine_Control_Data(cv.initial_phase, amplitude, 0));
 		}
 
 		public static Wave_Values calculate_jre_e235_toshiba_sic_2_level(Control_Values cv)
@@ -417,7 +419,7 @@ namespace VVVF_Generator_Porting
 				carrier_freq = new Carrier_Freq(base_freq, 100);
 			}
 
-			return calculate_two_level(pulse_mode, carrier_freq, cv.initial_phase, amplitude);
+			return calculate_two_level(pulse_mode, carrier_freq, new Sine_Control_Data(cv.initial_phase, amplitude, 0));
 		}
 
 		public static Wave_Values calculate_jre_e235_mitsubishi_sic_2_level(Control_Values cv)
@@ -470,7 +472,7 @@ namespace VVVF_Generator_Porting
                 }
 			}
 
-			return calculate_two_level(pulse_mode, carrier_freq, cv.initial_phase, amplitude);
+			return calculate_two_level(pulse_mode, carrier_freq, new Sine_Control_Data(cv.initial_phase, amplitude, 0));
 		}
 
 
@@ -569,7 +571,7 @@ namespace VVVF_Generator_Porting
 				}
 			}
 
-			return calculate_two_level(pulse_mode, carrier_freq, cv.initial_phase, amplitude);
+			return calculate_two_level(pulse_mode, carrier_freq, new Sine_Control_Data(cv.initial_phase, amplitude, 0));
 		}
 		public static Wave_Values calculate_jrw_207_update_toshiba_igbt_2_level(Control_Values cv)
 		{
@@ -628,7 +630,7 @@ namespace VVVF_Generator_Porting
 				}
 			}
 
-			return calculate_two_level(pulse_mode, carrier_freq, cv.initial_phase, amplitude);
+			return calculate_two_level(pulse_mode, carrier_freq, new Sine_Control_Data(cv.initial_phase, amplitude, 0));
 		}
 
 		public static Wave_Values calculate_jrw_223_2000_hitachi_igbt_3_level(Control_Values cv)
@@ -766,7 +768,7 @@ namespace VVVF_Generator_Porting
 					dipolar = 1;
 				}
 			}
-			return calculate_three_level(pulse_Mode, carrier_freq, cv.initial_phase, amplitude, dipolar);
+			return calculate_three_level(pulse_Mode, carrier_freq, new Sine_Control_Data(cv.initial_phase, amplitude, 0), dipolar);
 		}
 		public static Wave_Values calculate_jrw_321_hitachi_igbt_2_level(Control_Values cv)
 		{
@@ -816,7 +818,7 @@ namespace VVVF_Generator_Porting
 				}
 			}
 
-			return calculate_two_level(pulse_mode, carrier_freq, cv.initial_phase, amplitude);
+			return calculate_two_level(pulse_mode, carrier_freq, new Sine_Control_Data(cv.initial_phase, amplitude, 0));
 		}
 
 		public static Wave_Values calculate_jrw_225_5100_mitsubishi_igbt_2_level(Control_Values cv)
@@ -864,7 +866,7 @@ namespace VVVF_Generator_Porting
 				}
 			}
 
-			return calculate_two_level(pulse_mode, carrier_freq, cv.initial_phase, amplitude);
+			return calculate_two_level(pulse_mode, carrier_freq, new Sine_Control_Data(cv.initial_phase, amplitude,0));
 		}
 
 
@@ -935,7 +937,7 @@ namespace VVVF_Generator_Porting
 					return get_Wave_Values_None();
 				}
 			}
-			return calculate_two_level(pulse_mode, carrier_freq, cv.initial_phase, amplitude);
+			return calculate_two_level(pulse_mode, carrier_freq, new Sine_Control_Data(cv.initial_phase, amplitude,0));
 		}
 
 		public static Wave_Values calculate_tokyuu_5000_hitachi_igbt_2_level(Control_Values cv)
@@ -1009,7 +1011,7 @@ namespace VVVF_Generator_Porting
 
 			if (!cv.mascon_on && cv.free_run && cv.wave_stat < 23) amplitude = 0;
 
-			return calculate_two_level(pulse_mode, carrier_freq, cv.initial_phase, amplitude);
+			return calculate_two_level(pulse_mode, carrier_freq, new Sine_Control_Data(cv.initial_phase, amplitude,0));
 		}
 		public static Wave_Values calculate_tokyuu_1000_1500_update_toshiba_igbt_2_level(Control_Values cv)
 		{
@@ -1074,7 +1076,7 @@ namespace VVVF_Generator_Porting
 				}
 			}
 
-			return calculate_two_level(pulse_mode, carrier_freq, cv.initial_phase, amplitude);
+			return calculate_two_level(pulse_mode, carrier_freq, new Sine_Control_Data(cv.initial_phase, amplitude,0));
 		}
 
 
@@ -1148,7 +1150,7 @@ namespace VVVF_Generator_Porting
 				}
 			}
 
-			return calculate_two_level(pulse_mode, carrier_freq, cv.initial_phase, amplitude);
+			return calculate_two_level(pulse_mode, carrier_freq, new Sine_Control_Data(cv.initial_phase, amplitude,0));
 		}
 		public static Wave_Values calculate_kintetsu_9820_mitsubishi_igbt_2_level(Control_Values cv)
 		{
@@ -1181,7 +1183,7 @@ namespace VVVF_Generator_Porting
 				pulse_mode = Pulse_Mode.Async;
 			}
 
-			return calculate_two_level(pulse_mode, carrier_freq, cv.initial_phase, amplitude);
+			return calculate_two_level(pulse_mode, carrier_freq, new Sine_Control_Data(cv.initial_phase, amplitude,0));
 		}
 
 		public static Wave_Values calculate_kintetsu_9820_hitachi_igbt_2_level(Control_Values cv)
@@ -1209,7 +1211,7 @@ namespace VVVF_Generator_Porting
 				pulse_mode = Pulse_Mode.Async;
 			}
 
-			return calculate_two_level(pulse_mode, carrier_freq, cv.initial_phase, amplitude);
+			return calculate_two_level(pulse_mode, carrier_freq, new Sine_Control_Data(cv.initial_phase, amplitude,0));
 		}
 
 
@@ -1285,7 +1287,7 @@ namespace VVVF_Generator_Porting
 				}
 			}
 
-			return calculate_two_level(pulse_mode, carrier_freq, cv.initial_phase, amplitude);
+			return calculate_two_level(pulse_mode, carrier_freq, new Sine_Control_Data(cv.initial_phase, amplitude,0));
 		}
 
 
@@ -1504,7 +1506,7 @@ namespace VVVF_Generator_Porting
 			if (cv.wave_stat == 0) amplitude = 0;
 			if (pulse_mode == Pulse_Mode.P_3) amplitude /= 1.25;
 
-			return calculate_two_level(pulse_mode, carrier_freq, cv.initial_phase, amplitude);
+			return calculate_two_level(pulse_mode, carrier_freq, new Sine_Control_Data(cv.initial_phase, amplitude,0));
 		}
 
 
@@ -1619,7 +1621,7 @@ namespace VVVF_Generator_Porting
 				}
 			}
 			double amplitude = ((k[a - 1, b - 1] * cv.wave_stat) + B[a - 1, b - 1]) >= 1.25 ? 1.25 : ((k[a - 1, b - 1] * cv.wave_stat) + B[a - 1, b - 1]);//¼ÆËãµ÷ÖÆ¶È
-			return calculate_two_level(pulse_mode, carrier_freq, cv.initial_phase, amplitude);
+			return calculate_two_level(pulse_mode, carrier_freq, new Sine_Control_Data(cv.initial_phase, amplitude,0));
 		}
 
 		public static Wave_Values calculate_not_real_keikyu_n1000_siemens_gto_2_level(Control_Values cv)
@@ -1686,7 +1688,7 @@ namespace VVVF_Generator_Porting
 			}
 
 
-			return calculate_two_level(pulse_mode, carrier_freq, cv.initial_phase, amplitude);
+			return calculate_two_level(pulse_mode, carrier_freq, new Sine_Control_Data(cv.initial_phase, amplitude,0));
 		}
 
 
@@ -1746,7 +1748,7 @@ namespace VVVF_Generator_Porting
 				carrier_freq = new Carrier_Freq(base_freq, 100);
 			}
 
-			return calculate_two_level(pulse_mode, carrier_freq, cv.initial_phase, amplitude);
+			return calculate_two_level(pulse_mode, carrier_freq, new Sine_Control_Data(cv.initial_phase, amplitude,0));
 		}
 
 
@@ -1801,7 +1803,7 @@ namespace VVVF_Generator_Porting
 				pulse_mode = Pulse_Mode.Async;
 			}
 
-			return calculate_two_level(pulse_mode, carrier_freq, cv.initial_phase, amplitude);
+			return calculate_two_level(pulse_mode, carrier_freq, new Sine_Control_Data(cv.initial_phase, amplitude,0));
 		}
 
 
@@ -1866,7 +1868,7 @@ namespace VVVF_Generator_Porting
 				}
 			}
 
-			return calculate_two_level(pulse_mode, carrier_freq, cv.initial_phase, amplitude);
+			return calculate_two_level(pulse_mode, carrier_freq, new Sine_Control_Data(cv.initial_phase, amplitude,0));
 		}
 
 
@@ -1899,7 +1901,7 @@ namespace VVVF_Generator_Porting
 				pulse_mode = Pulse_Mode.Async;
 			}
 
-			return calculate_two_level(pulse_mode, carrier_freq, cv.initial_phase, amplitude);
+			return calculate_two_level(pulse_mode, carrier_freq, new Sine_Control_Data(cv.initial_phase, amplitude,0));
 		}
 
 
@@ -1957,7 +1959,7 @@ namespace VVVF_Generator_Porting
 				pulse_mode = Pulse_Mode.Async;
 			}
 
-			return calculate_two_level(pulse_mode, carrier_freq, cv.initial_phase, amplitude);
+			return calculate_two_level(pulse_mode, carrier_freq, new Sine_Control_Data(cv.initial_phase, amplitude,0));
 		}
 
 
@@ -2029,7 +2031,7 @@ namespace VVVF_Generator_Porting
 
 			}
 
-			return calculate_two_level(pulse_mode, carrier_freq, cv.initial_phase, amplitude);
+			return calculate_two_level(pulse_mode, carrier_freq, new Sine_Control_Data(cv.initial_phase, amplitude,0));
 		}
 
 		public static Wave_Values calculate_wmata_7000_toshiba_igbt_2_level(Control_Values cv)
@@ -2085,7 +2087,7 @@ namespace VVVF_Generator_Porting
 
 			}
 
-			return calculate_two_level(pulse_mode, carrier_freq, cv.initial_phase, amplitude);
+			return calculate_two_level(pulse_mode, carrier_freq, new Sine_Control_Data(cv.initial_phase, amplitude,0));
 		}
 
 
@@ -2188,7 +2190,7 @@ namespace VVVF_Generator_Porting
 				}
 			}
 
-			return calculate_two_level(pulse_mode, carrier_freq, cv.initial_phase, amplitude);
+			return calculate_two_level(pulse_mode, carrier_freq, new Sine_Control_Data(cv.initial_phase, amplitude,0));
 		}
 
 		public static Wave_Values calculate_toyo_igbt_2_level(Control_Values cv)
@@ -2233,7 +2235,7 @@ namespace VVVF_Generator_Porting
 					pulse_mode = Pulse_Mode.Async;
 				}
 			}
-			return calculate_two_level(pulse_mode, carrier_freq, cv.initial_phase, amplitude);
+			return calculate_two_level(pulse_mode, carrier_freq, new Sine_Control_Data(cv.initial_phase, amplitude,0));
 		}
 
 		public static Wave_Values calculate_silent_2_level(Control_Values cv)
@@ -2250,7 +2252,7 @@ namespace VVVF_Generator_Porting
 				carrier_freq = new Carrier_Freq(550, 100);
 			}
 
-			return calculate_two_level(pulse_mode, carrier_freq, cv.initial_phase, amplitude);
+			return calculate_two_level(pulse_mode, carrier_freq, new Sine_Control_Data(cv.initial_phase, amplitude,0));
 		}
 		public static Wave_Values calculate_jre_209_mitsubishi_gto_2_level(Control_Values cv)
 		{
@@ -2281,7 +2283,7 @@ namespace VVVF_Generator_Porting
 			{
 				return get_Wave_Values_None();
 			}
-			return calculate_two_level(pulse_mode, carrier_freq, cv.initial_phase, amplitude);
+			return calculate_two_level(pulse_mode, carrier_freq, new Sine_Control_Data(cv.initial_phase, amplitude,0));
 		}
 
 		public static Wave_Values calculate_famina_2_level(Control_Values cv)
@@ -2327,7 +2329,7 @@ namespace VVVF_Generator_Porting
 				pulse_mode = Pulse_Mode.Async;
 			}
 
-			return calculate_two_level(pulse_mode, carrier_freq, cv.initial_phase, amplitude);
+			return calculate_two_level(pulse_mode, carrier_freq, new Sine_Control_Data(cv.initial_phase, amplitude,0));
 		}
 
 		public static Wave_Values calculate_real_doremi_2_level(Control_Values cv)
@@ -2393,7 +2395,7 @@ namespace VVVF_Generator_Porting
 				}
 			}
 
-			return calculate_two_level(pulse_mode, carrier_freq, cv.initial_phase, amplitude);
+			return calculate_two_level(pulse_mode, carrier_freq, new Sine_Control_Data(cv.initial_phase, amplitude,0));
 		}
 	}
 }

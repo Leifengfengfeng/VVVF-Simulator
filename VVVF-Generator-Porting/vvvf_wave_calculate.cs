@@ -272,18 +272,42 @@ namespace VVVF_Generator_Porting
 			if (get_Random_Freq_Move_Count() > interval_count)
 				set_Random_Freq_Move_Count(0);
 			return random_freq;
+        }
+
+        public class Sine_Control_Data {
+			public double initial_phase = 0;
+			public double amplitude = 0;
+			public double min_sine_freq = 0;
+
+			public Sine_Control_Data(double Initial_Phase , double Amplitude , double Minimum_Sine_Frequency)
+            {
+				initial_phase = Initial_Phase;
+				amplitude = Amplitude;
+				min_sine_freq = Minimum_Sine_Frequency;
+            }
 		}
 
-		public static Wave_Values calculate_three_level(Pulse_Mode pulse_mode, Carrier_Freq data, double initial_phase, double amplitude, double dipolar)
+        public static Wave_Values calculate_three_level(Pulse_Mode pulse_mode, Carrier_Freq data, Sine_Control_Data sine_control, double dipolar)
 		{
 			//variable change for video
 			//no need in RPI zero vvvf
 			Video_Generate_Values.pulse_mode = pulse_mode;
-			Video_Generate_Values.sine_amplitude = amplitude;
+			Video_Generate_Values.sine_amplitude = sine_control.amplitude;
 			Video_Generate_Values.carrier_freq_data = data;
 			Video_Generate_Values.dipolar = dipolar;
 
-			double sin_angle_freq = get_Sine_Angle_Freq();
+			double sine_angle_freq = get_Sine_Angle_Freq();
+			double sine_time = get_Sine_Time();
+			double min_sine_angle_freq = sine_control.min_sine_freq * M_2PI;
+			if (sine_angle_freq < min_sine_angle_freq)
+            {
+				set_Allowed_Sine_Time_Change(false);
+				sine_angle_freq = min_sine_angle_freq;
+            }
+            else
+				set_Allowed_Sine_Time_Change(true);
+
+			Video_Generate_Values.sine_angle_freq = sine_angle_freq;
 
 			if (pulse_mode == Pulse_Mode.Async)
             {
@@ -295,11 +319,11 @@ namespace VVVF_Generator_Porting
 			}
 			else
 			{
-				set_Saw_Angle_Freq(sin_angle_freq * get_Pulse_Num(pulse_mode));
-				set_Saw_Time(get_Sine_Time());
+				set_Saw_Angle_Freq(sine_angle_freq * get_Pulse_Num(pulse_mode));
+				set_Saw_Time(sine_time);
 			}
 
-			double sin_value = get_sin_value(get_Sine_Time(), sin_angle_freq, initial_phase, amplitude);
+			double sin_value = get_sin_value(sine_time, sine_angle_freq, sine_control.initial_phase, sine_control.amplitude);
 
 			double saw_value = get_saw_value(get_Saw_Time(), get_Saw_Angle_Freq(), 0);
 
@@ -313,17 +337,31 @@ namespace VVVF_Generator_Porting
 			return wv;
 		}
 
-		public static Wave_Values calculate_two_level(Pulse_Mode pulse_mode, Carrier_Freq carrier_freq_data, double initial_phase, double amplitude)
+		public static Wave_Values calculate_two_level(Pulse_Mode pulse_mode, Carrier_Freq carrier_freq_data, Sine_Control_Data sine_control)
 		{
 			Video_Generate_Values.pulse_mode = pulse_mode;
-			Video_Generate_Values.sine_amplitude = amplitude;
+			Video_Generate_Values.sine_amplitude = sine_control.amplitude;
 			Video_Generate_Values.carrier_freq_data = carrier_freq_data;
+			Video_Generate_Values.dipolar = -1;
 
-			double sin_time = get_Sine_Time();
 			double sin_angle_freq = get_Sine_Angle_Freq();
+			double sin_time = get_Sine_Time();
+			double min_sine_angle_freq = sine_control.min_sine_freq * M_2PI;
+			if (sin_angle_freq < min_sine_angle_freq)
+			{
+				set_Allowed_Sine_Time_Change(false);
+				sin_angle_freq = min_sine_angle_freq;
+			}
+			else
+				set_Allowed_Sine_Time_Change(true);
+
+			Video_Generate_Values.sine_angle_freq = sin_angle_freq;
 
 			double saw_time = get_Saw_Time();
 			double saw_angle_freq = get_Saw_Angle_Freq();
+
+			double initial_phase = sine_control.initial_phase;
+			double amplitude = sine_control.amplitude;
 
 			if (pulse_mode == Pulse_Mode.P_Wide_3)
 				return get_Wide_P_3(sin_time, sin_angle_freq, initial_phase, amplitude, false);
@@ -457,9 +495,6 @@ namespace VVVF_Generator_Porting
 
 			int pwm_value = get_pwm_value(sin_value, saw_value) * 2;
 			//Console.WriteLine(pwm_value);
-
-			set_Sine_Angle_Freq(sin_angle_freq);
-			set_Sine_Time(sin_time);
 
 			set_Saw_Angle_Freq(saw_angle_freq);
 			set_Saw_Time(saw_time);
