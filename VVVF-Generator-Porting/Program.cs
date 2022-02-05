@@ -1,6 +1,10 @@
 ﻿using System;
 using static VVVF_Generator_Porting.vvvf_sound_definition;
-using static VVVF_Generator_Porting.Generation.Generate_Common;
+using static VVVF_Generator_Porting.Generation.Generate_Control_Info;
+using static VVVF_Generator_Porting.Generation.Generate_Hexagon;
+using static VVVF_Generator_Porting.Generation.Generate_RealTime;
+using static VVVF_Generator_Porting.Generation.Generate_Sound;
+using static VVVF_Generator_Porting.Generation.Generate_Wave_Form;
 
 namespace VVVF_Generator_Porting
 {

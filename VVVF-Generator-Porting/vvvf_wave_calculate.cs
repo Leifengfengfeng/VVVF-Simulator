@@ -1,19 +1,11 @@
 ﻿using static VVVF_Generator_Porting.Generation.Generate_Common;
 using static VVVF_Generator_Porting.vvvf_wave_control;
+using static VVVF_Generator_Porting.my_math;
 
 namespace VVVF_Generator_Porting
 {
 	public class vvvf_wave_calculate
 	{
-		public static double M_2PI = 6.283185307179586476925286766559;
-		public static double M_PI = 3.1415926535897932384626433832795;
-		public static double M_PI_2 = 1.5707963267948966192313216916398;
-		public static double M_2_PI = 0.63661977236758134307553505349006;
-		public static double M_1_PI = 0.31830988618379067153776752674503;
-		public static double M_1_2PI = 0.15915494309189533576888376337251;
-		public static double M_PI_180 = 0.01745329251994329576923690768489;
-		public static double M_PI_4 = 0.78539816339744830961566084581988;
-
 		public struct Wave_Values
 		{
 			public double sin_value;
