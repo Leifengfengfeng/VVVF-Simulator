@@ -62,7 +62,7 @@ namespace VVVF_Generator_Porting
                 if (gen_audio) generate_sound(output_path, sound_name);
                 if (gen_U_V) generate_wave_U_V(output_path, sound_name);
                 if (gen_UVW) generate_wave_UVW(output_path, sound_name);
-                if (gen_hexagon) generate_wave_hexagon(output_path, sound_name);
+                if (gen_hexagon) generate_wave_hexagon_taroimo_like(output_path, sound_name);
                 if (gen_hexagon_explain) generate_wave_hexagon_explain(output_path, sound_name);
                 if (gen_mascon_video) generate_status_video(output_path, sound_name);
             }
