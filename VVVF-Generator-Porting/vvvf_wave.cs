@@ -1,5 +1,6 @@
 ﻿using static VVVF_Generator_Porting.vvvf_wave_calculate;
 using static VVVF_Generator_Porting.vvvf_wave_control;
+using static VVVF_Generator_Porting.my_math;
 
 namespace VVVF_Generator_Porting
 {
