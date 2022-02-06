@@ -224,30 +224,37 @@ namespace VVVF_Generator_Porting
 
 		private static double get_random_freq(Carrier_Freq data)
 		{
-			double random_freq = 0;
-			if (get_Random_Freq_Move_Count() == 0 || get_Pre_Saw_Random_Freq() == 0)
-			{
-				int random_v = my_math.my_random();
-				double diff_freq = my_math.mod_d(random_v, data.range);
-				if ((random_v & 0x01) == 1)
-					diff_freq = -diff_freq;
-				double silent_random_freq = data.base_freq + diff_freq;
-				random_freq = silent_random_freq;
-				set_Pre_Saw_Random_Freq(silent_random_freq);
-			}
-			else
-			{
-				random_freq = get_Pre_Saw_Random_Freq();
-			}
+            if (is_Allowed_Random_Freq_Move())
+            {
+				double random_freq = 0;
+				if (get_Random_Freq_Move_Count() == 0 || get_Pre_Saw_Random_Freq() == 0)
+				{
+					int random_v = my_math.my_random();
+					double diff_freq = my_math.mod_d(random_v, data.range);
+					if ((random_v & 0x01) == 1)
+						diff_freq = -diff_freq;
+					double silent_random_freq = data.base_freq + diff_freq;
+					random_freq = silent_random_freq;
+					set_Pre_Saw_Random_Freq(silent_random_freq);
+				}
+				else
+				{
+					random_freq = get_Pre_Saw_Random_Freq();
+				}
 
-			add_Random_Freq_Move_Count(1);
-			if (get_Random_Freq_Move_Count() == 100)
-				set_Random_Freq_Move_Count(0);
+				add_Random_Freq_Move_Count(1);
+				if (get_Random_Freq_Move_Count() == 100)
+					set_Random_Freq_Move_Count(0);
 
-			return random_freq;
+				return random_freq;
+            }
+            else
+            {
+				return data.base_freq;
+            }
 		}
 
-		public static double get_changing_freq(double starting_freq, double starting_carrier_freq, double ending_freq, double ending_carrier_freq, double current_frequency)
+		public static double get_Changing_freq(double starting_freq, double starting_carrier_freq, double ending_freq, double ending_carrier_freq, double current_frequency)
 		{
 			return starting_carrier_freq + (ending_carrier_freq - starting_carrier_freq) / (ending_freq - starting_freq) * (current_frequency - starting_freq);
 		}
