@@ -441,7 +441,6 @@ namespace VVVF_Generator_Porting.Generation
 
         public static double get_wave_form_voltage_rage(VVVF_Sound_Names sound_name)
         {
-
             int hex_div_seed = 10000;
             int hex_div = 6 * hex_div_seed;
             double[] hexagon_coordinate = new double[] { 100, 500 };
@@ -493,15 +492,16 @@ namespace VVVF_Generator_Porting.Generation
                 double int_move_x = 200 * move_x / (double)hex_div_seed;
                 double int_move_y = 200 * move_y / (double)hex_div_seed;
 
-                y_coordinate[(int)Math.Round(hexagon_coordinate[0])].Add((int)Math.Round(hexagon_coordinate[1]));
-                y_coordinate[(int)Math.Round(hexagon_coordinate[0] + int_move_x)].Add((int)Math.Round(hexagon_coordinate[1] + int_move_y));
+                List<Int32> x1 = y_coordinate[(int)Math.Round(hexagon_coordinate[0])];
+                if(!x1.Contains((int)Math.Round(hexagon_coordinate[1])))
+                    x1.Add((int)Math.Round(hexagon_coordinate[1]));
+
+                List<Int32> x2 = y_coordinate[(int)Math.Round(hexagon_coordinate[0] + int_move_x)];
+                if(!x2.Contains((int)Math.Round(hexagon_coordinate[1] + int_move_y)))
+                    x2.Add((int)Math.Round(hexagon_coordinate[1] + int_move_y));
 
                 hexagon_coordinate[0] = hexagon_coordinate[0] + int_move_x;
                 hexagon_coordinate[1] = hexagon_coordinate[1] + int_move_y;
-
-                
-
-
             }
 
             int total_dots = 0;
@@ -511,11 +511,13 @@ namespace VVVF_Generator_Porting.Generation
                 int repeat = y_dots.Count / 2;
                 for(int j = 0; j < repeat; j++)
                 {
-                    total_dots += Math.Abs(y_dots[j] - y_dots[j + 1]);
+                    total_dots += Math.Abs(y_dots[2 * j] - y_dots[2 * j + 1]);
                 }
             }
 
-            double voltage = total_dots / 2084.0;
+            double voltage = total_dots/374763.0 * 100;
+            if (voltage > 100)
+                voltage = 100;
             return voltage;
         }
 
