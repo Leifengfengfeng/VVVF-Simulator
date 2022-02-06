@@ -439,7 +439,7 @@ namespace VVVF_Generator_Porting.Generation
 
         }
 
-        public static double get_wave_form_voltage_rage(VVVF_Sound_Names sound_name)
+        public static double get_wave_form_voltage_rate_with_surface(VVVF_Sound_Names sound_name)
         {
             int hex_div_seed = 10000;
             int hex_div = 6 * hex_div_seed;
@@ -454,8 +454,8 @@ namespace VVVF_Generator_Porting.Generation
 
             for (int i = 0; i < hex_div; i++)
             {
-                add_Sine_Time(1.0 / (hex_div) * ((get_Control_Frequency() == 0) ? 0 : 1 / get_Control_Frequency()));
-                add_Saw_Time(1.0 / (hex_div) * ((get_Control_Frequency() == 0) ? 0 : 1 / get_Control_Frequency()));
+                add_Sine_Time(1.0 / (hex_div) * ((get_Sine_Freq() == 0) ? 0 : 1 / get_Sine_Freq()));
+                add_Saw_Time(1.0 / (hex_div) * ((get_Sine_Freq() == 0) ? 0 : 1 / get_Sine_Freq()));
 
                 Control_Values cv_U = new Control_Values
                 {
@@ -518,6 +518,70 @@ namespace VVVF_Generator_Porting.Generation
             double voltage = total_dots/374763.0 * 100;
             if (voltage > 100)
                 voltage = 100;
+            return voltage;
+        }
+
+        public static double get_wave_form_voltage_rate_with_radius(VVVF_Sound_Names sound_name)
+        {
+            int hex_div_seed = 10000;
+            int hex_div = 6 * hex_div_seed;
+            double[] hexagon_coordinate = new double[] { 100, 500 };
+
+            int min_x = 2000, max_x = 0;
+            for (int i = 0; i < hex_div; i++)
+            {
+                add_Sine_Time(1.0 / (hex_div) * ((get_Sine_Freq() == 0) ? 0 : 1 / get_Sine_Freq()));
+                add_Saw_Time(1.0 / (hex_div) * ((get_Sine_Freq() == 0) ? 0 : 1 / get_Sine_Freq()));
+
+                Control_Values cv_U = new Control_Values
+                {
+                    brake = is_Braking(),
+                    mascon_on = !is_Mascon_Off(),
+                    free_run = is_Free_Running(),
+                    initial_phase = Math.PI * 2.0 / 3.0 * 0,
+                    wave_stat = get_Control_Frequency()
+                };
+                Wave_Values wv_U = get_Calculated_Value(sound_name, cv_U);
+
+                Control_Values cv_V = new Control_Values
+                {
+                    brake = is_Braking(),
+                    mascon_on = !is_Mascon_Off(),
+                    free_run = is_Free_Running(),
+                    initial_phase = Math.PI * 2.0 / 3.0 * 1,
+                    wave_stat = get_Control_Frequency()
+                };
+                Wave_Values wv_V = get_Calculated_Value(sound_name, cv_V);
+
+                Control_Values cv_W = new Control_Values
+                {
+                    brake = is_Braking(),
+                    mascon_on = !is_Mascon_Off(),
+                    free_run = is_Free_Running(),
+                    initial_phase = Math.PI * 2.0 / 3.0 * 2,
+                    wave_stat = get_Control_Frequency()
+                };
+                Wave_Values wv_W = get_Calculated_Value(sound_name, cv_W);
+
+                double move_x = -0.5 * wv_W.pwm_value - 0.5 * wv_V.pwm_value + wv_U.pwm_value;
+                double move_y = -0.866025403784438646763 * wv_W.pwm_value + 0.866025403784438646763 * wv_V.pwm_value;
+                double int_move_x = 200 * move_x / (double)hex_div_seed;
+                double int_move_y = 200 * move_y / (double)hex_div_seed;
+
+                hexagon_coordinate[0] = hexagon_coordinate[0] + int_move_x;
+                hexagon_coordinate[1] = hexagon_coordinate[1] + int_move_y;
+
+                if (min_x > Math.Round(hexagon_coordinate[0]))
+                    min_x = (int)Math.Round(hexagon_coordinate[0]);
+                if (max_x < Math.Round(hexagon_coordinate[0]))
+                    max_x = (int)Math.Round(hexagon_coordinate[0]);
+            }
+
+
+            double voltage = (max_x - min_x) / 8.0 ;
+            if (voltage > 100)
+                voltage = 100;
+
             return voltage;
         }
 
@@ -727,7 +791,7 @@ namespace VVVF_Generator_Porting.Generation
                     {
                         int base_pos = 620;
 
-                        double voltage = get_wave_form_voltage_rage(sound_name);
+                        double voltage = get_wave_form_voltage_rate_with_radius(sound_name);
                         String sine_freq_str = String.Format("{0:f1}", (voltage + pre_voltage) / 2.0);
                         SizeF freq_str_size = info_g.MeasureString(sine_freq_str, fnt_num);
                         SizeF hz_str_size = info_g.MeasureString("%", fnt_unit);

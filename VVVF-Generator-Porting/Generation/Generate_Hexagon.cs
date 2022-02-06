@@ -123,8 +123,8 @@ namespace VVVF_Generator_Porting.Generation
 
             for (int i = 0; i < hex_div; i++)
             {
-                add_Sine_Time(1.0 / (hex_div) * ((get_Control_Frequency() == 0) ? 0 : 1 / get_Control_Frequency()));
-                add_Saw_Time(1.0 / (hex_div) * ((get_Control_Frequency() == 0) ? 0 : 1 / get_Control_Frequency()));
+                add_Sine_Time(1.0 / (hex_div) * ((get_Sine_Freq() == 0) ? 0 : 1 / get_Sine_Freq()));
+                add_Saw_Time(1.0 / (hex_div) * ((get_Sine_Freq() == 0) ? 0 : 1 / get_Sine_Freq()));
 
                 Control_Values cv_U = new Control_Values
                 {
@@ -458,8 +458,8 @@ namespace VVVF_Generator_Porting.Generation
                     for (int i = 0; i < hex_div; i++)
                     {
 
-                        add_Sine_Time(1.0 / (hex_div) * ((get_Control_Frequency() == 0) ? 0 : 1 / get_Control_Frequency()));
-                        add_Saw_Time(1.0 / (hex_div) * ((get_Control_Frequency() == 0) ? 0 : 1 / get_Control_Frequency()));
+                        add_Sine_Time(1.0 / (hex_div) * ((get_Sine_Freq() * M_1_2PI == 0) ? 0 : 1 / get_Sine_Freq()));
+                        add_Saw_Time(1.0 / (hex_div) * ((get_Sine_Freq() == 0) ? 0 : 1 / get_Sine_Freq()));
 
                         Control_Values cv_U = new Control_Values
                         {
@@ -717,8 +717,8 @@ namespace VVVF_Generator_Porting.Generation
                     for (int i = 0; i < hex_div; i++)
                     {
 
-                        add_Sine_Time(1.0 / (hex_div) * ((get_Control_Frequency() == 0) ? 0 : 1 / get_Control_Frequency()));
-                        add_Saw_Time(1.0 / (hex_div) * ((get_Control_Frequency() == 0) ? 0 : 1 / get_Control_Frequency()));
+                        add_Sine_Time(1.0 / (hex_div) * ((get_Sine_Freq() == 0) ? 0 : 1 / get_Sine_Freq()));
+                        add_Saw_Time(1.0 / (hex_div) * ((get_Sine_Freq() == 0) ? 0 : 1 / get_Sine_Freq()));
 
                         Control_Values cv_U = new Control_Values
                         {
