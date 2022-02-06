@@ -1963,7 +1963,7 @@ namespace VVVF_Generator_Porting
 				}
 				else
 				{
-					amplitude = get_Amplitude(Amplitude_Mode.Linear, new Amplitude_Argument(0, 0, 52.5, 1.5, cv.wave_stat, false));
+					amplitude = get_Amplitude(Amplitude_Mode.Linear, new Amplitude_Argument(0, 0, 52.5, 1.1, cv.wave_stat, false));
 					if (cv.wave_stat < 5)
 						carrier_freq = new Carrier_Freq(220, 110);
 					else if(cv.wave_stat < 15)
@@ -2002,7 +2002,7 @@ namespace VVVF_Generator_Porting
 				}
 				else
 				{
-					amplitude = get_Amplitude(Amplitude_Mode.Linear, new Amplitude_Argument(0, 0, 52, 1.5, cv.wave_stat, false));
+					amplitude = get_Amplitude(Amplitude_Mode.Linear, new Amplitude_Argument(0, 0, 52, 1.05, cv.wave_stat, false));
 					if (cv.wave_stat < 1)
 						carrier_freq = new Carrier_Freq(205, 110);
 					else if (cv.wave_stat < 3)

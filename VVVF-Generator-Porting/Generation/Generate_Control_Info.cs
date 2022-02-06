@@ -594,6 +594,8 @@ namespace VVVF_Generator_Porting.Generation
             Bitmap final_image = new(image_width, image_height);
             Graphics final_g = Graphics.FromImage(final_image);
 
+            double pre_voltage = 0.0;
+
             while (loop)
             {
                 Control_Values cv_U = new Control_Values
@@ -722,7 +724,9 @@ namespace VVVF_Generator_Porting.Generation
                     if (!final_show)
                     {
                         int base_pos = 620;
-                        String sine_freq_str = String.Format("{0:f1}", get_wave_form_voltage_rage(sound_name));
+
+                        double voltage = get_wave_form_voltage_rage(sound_name);
+                        String sine_freq_str = String.Format("{0:f1}", (voltage + pre_voltage) / 2.0);
                         SizeF freq_str_size = info_g.MeasureString(sine_freq_str, fnt_num);
                         SizeF hz_str_size = info_g.MeasureString("%", fnt_unit);
 
@@ -730,6 +734,8 @@ namespace VVVF_Generator_Porting.Generation
 
                         info_g.DrawString(sine_freq_str, fnt_num, new SolidBrush(Color.White), base_pos - total_width / 2, 620 * 2);
                         info_g.DrawString("%", fnt_unit, new SolidBrush(Color.White), base_pos - total_width / 2 + freq_str_size.Width, 1200 + 115);
+
+                        pre_voltage = voltage;
                     }
                     //line_corner_curved_rectangle(g, new Pen(rikkou), 30 * 2, 45 * 2, 449 * 2, 163 * 2, 20);
 
