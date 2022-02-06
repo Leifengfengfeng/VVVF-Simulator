@@ -651,7 +651,7 @@ namespace VVVF_Generator_Porting.Generation
                 new PointF(image_width / 2 + 100 , image_height / 2 - 173) , new PointF(image_width / 2 - 100 , image_height / 2 - 173) ,
             });
             int outline_edit = 0;
-            graphic_max_hexagon.DrawPolygon(new Pen(Color.Black,1), new PointF[] { 
+            graphic_max_hexagon.DrawPolygon(new Pen(Color.FromArgb(180, 180, 180)), new PointF[] { 
                 new PointF(image_width / 2 - (200 + outline_edit) , image_height / 2 + outline_edit), 
                 new PointF(image_width / 2 - (100 + outline_edit) , image_height / 2 + (173 + outline_edit)) ,
                 new PointF(image_width / 2 + (100 + outline_edit) , image_height / 2 + (173 + outline_edit)) , 
