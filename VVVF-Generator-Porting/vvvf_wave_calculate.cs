@@ -254,7 +254,7 @@ namespace VVVF_Generator_Porting
             }
 		}
 
-		public static double get_changing_freq(double starting_freq, double starting_carrier_freq, double ending_freq, double ending_carrier_freq, double current_frequency)
+		public static double get_Changing_freq(double starting_freq, double starting_carrier_freq, double ending_freq, double ending_carrier_freq, double current_frequency)
 		{
 			return starting_carrier_freq + (ending_carrier_freq - starting_carrier_freq) / (ending_freq - starting_freq) * (current_frequency - starting_freq);
 		}

@@ -616,6 +616,15 @@ namespace VVVF_Generator_Porting.Generation
                         status_str = "Braking";
                     }
 
+                    if (final_show)
+                    {
+                        control_color = Color.FromArgb(242, 45, 45);
+                        control_str_color = Color.Black;
+
+                        text_point = new PointF(297, 150);
+                        status_str = "Braking";
+                    }
+
                     info_g.FillPolygon(new SolidBrush(control_color), new PointF[] {
                         new PointF(464 * 2,105 * 2),
                         new PointF(446 * 2,89 * 2),
