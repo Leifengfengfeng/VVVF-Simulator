@@ -505,7 +505,7 @@ namespace VVVF_Generator_Porting.Generation
             }
 
             int total_dots = 0;
-            for(int i = 0; i < 500; i++)
+            for(int i = 0; i < 1000; i++)
             {
                 List<Int32> y_dots = y_coordinate[i];
                 int repeat = y_dots.Count / 2;
@@ -515,7 +515,7 @@ namespace VVVF_Generator_Porting.Generation
                 }
             }
 
-            double voltage = total_dots / 208386.0 * 100;
+            double voltage = total_dots / 2084.0;
             return voltage;
         }
 
