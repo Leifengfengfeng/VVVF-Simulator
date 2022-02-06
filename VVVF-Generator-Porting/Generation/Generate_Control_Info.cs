@@ -489,7 +489,7 @@ namespace VVVF_Generator_Porting.Generation
 
             }
 
-            double voltage = total_move / 120.0;
+            double voltage = total_move / 60.0;
             return voltage;
         }
 
