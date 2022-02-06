@@ -499,10 +499,10 @@ namespace VVVF_Generator_Porting.Generation
 
 
                         hexagon_g.DrawLine(new Pen(Color.Black),
-                            (int)hexagon_coordinate[0],
-                            (int)hexagon_coordinate[1],
-                            (int)(hexagon_coordinate[0] + int_move_x),
-                            (int)(hexagon_coordinate[1] + int_move_y)
+                            (int)Math.Round(hexagon_coordinate[0]),
+                            (int)Math.Round(hexagon_coordinate[1]),
+                            (int)Math.Round(hexagon_coordinate[0] + int_move_x),
+                            (int)Math.Round(hexagon_coordinate[1] + int_move_y)
                         );
 
                         if (move_x == 0 && move_y == 0 && draw_zero_vector_circle)
@@ -541,8 +541,8 @@ namespace VVVF_Generator_Porting.Generation
                     final_g.FillRectangle(new SolidBrush(Color.White), 0, 0, image_width, image_height);
 
                     double moved_x = (1000 - (x_min_max[1] - x_min_max[0])) / 2.0;
-                    final_g.DrawImage(hexagon_image, (int)moved_x - 100, 0);
-                    final_g.DrawImage(zero_circle_image, (int)moved_x - 100, 0);
+                    final_g.DrawImage(hexagon_image, (int)Math.Round(moved_x) - 100, 0);
+                    final_g.DrawImage(zero_circle_image, (int)Math.Round(moved_x) - 100, 0);
 
                     MemoryStream ms = new MemoryStream();
                     final_image.Save(ms, ImageFormat.Png);
@@ -641,17 +641,42 @@ namespace VVVF_Generator_Porting.Generation
             VideoWriter vr = new VideoWriter(fileName, OpenCvSharp.FourCC.H264, div_freq / movie_div, new OpenCvSharp.Size(image_width, image_height));
 
 
+            Bitmap max_hexagon = new Bitmap(image_width, image_height);
+            Graphics graphic_max_hexagon = Graphics.FromImage(max_hexagon);
+
+            graphic_max_hexagon.FillRectangle(new SolidBrush(Color.FromArgb(226, 226, 226)), 0, 0, image_width, image_height);
+            graphic_max_hexagon.FillPolygon(new SolidBrush(Color.White), new PointF[] {
+                new PointF(image_width / 2 - 200 , image_height / 2), new PointF(image_width / 2 - 100, image_height / 2 + 173) ,
+                new PointF(image_width / 2 + 100 , image_height / 2 + 173) , new PointF(image_width / 2 + 200 , image_height / 2) ,
+                new PointF(image_width / 2 + 100 , image_height / 2 - 173) , new PointF(image_width / 2 - 100 , image_height / 2 - 173) ,
+            });
+            int outline_edit = 0;
+            graphic_max_hexagon.DrawPolygon(new Pen(Color.Black,1), new PointF[] { 
+                new PointF(image_width / 2 - (200 + outline_edit) , image_height / 2 + outline_edit), 
+                new PointF(image_width / 2 - (100 + outline_edit) , image_height / 2 + (173 + outline_edit)) ,
+                new PointF(image_width / 2 + (100 + outline_edit) , image_height / 2 + (173 + outline_edit)) , 
+                new PointF(image_width / 2 + (200 + outline_edit) , image_height / 2 + outline_edit) ,
+                new PointF(image_width / 2 + (100 + outline_edit) , image_height / 2 - (173 + outline_edit)) , 
+                new PointF(image_width / 2 - (100 + outline_edit) , image_height / 2 - (173 + outline_edit)) ,
+            });
+            
+
+            graphic_max_hexagon.Dispose();
+
             if (!vr.IsOpened())
             {
                 return;
             }
 
-            Boolean START_F192_WAIT = false;
+            Boolean START_F192_WAIT = true;
             if (START_F192_WAIT)
             {
                 Bitmap image = new(image_width, image_height);
                 Graphics g = Graphics.FromImage(image);
+
                 g.FillRectangle(new SolidBrush(Color.White), 0, 0, image_width, image_height);
+                g.DrawImage(max_hexagon, 0, 0);
+
                 MemoryStream ms = new MemoryStream();
                 image.Save(ms, ImageFormat.Png);
                 byte[] img = ms.GetBuffer();
@@ -731,10 +756,10 @@ namespace VVVF_Generator_Porting.Generation
 
 
                         hexagon_g.DrawLine(new Pen(Color.Black),
-                            (int)hexagon_coordinate[0],
-                            (int)hexagon_coordinate[1],
-                            (int)(hexagon_coordinate[0] + int_move_x),
-                            (int)(hexagon_coordinate[1] + int_move_y)
+                            (int)Math.Round(hexagon_coordinate[0]),
+                            (int)Math.Round(hexagon_coordinate[1]),
+                            (int)Math.Round(hexagon_coordinate[0] + int_move_x),
+                            (int)Math.Round(hexagon_coordinate[1] + int_move_y)
                         );
 
                         if (move_x == 0 && move_y == 0 && draw_zero_vector_circle)
@@ -742,17 +767,18 @@ namespace VVVF_Generator_Porting.Generation
                             if (!drawn_circle)
                             {
                                 drawn_circle = true;
+                                double radius = 5 * ((get_Control_Frequency() > 40) ? 1 : (get_Control_Frequency() / 40.0));
                                 zero_circle_g.FillEllipse(new SolidBrush(Color.White),
-                                    (int)hexagon_coordinate[0] - 2,
-                                    (int)hexagon_coordinate[1] - 2,
-                                    4,
-                                    4
+                                    (int)Math.Round(hexagon_coordinate[0] - radius),
+                                    (int)Math.Round(hexagon_coordinate[1] - radius),
+                                    (int)Math.Round(radius * 2),
+                                    (int)Math.Round(radius * 2)
                                 );
                                 zero_circle_g.DrawEllipse(new Pen(Color.Black),
-                                    (int)hexagon_coordinate[0] - 2,
-                                    (int)hexagon_coordinate[1] - 2,
-                                    4,
-                                    4
+                                    (int)Math.Round(hexagon_coordinate[0] - radius),
+                                    (int)Math.Round(hexagon_coordinate[1] - radius),
+                                    (int)Math.Round(radius * 2),
+                                    (int)Math.Round(radius * 2)
                                 );
                             }
 
@@ -773,8 +799,10 @@ namespace VVVF_Generator_Porting.Generation
                     final_g.FillRectangle(new SolidBrush(Color.White), 0, 0, image_width, image_height);
 
                     double moved_x = (image_width - (x_min_max[1] - x_min_max[0])) / 2.0;
-                    final_g.DrawImage(hexagon_image, (int)moved_x - 100, 0);
-                    final_g.DrawImage(zero_circle_image, (int)moved_x - 100, 0);
+                    final_g.DrawImage(max_hexagon, 0, 0);
+                    final_g.DrawImage(hexagon_image, (int)Math.Round(moved_x) - 100, 0);
+                    final_g.DrawImage(zero_circle_image, (int)Math.Round(moved_x) - 100, 0);
+                    
 
                     MemoryStream ms = new MemoryStream();
                     final_image.Save(ms, ImageFormat.Png);
@@ -813,6 +841,7 @@ namespace VVVF_Generator_Porting.Generation
                 Bitmap image = new(image_width, image_height);
                 Graphics g = Graphics.FromImage(image);
                 g.FillRectangle(new SolidBrush(Color.White), 0, 0, image_width, image_height);
+                g.DrawImage(max_hexagon, 0, 0);
                 MemoryStream ms = new MemoryStream();
                 image.Save(ms, ImageFormat.Png);
                 byte[] img = ms.GetBuffer();
