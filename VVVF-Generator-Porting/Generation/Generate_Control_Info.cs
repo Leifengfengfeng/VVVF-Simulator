@@ -743,7 +743,7 @@ namespace VVVF_Generator_Porting.Generation
 
                     final_g.DrawImage(background,0,0);
 
-                    if (is_Free_Running())
+                    if (first_show || final_show)
                     {
                         ColorMatrix cm = new ColorMatrix();
                         cm.Matrix00 = 1;
@@ -766,7 +766,7 @@ namespace VVVF_Generator_Porting.Generation
                     control_stat_image.Dispose();
                     control_stat_g.Dispose();
 
-                    if (final_show || first_show)
+                    if (final_show || first_show || is_Free_Running())
                     {
                         ColorMatrix cm = new ColorMatrix();
                         cm.Matrix00 = 1;
