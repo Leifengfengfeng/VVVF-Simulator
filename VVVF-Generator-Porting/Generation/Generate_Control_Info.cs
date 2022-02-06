@@ -439,7 +439,7 @@ namespace VVVF_Generator_Porting.Generation
 
         }
 
-        public static double get_wave_form_voltage_rage(VVVF_Sound_Names sound_name)
+        public static double get_wave_form_voltage_rate(VVVF_Sound_Names sound_name)
         {
             int hex_div_seed = 10000;
             int hex_div = 6 * hex_div_seed;
@@ -454,8 +454,8 @@ namespace VVVF_Generator_Porting.Generation
 
             for (int i = 0; i < hex_div; i++)
             {
-                add_Sine_Time(1.0 / (hex_div) * ((get_Control_Frequency() == 0) ? 0 : 1 / get_Control_Frequency()));
-                add_Saw_Time(1.0 / (hex_div) * ((get_Control_Frequency() == 0) ? 0 : 1 / get_Control_Frequency()));
+                add_Sine_Time(1.0 / (hex_div) * ((get_Sine_Freq() == 0) ? 0 : 1 / get_Sine_Freq()));
+                add_Saw_Time(1.0 / (hex_div) * ((get_Sine_Freq() == 0) ? 0 : 1 / get_Sine_Freq()));
 
                 Control_Values cv_U = new Control_Values
                 {
@@ -727,7 +727,7 @@ namespace VVVF_Generator_Porting.Generation
                     {
                         int base_pos = 620;
 
-                        double voltage = get_wave_form_voltage_rage(sound_name);
+                        double voltage = get_wave_form_voltage_rate(sound_name);
                         String sine_freq_str = String.Format("{0:f1}", (voltage + pre_voltage) / 2.0);
                         SizeF freq_str_size = info_g.MeasureString(sine_freq_str, fnt_num);
                         SizeF hz_str_size = info_g.MeasureString("%", fnt_unit);

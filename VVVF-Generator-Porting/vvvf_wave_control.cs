@@ -1,4 +1,6 @@
-﻿namespace VVVF_Generator_Porting
+﻿using static VVVF_Generator_Porting.my_math;
+
+namespace VVVF_Generator_Porting
 {
     public class vvvf_wave_control
     {
@@ -72,6 +74,8 @@
         public static void set_Sine_Angle_Freq(double b) { sin_angle_freq = b; }
         public static double get_Sine_Angle_Freq() { return sin_angle_freq; }
         public static void add_Sine_Angle_Freq(double b) { sin_angle_freq += b; }
+
+        public static double get_Sine_Freq() { return sin_angle_freq * M_1_2PI; }
 
         public static void set_Sine_Time(double t) { sin_time = t; }
         public static double get_Sine_Time() { return sin_time; }
