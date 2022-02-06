@@ -11,6 +11,7 @@ using System.Drawing.Drawing2D;
 using Point = System.Drawing.Point;
 using System.Windows.Forms;
 using Size = System.Drawing.Size;
+using System.Collections.Generic;
 
 namespace VVVF_Generator_Porting.Generation
 {
@@ -440,10 +441,17 @@ namespace VVVF_Generator_Porting.Generation
 
         public static double get_wave_form_voltage_rage(VVVF_Sound_Names sound_name)
         {
+
             int hex_div_seed = 10000;
             int hex_div = 6 * hex_div_seed;
+            double[] hexagon_coordinate = new double[] { 100, 500 };
 
-            double total_move = 0.0;
+            List<List< Int32 >> y_coordinate = new List<List<Int32>>();
+
+            for(int i = 0; i < 1000; i++)
+            {
+                y_coordinate.Add(new List<Int32>());
+            }
 
             for (int i = 0; i < hex_div; i++)
             {
@@ -485,11 +493,29 @@ namespace VVVF_Generator_Porting.Generation
                 double int_move_x = 200 * move_x / (double)hex_div_seed;
                 double int_move_y = 200 * move_y / (double)hex_div_seed;
 
-                total_move += Math.Sqrt(Math.Pow(int_move_x, 2) + Math.Pow(int_move_y, 2));
+                y_coordinate[(int)Math.Round(hexagon_coordinate[0])].Add((int)Math.Round(hexagon_coordinate[1]));
+                y_coordinate[(int)Math.Round(hexagon_coordinate[0] + int_move_x)].Add((int)Math.Round(hexagon_coordinate[1] + int_move_y));
+
+                hexagon_coordinate[0] = hexagon_coordinate[0] + int_move_x;
+                hexagon_coordinate[1] = hexagon_coordinate[1] + int_move_y;
+
+                
+
 
             }
 
-            double voltage = total_move / 60.0;
+            int total_dots = 0;
+            for(int i = 0; i < 500; i++)
+            {
+                List<Int32> y_dots = y_coordinate[i];
+                int repeat = y_dots.Count / 2;
+                for(int j = 0; j < repeat; j++)
+                {
+                    total_dots += Math.Abs(y_dots[j] - y_dots[j + 1]);
+                }
+            }
+
+            double voltage = total_dots / 208386.0 * 100;
             return voltage;
         }
 
@@ -585,6 +611,9 @@ namespace VVVF_Generator_Porting.Generation
                     Bitmap info_image = new(image_width, image_height);
                     Graphics info_g = Graphics.FromImage(info_image);
 
+                    Bitmap control_stat_image = new(image_width, image_height);
+                    Graphics control_stat_g = Graphics.FromImage(control_stat_image);
+
                     set_Sine_Time(0);
                     set_Saw_Time(0);
 
@@ -630,9 +659,9 @@ namespace VVVF_Generator_Porting.Generation
                         new PointF(446 * 2,89 * 2),
                         new PointF(446 * 2,120 * 2)
                     });
-                    info_g.FillRectangle(new SolidBrush(control_color), 474 * 2, 0 * 2, 7 * 2, 810 * 2);
-                    filled_corner_curved_rectangle(info_g, new SolidBrush(control_color), new Point(30 * 2, 45 * 2), new Point(449 * 2, 163 * 2), 20);
-                    info_g.DrawString(status_str,fnt_default,new SolidBrush(control_str_color), text_point);
+                    control_stat_g.FillRectangle(new SolidBrush(control_color), 474 * 2, 0 * 2, 7 * 2, 810 * 2);
+                    filled_corner_curved_rectangle(control_stat_g, new SolidBrush(control_color), new Point(30 * 2, 45 * 2), new Point(449 * 2, 163 * 2), 20);
+                    control_stat_g.DrawString(status_str,fnt_default,new SolidBrush(control_str_color), text_point);
 
                     title_str_with_line_corner_curved_rectangle(info_g ,"Carrier", new SolidBrush(Color.FromArgb(190, 190, 190)), fnt_default, new Pen(Color.FromArgb(144, 144, 144), 4), new Point(30 * 2, 225 * 2), new Point(449 * 2, 428 * 2), 20, new Point(0, 0));
 
@@ -707,6 +736,29 @@ namespace VVVF_Generator_Porting.Generation
                     final_g.DrawImage(background,0,0);
 
                     if (is_Free_Running())
+                    {
+                        ColorMatrix cm = new ColorMatrix();
+                        cm.Matrix00 = 1;
+                        cm.Matrix11 = 1;
+                        cm.Matrix22 = 1;
+                        cm.Matrix33 = 0.5F;
+                        cm.Matrix44 = 1;
+
+                        ImageAttributes ia = new ImageAttributes();
+                        ia.SetColorMatrix(cm);
+
+                        final_g.DrawImage(control_stat_image, new Rectangle(0, 0, image_width, image_height),
+                            0, 0, image_width, image_height, GraphicsUnit.Pixel, ia);
+                    }
+                    else
+                    {
+                        final_g.DrawImage(control_stat_image, 0, 0);
+                    }
+
+                    control_stat_image.Dispose();
+                    control_stat_g.Dispose();
+
+                    if (final_show || first_show)
                     {
                         ColorMatrix cm = new ColorMatrix();
                         cm.Matrix00 = 1;

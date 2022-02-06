@@ -372,5 +372,165 @@ namespace VVVF_Generator_Porting.Generation
             vr.Dispose();
         }
 
+        public static void generate_taroimo_like_wave_U_V(String output_path, VVVF_Sound_Names sound_name)
+        {
+            reset_control_variables();
+            reset_all_variables();
+
+            set_Allowed_Random_Freq_Move(false);
+
+            DateTime dt = DateTime.Now;
+            String gen_time = dt.ToString("yyyy-MM-dd_HH-mm-ss");
+            String appear_sound_name = get_Sound_Name(sound_name);
+            String fileName = output_path + "\\" + appear_sound_name + "-" + gen_time + ".avi";
+
+            bool temp = true;
+            Int32 sound_block_count = 0;
+
+            int image_width = 2000;
+            int image_height = 500;
+
+            int movie_div = 3000;
+            int wave_height = 100;
+            int calculate_div = 10;
+
+            VideoWriter vr = new VideoWriter(fileName, OpenCvSharp.FourCC.H264, div_freq / movie_div, new OpenCvSharp.Size(image_width, image_height));
+
+
+            if (!vr.IsOpened())
+            {
+                return;
+            }
+
+            Boolean START_F192_WAIT = true;
+            if (START_F192_WAIT)
+            {
+                for (int i = 0; i < 192; i++)
+                {
+                    Bitmap image = new(image_width, image_height);
+                    Graphics g = Graphics.FromImage(image);
+                    g.FillRectangle(new SolidBrush(Color.White), 0, 0, image_width, image_height);
+                    MemoryStream ms = new MemoryStream();
+                    image.Save(ms, ImageFormat.Png);
+                    byte[] img = ms.GetBuffer();
+                    Mat mat = OpenCvSharp.Mat.FromImageData(img);
+
+                    Cv2.ImShow("Wave Form View", mat);
+                    Cv2.WaitKey(1);
+
+                    vr.Write(mat);
+
+                    g.Dispose();
+                    image.Dispose();
+                }
+            }
+
+            Boolean loop = true;
+            while (loop)
+            {
+
+
+                if (sound_block_count % movie_div == 0 && temp)
+                {
+                    set_Sine_Time(0);
+                    set_Saw_Time(0);
+
+                    Bitmap image = new(image_width, image_height);
+                    Graphics g = Graphics.FromImage(image);
+                    g.FillRectangle(new SolidBrush(Color.White), 0, 0, image_width, image_height);
+
+                    for (int i = 0; i < image_width * calculate_div; i++)
+                    {
+                        Wave_Values[] values = new Wave_Values[4];
+
+                        for (int j = 0; j < 2; j++)
+                        {
+                            Control_Values cv_U = new Control_Values
+                            {
+                                brake = is_Braking(),
+                                mascon_on = !is_Mascon_Off(),
+                                free_run = is_Free_Running(),
+                                initial_phase = Math.PI * 2.0 / 3.0 * 0,
+                                wave_stat = get_Control_Frequency()
+                            };
+                            Wave_Values wv_U = get_Calculated_Value(sound_name, cv_U);
+                            Control_Values cv_V = new Control_Values
+                            {
+                                brake = is_Braking(),
+                                mascon_on = !is_Mascon_Off(),
+                                free_run = is_Free_Running(),
+                                initial_phase = Math.PI * 2.0 / 3.0 * 1,
+                                wave_stat = get_Control_Frequency()
+                            };
+                            Wave_Values wv_V = get_Calculated_Value(sound_name, cv_V);
+
+                            if (j == 0)
+                            {
+                                add_Saw_Time(Math.PI / (120000.0 * calculate_div));
+                                add_Sine_Time(Math.PI / (120000.0 * calculate_div));
+                            }
+
+                            values[j * 2] = wv_U;
+                            values[j * 2 + 1] = wv_V;
+                        }
+
+
+                        int curr_val = (int)(-(values[0].pwm_value - values[1].pwm_value) * wave_height + image_height / 2.0);
+                        int next_val = (int)(-(values[2].pwm_value - values[3].pwm_value) * wave_height + image_height / 2.0);
+                        g.DrawLine(new Pen(Color.Black), (int)(i / (double)calculate_div), curr_val, (int)(((curr_val != next_val) ? i : i + 1) / (double)calculate_div), next_val);
+                    }
+
+                    MemoryStream ms = new MemoryStream();
+                    image.Save(ms, ImageFormat.Png);
+                    byte[] img = ms.GetBuffer();
+                    Mat mat = OpenCvSharp.Mat.FromImageData(img);
+
+                    Cv2.ImShow("Wave Form View", mat);
+                    Cv2.WaitKey(1);
+
+                    vr.Write(mat);
+
+                    g.Dispose();
+                    image.Dispose();
+
+                    temp = false;
+                }
+                else if (sound_block_count % movie_div != 0)
+                {
+                    temp = true;
+                }
+
+                sound_block_count++;
+
+                loop = check_for_freq_change();
+
+            }
+
+            Boolean END_F64_WAIT = true;
+            if (END_F64_WAIT)
+            {
+                for (int i = 0; i < 64; i++)
+                {
+                    Bitmap image = new(image_width, image_height);
+                    Graphics g = Graphics.FromImage(image);
+                    g.FillRectangle(new SolidBrush(Color.White), 0, 0, image_width, image_height);
+                    MemoryStream ms = new MemoryStream();
+                    image.Save(ms, ImageFormat.Png);
+                    byte[] img = ms.GetBuffer();
+                    Mat mat = OpenCvSharp.Mat.FromImageData(img);
+
+                    Cv2.ImShow("Wave Form View", mat);
+                    Cv2.WaitKey(1);
+
+                    vr.Write(mat);
+
+                    g.Dispose();
+                    image.Dispose();
+                }
+            }
+
+            vr.Release();
+            vr.Dispose();
+        }
     }
 }
