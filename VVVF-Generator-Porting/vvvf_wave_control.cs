@@ -12,6 +12,7 @@
         private static int temp_count = 0;
 
         private static bool allow_sine_time_change = true;
+        private static bool allow_random_freq_move = true;
 
         public static void reset_control_variables()
         {
@@ -22,6 +23,7 @@
             mascon_off = false;
             temp_count = 0;
             allow_sine_time_change = true;
+            allow_random_freq_move = true;
         }
 
         public static double get_Control_Frequency() { return wave_stat; }
@@ -52,6 +54,9 @@
 
         public static bool is_Allowed_Sine_Time_Change() { return allow_sine_time_change; }
         public static void set_Allowed_Sine_Time_Change(bool b) { allow_sine_time_change = b; }
+
+        public static bool is_Allowed_Random_Freq_Move() { return allow_random_freq_move; }
+        public static void set_Allowed_Random_Freq_Move(bool b) { allow_random_freq_move = b; }
 
 
         //--- from vvvf wave calculate

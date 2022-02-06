@@ -605,6 +605,8 @@ namespace VVVF_Generator_Porting.Generation
             reset_control_variables();
             reset_all_variables();
 
+            set_Allowed_Random_Freq_Move(false);
+
             DateTime dt = DateTime.Now;
             String gen_time = dt.ToString("yyyy-MM-dd_HH-mm-ss");
             String appear_sound_name = get_Sound_Name(sound_name);
