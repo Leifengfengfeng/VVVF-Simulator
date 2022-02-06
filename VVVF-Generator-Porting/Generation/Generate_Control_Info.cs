@@ -656,7 +656,7 @@ namespace VVVF_Generator_Porting.Generation
                         status_str = "Braking";
                     }
 
-                    info_g.FillPolygon(new SolidBrush(control_color), new PointF[] {
+                    control_stat_g.FillPolygon(new SolidBrush(control_color), new PointF[] {
                         new PointF(464 * 2,105 * 2),
                         new PointF(446 * 2,89 * 2),
                         new PointF(446 * 2,120 * 2)
