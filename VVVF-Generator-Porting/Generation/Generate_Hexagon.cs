@@ -871,7 +871,7 @@ namespace VVVF_Generator_Porting.Generation
             DateTime dt = DateTime.Now;
             String gen_time = dt.ToString("yyyy-MM-dd_HH-mm-ss");
             String appear_sound_name = get_Sound_Name(sound_name);
-            //String fileName = output_path + "\\" + appear_sound_name + "-" + gen_time + ".png";
+            String fileName = output_path + "\\" + appear_sound_name + "-" + gen_time + ".png";
 
             Boolean draw_zero_vector_circle = true;
             while (true)
@@ -895,6 +895,7 @@ namespace VVVF_Generator_Porting.Generation
                     Console.WriteLine("Enter the frequency you want to see.");
                     double d = Double.Parse(Console.ReadLine());
                     set_Sine_Angle_Freq(d * M_2PI);
+                    set_Control_Frequency(d);
                     break;
                 }
                 catch (Exception)
@@ -1014,6 +1015,9 @@ namespace VVVF_Generator_Porting.Generation
             final_image.Save(ms, ImageFormat.Png);
             byte[] img = ms.GetBuffer();
             Mat mat = Mat.FromImageData(img);
+
+            final_image.Save(fileName,ImageFormat.Png);
+
 
             Cv2.ImShow(appear_sound_name, mat);
             Cv2.WaitKey();
