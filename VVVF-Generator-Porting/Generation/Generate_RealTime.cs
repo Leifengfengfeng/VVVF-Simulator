@@ -68,7 +68,7 @@ namespace VVVF_Generator_Porting.Generation
                         set_Control_Frequency(get_Sine_Angle_Freq() / M_2PI);
                     else
                     {
-                        add_Control_Frequency(M_2PI / (get_Mascon_Off_Div() / 12.0));
+                        add_Control_Frequency(M_2PI / (get_Mascon_Off_Div() / 24));
 
                         if (get_Sine_Angle_Freq() < get_Control_Frequency() * M_2PI)
                         {
@@ -83,7 +83,7 @@ namespace VVVF_Generator_Porting.Generation
                 }
                 else
                 {
-                    add_Control_Frequency(-(Math.PI * 2) / (double)(get_Mascon_Off_Div() / 12.0));
+                    add_Control_Frequency(- M_2PI / (get_Mascon_Off_Div() / 24));
                     if (get_Control_Frequency() < 0) set_Control_Frequency(0);
                     set_Free_Running(true);
                 }
