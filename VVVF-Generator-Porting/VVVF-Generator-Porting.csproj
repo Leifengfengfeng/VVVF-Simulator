@@ -4,7 +4,12 @@
     <OutputType>Exe</OutputType>
     <TargetFramework>net6.0-windows</TargetFramework>
     <RootNamespace>VVVF_Generator_Porting</RootNamespace>
+    <ApplicationIcon>vvvf-simulator.ico</ApplicationIcon>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Content Include="vvvf-simulator.ico" />
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="NAudio" Version="2.0.1" />
