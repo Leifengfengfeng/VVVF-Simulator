@@ -303,6 +303,11 @@ namespace VVVF_Generator_Porting
 			return -1;
 		}
 
+		public static bool check_for_mascon_off_wave_stat(Control_Values cv, double freq)
+        {
+			return (cv.free_run && get_Sine_Angle_Freq() >= 24.9 * M_2PI);
+		}
+
         public static Wave_Values calculate_three_level(Pulse_Mode pulse_mode, Carrier_Freq data, Sine_Control_Data sine_control, double dipolar)
 		{
 			//variable change for video
