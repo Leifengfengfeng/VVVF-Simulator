@@ -384,12 +384,12 @@ namespace VVVF_Generator_Porting.Generation
             bool temp = true;
             Int32 sound_block_count = 0;
 
-            int image_width = 2000;
-            int image_height = 500;
+            int image_width = 2880;
+            int image_height = 540;
 
             int movie_div = 3000;
             int wave_height = 100;
-            int calculate_div = 10;
+            int calculate_div = 15;
 
             VideoWriter vr = new VideoWriter(fileName, OpenCvSharp.FourCC.H264, div_freq / movie_div, new OpenCvSharp.Size(image_width, image_height));
 
