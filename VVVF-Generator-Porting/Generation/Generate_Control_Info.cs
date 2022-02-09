@@ -533,6 +533,9 @@ namespace VVVF_Generator_Porting.Generation
                 add_Sine_Time(1.0 / (hex_div) * ((get_Sine_Freq() == 0) ? 0 : 1 / get_Sine_Freq()));
                 add_Saw_Time(1.0 / (hex_div) * ((get_Sine_Freq() == 0) ? 0 : 1 / get_Sine_Freq()));
 
+                if (get_Sine_Freq() == 0)
+                    return 0;
+
                 Control_Values cv_U = new Control_Values
                 {
                     brake = is_Braking(),
@@ -587,31 +590,7 @@ namespace VVVF_Generator_Porting.Generation
 
         private static String[] get_Taroimo_Pulse_Name(Pulse_Mode mode)
         {
-            //Not in sync
-            if (mode == Pulse_Mode.Async || mode == Pulse_Mode.Asyn_THI)
-            {
-                string[] names = new string[3];
-                int count = 0;
-
-                names[count] = String.Format("Async - " + Video_Generate_Values.carrier_freq_data.base_freq.ToString("F2")).PadLeft(6);
-                count++;
-
-                if (Video_Generate_Values.carrier_freq_data.range != 0)
-                {
-                    names[count] = String.Format("Random ± " + Video_Generate_Values.carrier_freq_data.range.ToString("F2")).PadLeft(6);
-                    count++;
-                }
-
-                if (Video_Generate_Values.dipolar != -1)
-                {
-                    names[count] = String.Format("Dipolar : " + Video_Generate_Values.dipolar.ToString("F0")).PadLeft(6);
-                    count++;
-                }
-                return names;
-
-            }
-
-            //Abs
+  
             if (mode == Pulse_Mode.P_Wide_3)
                 return new string[] { "Wide 3"};
 
