@@ -799,8 +799,6 @@ namespace VVVF_Generator_Porting.Generation
                     Graphics final_g = Graphics.FromImage(final_image);
                     final_g.FillRectangle(new SolidBrush(Color.White), 0, 0, image_width, image_height);
 
-                    Console.WriteLine(x_min_max[0] + "," + x_min_max[1]);
-
                     double moved_x = (image_width - x_min_max[1] - x_min_max[0]) / 2.0;
                     final_g.DrawImage(max_hexagon, 0, 0);
                     final_g.DrawImage(hexagon_image, (int)Math.Round(moved_x), 0);
