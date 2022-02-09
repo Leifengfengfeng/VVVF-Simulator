@@ -286,6 +286,28 @@ namespace VVVF_Generator_Porting
             }
 		}
 
+		public static double check_for_mascon_off(Control_Values cv, double max_voltage_freq)
+        {
+			if (cv.free_run && !cv.mascon_on && cv.wave_stat > max_voltage_freq)
+			{
+				set_Control_Frequency(max_voltage_freq);
+				return max_voltage_freq;
+				
+			}
+			else if (cv.free_run && cv.mascon_on && cv.wave_stat > max_voltage_freq)
+			{
+				double rolling_freq = get_Sine_Angle_Freq() * M_1_2PI;
+				set_Control_Frequency(rolling_freq);
+				return rolling_freq;
+			}
+			return -1;
+		}
+
+		public static bool check_for_mascon_off_wave_stat(Control_Values cv, double freq)
+        {
+			return (cv.free_run && get_Sine_Angle_Freq() >= 24.9 * M_2PI);
+		}
+
         public static Wave_Values calculate_three_level(Pulse_Mode pulse_mode, Carrier_Freq data, Sine_Control_Data sine_control, double dipolar)
 		{
 			//variable change for video

@@ -585,6 +585,67 @@ namespace VVVF_Generator_Porting.Generation
             return voltage;
         }
 
+        private static String[] get_Taroimo_Pulse_Name(Pulse_Mode mode)
+        {
+            //Not in sync
+            if (mode == Pulse_Mode.Async || mode == Pulse_Mode.Asyn_THI)
+            {
+                string[] names = new string[3];
+                int count = 0;
+
+                names[count] = String.Format("Async - " + Video_Generate_Values.carrier_freq_data.base_freq.ToString("F2")).PadLeft(6);
+                count++;
+
+                if (Video_Generate_Values.carrier_freq_data.range != 0)
+                {
+                    names[count] = String.Format("Random ± " + Video_Generate_Values.carrier_freq_data.range.ToString("F2")).PadLeft(6);
+                    count++;
+                }
+
+                if (Video_Generate_Values.dipolar != -1)
+                {
+                    names[count] = String.Format("Dipolar : " + Video_Generate_Values.dipolar.ToString("F0")).PadLeft(6);
+                    count++;
+                }
+                return names;
+
+            }
+
+            //Abs
+            if (mode == Pulse_Mode.P_Wide_3)
+                return new string[] { "3 Pulse" , "Wide" };
+
+            if (mode.ToString().StartsWith("CHM"))
+            {
+                String mode_name = mode.ToString();
+                bool contain_wide = mode_name.Contains("Wide");
+                mode_name = mode_name.Replace("_Wide", "");
+
+                String[] mode_name_type = mode_name.Split("_");
+
+                String final_mode_name = mode_name_type[1] + " Pulse";
+
+                return new string[] { final_mode_name, (contain_wide ? "Wide " : "") + "CHM" };
+            }
+            if (mode.ToString().StartsWith("SHE"))
+            {
+                String mode_name = mode.ToString();
+                bool contain_wide = mode_name.Contains("Wide");
+                mode_name = mode_name.Replace("_Wide", "");
+
+                String[] mode_name_type = mode_name.Split("_");
+
+                String final_mode_name = mode_name_type[1] + " Pulse";
+
+                return new string[] { final_mode_name, (contain_wide ? "Wide " : "") + "SHE" };
+            }
+            else
+            {
+                String[] mode_name_type = mode.ToString().Split("_");
+                String mode_name = mode_name_type[1] + " Pulse";
+                return new string[] { mode_name, (mode_name_type[0] == "SP") ? "Shifted " : "" };
+            }
+        }
 
         public static void generate_status_taroimo_like_video(String output_path, VVVF_Sound_Names sound_name)
         {
@@ -733,7 +794,7 @@ namespace VVVF_Generator_Porting.Generation
 
                     title_str_with_line_corner_curved_rectangle(info_g ,"Carrier", new SolidBrush(Color.FromArgb(190, 190, 190)), fnt_default, new Pen(Color.FromArgb(144, 144, 144), 4), new Point(30 * 2, 225 * 2), new Point(449 * 2, 428 * 2), 20, new Point(0, 0));
 
-                    String[] pulse_mode_name = get_Pulse_Name(Video_Generate_Values.pulse_mode);
+                    
                     if (Video_Generate_Values.pulse_mode == Pulse_Mode.Async || Video_Generate_Values.pulse_mode == Pulse_Mode.Asyn_THI)
                     {
                         String carrier_freq_str = String.Format("{0:f0}", Video_Generate_Values.carrier_freq_data.base_freq);
@@ -749,9 +810,20 @@ namespace VVVF_Generator_Porting.Generation
                     }
                     else
                     {
-                        String carrier_freq_str = pulse_mode_name[0];
-                        SizeF freq_str_size = info_g.MeasureString(carrier_freq_str, fnt_num);
-                        info_g.DrawString(carrier_freq_str, fnt_num, new SolidBrush(Color.White), 920 / 2 - freq_str_size.Width / 2, 250 * 2);
+                        String[] pulse_mode_name = get_Taroimo_Pulse_Name(Video_Generate_Values.pulse_mode);
+
+                        SizeF freq_str_size = info_g.MeasureString(pulse_mode_name[0], fnt_num);
+                        SizeF freq_other_str_size = new SizeF(0, 0);
+                        if(pulse_mode_name[1].Length > 0)
+                            freq_other_str_size = info_g.MeasureString(pulse_mode_name[1], fnt_syncmode);
+
+                        double total_width = freq_str_size.Width + freq_other_str_size.Width;
+
+                        info_g.DrawString(pulse_mode_name[0], fnt_num, new SolidBrush(Color.White), (int)Math.Round(920 / 2 - total_width / 2 + freq_other_str_size.Width), 250 * 2);
+
+                        if(pulse_mode_name[1].Length > 0)
+                            info_g.DrawString(pulse_mode_name[1], fnt_syncmode, new SolidBrush(Color.White), (int)Math.Round(920 / 2 - total_width / 2), 250 * 2);
+
                         center_text_with_filled_corner_curved_rectangle(info_g, "Sync Mode", new SolidBrush(Color.FromArgb(52, 52, 52)), fnt_syncmode, new SolidBrush(Color.White), new Point(47 * 2, 359 * 2), new Point(431 * 2, 410 * 2), 20, new Point(0, 5));
                     }
 

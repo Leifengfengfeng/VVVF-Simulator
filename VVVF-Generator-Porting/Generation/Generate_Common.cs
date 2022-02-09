@@ -39,8 +39,8 @@ namespace VVVF_Generator_Porting.Generation
                 double sin_new_angle_freq = get_Sine_Angle_Freq();
                  
                 // But you can change 400 here. If you wanna accelerate more slower, change 400 to like 800;
-                if (!is_Braking()) sin_new_angle_freq += Math.PI / 400;
-                else sin_new_angle_freq -= Math.PI / 400;
+                if (!is_Braking()) sin_new_angle_freq += Math.PI / 450;
+                else sin_new_angle_freq -= Math.PI / 450;
 
                 double amp = get_Sine_Angle_Freq() / sin_new_angle_freq;
 
