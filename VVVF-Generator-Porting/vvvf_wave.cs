@@ -81,7 +81,7 @@ namespace VVVF_Generator_Porting
 
 			double dipolar = -1;
 
-			if (cv.wave_stat > 0 && cv.wave_stat < 2 && !cv.free_run) cv.wave_stat = 2;
+			if (cv.wave_stat > 0 && cv.wave_stat < 2 && !cv.free_run && !cv.brake) cv.wave_stat = 2;
 
 			if (cv.brake)
 			{
@@ -194,7 +194,7 @@ namespace VVVF_Generator_Porting
 					dipolar = 2;
 				}
 			}
-			return calculate_three_level(pulse_Mode, carrier_freq, new Sine_Control_Data(cv.initial_phase, amplitude, 2), dipolar);
+			return calculate_three_level(pulse_Mode, carrier_freq, new Sine_Control_Data(cv.initial_phase, amplitude, (!cv.free_run && !cv.brake) ? 2 : -1), dipolar);
 		}
 		public static Wave_Values calculate_jre_e231_1000_hitachi_igbt_2_level(Control_Values cv)
 		{
