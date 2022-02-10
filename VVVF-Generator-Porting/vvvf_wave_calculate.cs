@@ -437,10 +437,16 @@ namespace VVVF_Generator_Porting
 
 			if(pulse_mode == Pulse_Mode.P_5 ||
 				pulse_mode == Pulse_Mode.SP_5 ||
+
 				pulse_mode == Pulse_Mode.P_6||
 				pulse_mode == Pulse_Mode.SP_6||
+
 				pulse_mode == Pulse_Mode.P_7||
 				pulse_mode == Pulse_Mode.SP_7||
+
+				pulse_mode == Pulse_Mode.P_8 ||
+				pulse_mode == Pulse_Mode.SP_8 ||
+
 				pulse_mode == Pulse_Mode.P_11||
 				pulse_mode == Pulse_Mode.SP_11||
 				pulse_mode == Pulse_Mode.CHMP_3
