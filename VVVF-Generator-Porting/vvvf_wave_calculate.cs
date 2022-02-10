@@ -32,13 +32,14 @@ namespace VVVF_Generator_Porting
 		};
 		public enum Pulse_Mode
 		{
-			Async, P_1, P_Wide_3, P_10, P_12, P_18,
-			P_3, P_5, P_7, P_9, P_11, P_13, P_15, P_17, P_19,
+			Async, 
+			P_1, P_Wide_3, 
+
+			P_3, P_5, P_6, P_7, P_9, P_11,P_13, P_15, P_17, P_19,
 			P_21, P_23, P_25, P_27, P_29, P_31, P_33, P_35, P_37, P_39, P_41
 			, P_43, P_45, P_47, P_49, P_51, P_53, P_55, P_57, P_59, P_61,
 
-			SP_1, SP_Wide_3, SP_10, SP_12, SP_18,
-			SP_3, SP_5, SP_7, SP_9, SP_11, SP_13, SP_15, SP_17, SP_19,
+			SP_3, SP_5, SP_6, SP_7, SP_9, SP_11, SP_13, SP_15, SP_17, SP_19,
 			SP_21, SP_23, SP_25, SP_27, SP_29, SP_31, SP_33, SP_35, SP_37, SP_39, SP_41
 			, SP_43, SP_45, SP_47, SP_49, SP_51, SP_53, SP_55, SP_57, SP_59, SP_61
 
@@ -206,23 +207,46 @@ namespace VVVF_Generator_Porting
 				return 0;
 			if (mode == Pulse_Mode.P_Wide_3 || mode == Pulse_Mode.CHMP_Wide_3 || mode == Pulse_Mode.CHMP_3)
 				return 0;
-			if (mode == Pulse_Mode.P_5 || mode == Pulse_Mode.CHMP_5 || mode == Pulse_Mode.CHMP_Wide_5)
-				return 6;
-			if (mode == Pulse_Mode.P_7 || mode == Pulse_Mode.CHMP_7 || mode == Pulse_Mode.CHMP_Wide_7)
-				return 9;
-			if (mode == Pulse_Mode.P_10 || mode == Pulse_Mode.CHMP_9)
-				return 10;
-			if (mode == Pulse_Mode.P_11 || mode == Pulse_Mode.CHMP_11)
-				return 15;
-			if (mode == Pulse_Mode.P_12 || mode == Pulse_Mode.CHMP_13)
-				return 12;
-			if (mode == Pulse_Mode.P_18 || mode == Pulse_Mode.CHMP_15)
-				return 18;
-			if ((int)mode <= (int)Pulse_Mode.P_61)
-				return 3 + (2 * ((int)mode - 6));
 
-			return get_Pulse_Num((Pulse_Mode)((int)mode - 35));
+			if (mode == Pulse_Mode.P_5 || mode == Pulse_Mode.SP_5 || mode == Pulse_Mode.CHMP_5 || mode == Pulse_Mode.CHMP_Wide_5)
+				return 6;
+			if (mode == Pulse_Mode.P_6 || mode == Pulse_Mode.SP_6)
+				return 9;
+			if (mode == Pulse_Mode.P_7 || mode == Pulse_Mode.SP_7 || mode == Pulse_Mode.CHMP_7 || mode == Pulse_Mode.CHMP_Wide_7)
+				return 9;
+			if (mode == Pulse_Mode.CHMP_9)
+				return 10;
+			if (mode == Pulse_Mode.P_11 || mode == Pulse_Mode.SP_11 || mode == Pulse_Mode.CHMP_11)
+				return 15;
+			if (mode == Pulse_Mode.CHMP_13)
+				return 12;
+			if ( mode == Pulse_Mode.CHMP_15)
+				return 18;
+
+
+			String pulse_name = mode.ToString();
+			String[] split = pulse_name.Split("_");
+			String pulse = split[split.Length - 1];
+            try
+            {
+				return Int32.Parse(pulse);
+            }
+            catch
+            {
+				return -1;
+            }
 		}
+		public static double get_Pulse_Initial(Pulse_Mode mode)
+        {
+            switch (mode) {
+				case Pulse_Mode.P_6:
+					return M_1_2PI;
+				case Pulse_Mode.SP_6:
+					return M_1_2PI;
+			}
+
+            return 0;
+        }
 
 		// random range => -range ~ range
 		public class Carrier_Freq
@@ -401,20 +425,22 @@ namespace VVVF_Generator_Porting
 
 			if (pulse_mode == Pulse_Mode.P_Wide_3)
 				return get_Wide_P_3(sin_time, sin_angle_freq, initial_phase, amplitude, false);
-			if (pulse_mode == Pulse_Mode.SP_Wide_3)
-				return get_Wide_P_3(sin_time, sin_angle_freq, initial_phase, amplitude, true);
-			if (pulse_mode == Pulse_Mode.P_5)
-				return get_P_with_saw(sin_time, sin_angle_freq, initial_phase, amplitude, get_Pulse_Num(pulse_mode), false);
-			if (pulse_mode == Pulse_Mode.SP_5)
-				return get_P_with_saw(sin_time, sin_angle_freq, initial_phase, amplitude, get_Pulse_Num(pulse_mode), true);
-			if (pulse_mode == Pulse_Mode.P_7)
-				return get_P_with_saw(sin_time, sin_angle_freq, initial_phase, amplitude, get_Pulse_Num(pulse_mode), false);
-			if (pulse_mode == Pulse_Mode.SP_7)
-				return get_P_with_saw(sin_time, sin_angle_freq, initial_phase, amplitude, get_Pulse_Num(pulse_mode), true);
-			if (pulse_mode == Pulse_Mode.P_11)
-				return get_P_with_saw(sin_time, sin_angle_freq, initial_phase, amplitude, get_Pulse_Num(pulse_mode), false);
-			if (pulse_mode == Pulse_Mode.SP_11)
-				return get_P_with_saw(sin_time, sin_angle_freq, initial_phase, amplitude, get_Pulse_Num(pulse_mode), true);
+
+			Pulse_Mode[] get_p_with_saw_list = new Pulse_Mode[]
+			{
+				Pulse_Mode.P_5,Pulse_Mode.SP_5,
+				Pulse_Mode.P_6,Pulse_Mode.SP_6,
+				Pulse_Mode.P_7,Pulse_Mode.SP_7,
+				Pulse_Mode.P_11,Pulse_Mode.SP_11,
+			};
+			if(Array.IndexOf(get_p_with_saw_list,pulse_mode) >= 0)
+            {
+				bool is_shift = (pulse_mode.ToString().StartsWith("S") ? true : false);
+				int pulse_num = get_Pulse_Num(pulse_mode);
+				double pulse_initial_phase = get_Pulse_Initial(pulse_mode);
+				return get_P_with_saw(sin_time, sin_angle_freq, initial_phase + pulse_initial_phase, amplitude, pulse_num, is_shift);
+			}
+
 			if (pulse_mode == Pulse_Mode.CHMP_15)
 				return get_P_with_switchingangle(
 				   my_switchingangles.Alpha[(int)(100 * amplitude) + 1, 0] * M_PI_180,
