@@ -91,9 +91,9 @@ namespace VVVF_Generator_Porting
 			wv.pwm_value = gate;
 			return wv;
 		}
-		public static Wave_Values get_P_with_saw(double time, double sin_angle_frequency, double initial_phase, double voltage, double carrier_mul, bool saw_oppose)
+		public static Wave_Values get_P_with_saw(double time, double sin_angle_frequency, double initial_phase, double carrier_initial_phase, double voltage, double carrier_mul, bool saw_oppose)
 		{
-			double carrier_saw = -get_saw_value(time, carrier_mul * sin_angle_frequency, carrier_mul * initial_phase);
+			double carrier_saw = -get_saw_value(time, carrier_mul * sin_angle_frequency, carrier_mul * initial_phase + carrier_initial_phase);
 			double saw = -get_saw_value(time, sin_angle_frequency, initial_phase);
 			if (saw_oppose)
 				saw = -saw;
@@ -247,9 +247,9 @@ namespace VVVF_Generator_Porting
         {
             switch (mode) {
 				case Pulse_Mode.P_6:
-					return M_1_2PI;
+					return M_PI_2;
 				case Pulse_Mode.SP_6:
-					return M_1_2PI;
+					return M_PI_2;
 			}
 
             return 0;
@@ -433,19 +433,21 @@ namespace VVVF_Generator_Porting
 			if (pulse_mode == Pulse_Mode.P_Wide_3)
 				return get_Wide_P_3(sin_time, sin_angle_freq, initial_phase, amplitude, false);
 
-			Pulse_Mode[] get_p_with_saw_list = new Pulse_Mode[]
-			{
-				Pulse_Mode.P_5,Pulse_Mode.SP_5,
-				Pulse_Mode.P_6,Pulse_Mode.SP_6,
-				Pulse_Mode.P_7,Pulse_Mode.SP_7,
-				Pulse_Mode.P_11,Pulse_Mode.SP_11,
-			};
-			if(Array.IndexOf(get_p_with_saw_list,pulse_mode) >= 0)
+			if(pulse_mode == Pulse_Mode.P_5 ||
+				pulse_mode == Pulse_Mode.SP_5 ||
+				pulse_mode == Pulse_Mode.P_6||
+				pulse_mode == Pulse_Mode.SP_6||
+				pulse_mode == Pulse_Mode.P_7||
+				pulse_mode == Pulse_Mode.SP_7||
+				pulse_mode == Pulse_Mode.P_11||
+				pulse_mode == Pulse_Mode.SP_11||
+				pulse_mode == Pulse_Mode.CHMP_3
+			)
             {
 				bool is_shift = (pulse_mode.ToString().StartsWith("S") ? true : false);
 				int pulse_num = get_Pulse_Num(pulse_mode);
 				double pulse_initial_phase = get_Pulse_Initial(pulse_mode);
-				return get_P_with_saw(sin_time, sin_angle_freq, initial_phase + pulse_initial_phase, amplitude, pulse_num, is_shift);
+				return get_P_with_saw(sin_time, sin_angle_freq, initial_phase, pulse_initial_phase, amplitude, pulse_num, is_shift);
 			}
 
 			if (pulse_mode == Pulse_Mode.CHMP_15)
@@ -528,8 +530,6 @@ namespace VVVF_Generator_Porting
 				   M_PI_2,
 				   M_PI_2,
 				   'A', sin_time, sin_angle_freq, initial_phase);
-			if (pulse_mode == Pulse_Mode.CHMP_3)
-				return get_P_with_saw(sin_time, sin_angle_freq, initial_phase, amplitude, get_Pulse_Num(pulse_mode), false);
 			if (pulse_mode == Pulse_Mode.CHMP_Wide_3)
 				return get_P_with_switchingangle(
 				   my_switchingangles._WideAlpha[(int)(500 * amplitude) + 1] * M_PI_180,
