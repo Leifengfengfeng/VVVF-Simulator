@@ -64,7 +64,6 @@ namespace VVVF_Generator_Porting.Generation
                     set_Mascon_Off(false);
                     set_Braking(true);
                     set_Temp_Count(get_Temp_Count() + 1);
-                    return false;
                 }
             }
             /*
