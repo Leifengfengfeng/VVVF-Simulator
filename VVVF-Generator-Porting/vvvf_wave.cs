@@ -1618,6 +1618,9 @@ namespace VVVF_Generator_Porting
 				}
 			}
 			double amplitude = ((k[a - 1, b - 1] * cv.wave_stat) + B[a - 1, b - 1]) >= 1.25 ? 1.25 : ((k[a - 1, b - 1] * cv.wave_stat) + B[a - 1, b - 1]);//¼ÆËãµ÷ÖÆ¶È
+
+			if (cv.wave_stat == 0) amplitude = 0;
+
 			return calculate_two_level(pulse_mode, carrier_freq, new Sine_Control_Data(cv.initial_phase, amplitude,0));
 		}
 
