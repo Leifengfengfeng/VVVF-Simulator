@@ -1,6 +1,7 @@
 ﻿using static VVVF_Generator_Porting.Generation.Generate_Common;
 using static VVVF_Generator_Porting.vvvf_wave_control;
 using static VVVF_Generator_Porting.my_math;
+using System;
 
 namespace VVVF_Generator_Porting
 {
@@ -129,7 +130,7 @@ namespace VVVF_Generator_Porting
 		
 		public enum Amplitude_Mode
         {
-			Linear, Wide_3_Pulse, Level_3_1P, Exponential
+			Linear, Wide_3_Pulse, Level_3_1P_1,Level_3_1P_2 , Exponential
 		}
 
 		public class Amplitude_Argument
@@ -171,10 +172,24 @@ namespace VVVF_Generator_Porting
 				val = (arg.max_amp - arg.min_amp) / (arg.max_freq - arg.min_freq) * (arg.current - arg.min_freq) + arg.min_amp;
 			else if(mode == Amplitude_Mode.Wide_3_Pulse)
 				val = (0.2 * ((arg.current - arg.min_freq) * ((arg.max_amp - arg.min_amp) / (arg.max_freq - arg.min_freq)) + arg.min_amp)) + 0.8;
-			else if(mode == Amplitude_Mode.Level_3_1P)
+			else if(mode == Amplitude_Mode.Level_3_1P_1)
             {
 				val = 1 / get_Amplitude(Amplitude_Mode.Linear, new Amplitude_Argument(arg.min_freq, 1 / arg.min_amp, arg.max_freq, 1 / arg.max_amp, arg.current, arg.disable_range_limit));
-			}else if(mode == Amplitude_Mode.Exponential)
+			}
+			else if(mode == Amplitude_Mode.Level_3_1P_2)
+            {
+				double x = get_Amplitude(Amplitude_Mode.Linear, new Amplitude_Argument(arg.min_freq, 1 / arg.min_amp, arg.max_freq, 1 / arg.max_amp, arg.current, arg.disable_range_limit));
+
+				double c = 0.43;
+				double k = arg.max_amp;
+				double l = arg.min_amp;
+				double a = 1 / (2 - (1 / k)) * (1 / (l - c) - 1 / (k - c));
+				double b = 1 / (1 - 2 * k) * (1 / (l - c) - 2 * k / (k - c));
+
+				//val = 1 / (6.25*x - 2.5) + 0.4;
+				val = 1 / (a * x + b) + c;
+			}
+			else if(mode == Amplitude_Mode.Exponential)
             {
 				val = my_math.exponential(arg.max_amp + 1, (arg.current - arg.min_freq) / (arg.max_freq - arg.min_freq)) - 1;//(arg.current - arg.min_freq) / (arg.max_freq - arg.min_freq) + arg.min_amp;
 			}
