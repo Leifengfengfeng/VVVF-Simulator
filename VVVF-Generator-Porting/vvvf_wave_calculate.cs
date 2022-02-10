@@ -35,11 +35,11 @@ namespace VVVF_Generator_Porting
 			Async, 
 			P_1, P_Wide_3, 
 
-			P_3, P_5, P_6, P_7, P_9, P_11,P_12,P_13, P_15, P_17,P_18, P_19,
+			P_3, P_5, P_6, P_7,P_8, P_9, P_11,P_12,P_13, P_15, P_17,P_18, P_19,
 			P_21, P_23, P_25, P_27, P_29, P_31, P_33, P_35, P_37, P_39, P_41
 			, P_43, P_45, P_47, P_49, P_51, P_53, P_55, P_57, P_59, P_61,
 
-			SP_3, SP_5, SP_6, SP_7, SP_9, SP_11, SP_13, SP_15, SP_17, SP_19,
+			SP_3, SP_5, SP_6, SP_8, SP_7, SP_9, SP_11, SP_13, SP_15, SP_17, SP_19,
 			SP_21, SP_23, SP_25, SP_27, SP_29, SP_31, SP_33, SP_35, SP_37, SP_39, SP_41
 			, SP_43, SP_45, SP_47, SP_49, SP_51, SP_53, SP_55, SP_57, SP_59, SP_61
 
@@ -219,6 +219,9 @@ namespace VVVF_Generator_Porting
 			if (mode == Pulse_Mode.P_7 || mode == Pulse_Mode.SP_7 || mode == Pulse_Mode.CHMP_7 || mode == Pulse_Mode.CHMP_Wide_7)
 				return 9;
 
+			if (mode == Pulse_Mode.P_8 || mode == Pulse_Mode.SP_8)
+				return 12;
+
 			if (mode == Pulse_Mode.CHMP_9)
 				return 10;
 
@@ -245,14 +248,13 @@ namespace VVVF_Generator_Porting
 		}
 		public static double get_Pulse_Initial(Pulse_Mode mode)
         {
-            switch (mode) {
-				case Pulse_Mode.P_6:
-					return M_PI_2;
-				case Pulse_Mode.SP_6:
-					return M_PI_2;
-			}
+			if(mode == Pulse_Mode.P_6 || mode == Pulse_Mode.SP_6)
+				return M_PI_2;
 
-            return 0;
+			if (mode == Pulse_Mode.P_8 || mode == Pulse_Mode.SP_8)
+				return M_PI_2;
+
+			return 0;
         }
 
 		// random range => -range ~ range
