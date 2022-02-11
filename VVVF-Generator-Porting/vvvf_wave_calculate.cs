@@ -225,7 +225,7 @@ namespace VVVF_Generator_Porting
 				return 18;
 
 			String pulse_name = mode.ToString();
-			String[] split = pulse_name.Split("_");
+			String[] split = pulse_name.Split('_');
 			if (split.Length < 2)
 				return 0;
 
@@ -239,7 +239,7 @@ namespace VVVF_Generator_Porting
 		public static double get_Pulse_Initial(Pulse_Mode mode)
         {
 			String pulse_name = mode.ToString();
-			String[] split = pulse_name.Split("_");
+			String[] split = pulse_name.Split('_');
 			String pulse = split[split.Length - 1];
 
 			int pulse_num = Int32.Parse(pulse);
@@ -518,7 +518,7 @@ namespace VVVF_Generator_Porting
 				   'B', sin_time, sin_angle_freq, initial_phase);
 
 
-			String[] pulse_name_split = pulse_mode.ToString().Split("_");
+			String[] pulse_name_split = pulse_mode.ToString().Split('_');
 			bool saw_go = false;
 			if (pulse_name_split.Length > 1 && Int32.Parse(pulse_name_split[pulse_name_split.Length - 1]) % 2 == 0)
 				saw_go = true;
