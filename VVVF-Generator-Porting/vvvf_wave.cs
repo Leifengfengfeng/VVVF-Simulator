@@ -2441,6 +2441,33 @@ namespace VVVF_Generator_Porting
 			return calculate_two_level(pulse_mode, carrier_freq, new Sine_Control_Data(cv.initial_phase, amplitude,0));
 		}
 
+		public static Wave_Values calculate_pulse_test_2_level(Control_Values cv)
+		{
+
+			double amplitude = get_Amplitude(Amplitude_Mode.Linear, new Amplitude_Argument(0, 0.1, 60, 1, cv.wave_stat, false));
+			Pulse_Mode pulse_mode;
+			Carrier_Freq carrier_freq = new Carrier_Freq(700, 0);
+
+			if (60 <= cv.wave_stat)
+			{
+				pulse_mode = Pulse_Mode.P_1;
+			}
+			else if (5 <= cv.wave_stat)
+            {
+				double katamuki = ((int)Pulse_Mode.P_61 - (int)Pulse_Mode.P_1) / 55.0;
+				double loc = - katamuki * (cv.wave_stat - 5) + (int)Pulse_Mode.P_61;
+				pulse_mode = (Pulse_Mode)((int)loc);
+            }
+				
+			else
+			{
+				carrier_freq = new Carrier_Freq(700, 0);
+				pulse_mode = Pulse_Mode.Async;
+			}
+
+			return calculate_two_level(pulse_mode, carrier_freq, new Sine_Control_Data(cv.initial_phase, amplitude, 0));
+		}
+
 		public static Wave_Values calculate_real_doremi_2_level(Control_Values cv)
 		{
 

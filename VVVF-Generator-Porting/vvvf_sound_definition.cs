@@ -56,6 +56,7 @@ namespace VVVF_Generator_Porting
             SOUND_X_FAMINA_2_LEVEL,
             SOUND_X_REAL_DOREMI_2_LEVEL,
             SOUND_KEIKYU_NOT_REAL_N1000_SIEMENS_GTO_2_LEVEL,
+            SOUND_X_PULSE_TEST_2_LEVEL,
         }
 
         public static Wave_Values get_Calculated_Value(VVVF_Sound_Names name, Control_Values cv)
@@ -120,6 +121,8 @@ namespace VVVF_Generator_Porting
             if (name == VVVF_Sound_Names.SOUND_X_FAMINA_2_LEVEL) return calculate_famina_2_level(cv);
             if (name == VVVF_Sound_Names.SOUND_X_REAL_DOREMI_2_LEVEL) return calculate_real_doremi_2_level(cv);
             if (name == VVVF_Sound_Names.SOUND_KEIKYU_NOT_REAL_N1000_SIEMENS_GTO_2_LEVEL) return calculate_not_real_keikyu_n1000_siemens_gto_2_level(cv);
+            if (name == VVVF_Sound_Names.SOUND_X_PULSE_TEST_2_LEVEL) return calculate_pulse_test_2_level(cv);
+
             return calculate_silent_2_level(cv);
         }
 
