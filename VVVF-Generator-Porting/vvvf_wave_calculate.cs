@@ -518,19 +518,6 @@ namespace VVVF_Generator_Porting
 				   'B', sin_time, sin_angle_freq, initial_phase);
 
 
-			if (pulse_mode == Pulse_Mode.Async || pulse_mode == Pulse_Mode.Asyn_THI)
-			{
-				double desire_saw_angle_freq = (carrier_freq_data.range == 0) ? carrier_freq_data.base_freq * M_2PI : get_random_freq(carrier_freq_data) * M_2PI;
-				saw_time = saw_angle_freq / desire_saw_angle_freq * saw_time;
-				saw_angle_freq = desire_saw_angle_freq;
-			}
-			else
-			{
-				saw_angle_freq = sin_angle_freq * get_Pulse_Num(pulse_mode);
-				saw_time = sin_time;
-			}
-
-
 			String[] pulse_name_split = pulse_mode.ToString().Split("_");
 			bool saw_go = false;
 			if (pulse_name_split.Length > 1 && Int32.Parse(pulse_name_split[pulse_name_split.Length - 1]) % 2 == 0)
@@ -554,6 +541,19 @@ namespace VVVF_Generator_Porting
 				int pulse_num = get_Pulse_Num(pulse_mode);
 				double pulse_initial_phase = get_Pulse_Initial(pulse_mode);
 				return get_P_with_saw(sin_time, sin_angle_freq, initial_phase, pulse_initial_phase, amplitude, pulse_num, is_shift);
+			}
+
+			if (pulse_mode == Pulse_Mode.Async || pulse_mode == Pulse_Mode.Asyn_THI)
+			{
+				double desire_saw_angle_freq = (carrier_freq_data.range == 0) ? carrier_freq_data.base_freq * M_2PI : get_random_freq(carrier_freq_data) * M_2PI;
+				saw_time = saw_angle_freq / desire_saw_angle_freq * saw_time;
+				saw_angle_freq = desire_saw_angle_freq;
+			}
+			else
+			{
+				double desire_saw_angle_freq = sin_angle_freq * get_Pulse_Num(pulse_mode);
+				saw_time = sin_time;
+				saw_angle_freq = desire_saw_angle_freq;
 			}
 
 			double sin_value = pulse_mode == Pulse_Mode.Asyn_THI ?
