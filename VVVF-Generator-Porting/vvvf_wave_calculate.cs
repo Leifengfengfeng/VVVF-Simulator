@@ -226,35 +226,25 @@ namespace VVVF_Generator_Porting
 
 			String pulse_name = mode.ToString();
 			String[] split = pulse_name.Split("_");
-			String pulse = split[split.Length - 1];
-            try
-            {
-				int pulse_num = Int32.Parse(pulse);
-				if (pulse_num % 2 == 0)
-					pulse_num = (int)(pulse_num * 1.5);
-
-				return pulse_num;
-			}
-            catch
-            {
+			if (split.Length < 2)
 				return 0;
-            }
+
+			String pulse = split[split.Length - 1];
+			int pulse_num = Int32.Parse(pulse);
+			
+			if( pulse_num % 2 == 0)
+				return (int)(pulse_num * 1.5);
+			return pulse_num;
 		}
 		public static double get_Pulse_Initial(Pulse_Mode mode)
         {
 			String pulse_name = mode.ToString();
 			String[] split = pulse_name.Split("_");
 			String pulse = split[split.Length - 1];
-			try
-			{
-				int pulse_num = Int32.Parse(pulse);
-				if (pulse_num % 2 == 0)
-					return M_PI_2;
-			}
-			catch
-			{
-				return 0;
-			}
+
+			int pulse_num = Int32.Parse(pulse);
+			if (split.Length > 1 && pulse_num % 2 == 0)
+				return M_PI_2;
 
 			return 0;
         }
