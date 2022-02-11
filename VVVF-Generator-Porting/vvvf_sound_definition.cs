@@ -44,6 +44,8 @@ namespace VVVF_Generator_Porting
 
             SOUND_KEIHAN_13000_TOYO_IGBT_2_LEVEL,
 
+            SOUND_TOEI_5300_MITSUBISHI_GTO_2_LEVEL,
+            SOUND_TOEI_6300_MITSUBISHI_GTO_2_LEVEL,
             SOUND_TOEI_6300_MITSUBISHI_IGBT_2_LEVEL,
 
             SOUND_WMATA_6000_ALSTOM_IGBT_2_LEVEL,
@@ -107,6 +109,8 @@ namespace VVVF_Generator_Porting
             if (name == VVVF_Sound_Names.SOUND_KEIHAN_13000_TOYO_IGBT_2_LEVEL) return calculate_keihan_13000_toyo_igbt_2_level(cv);
 
             //TOEI SUBWAY
+            if (name == VVVF_Sound_Names.SOUND_TOEI_5300_MITSUBISHI_GTO_2_LEVEL) return calculate_toei_5300_mitsubishi_gto_2_level(cv);
+            if (name == VVVF_Sound_Names.SOUND_TOEI_6300_MITSUBISHI_GTO_2_LEVEL) return calculate_toei_6300_mitsubishi_gto_2_level(cv);
             if (name == VVVF_Sound_Names.SOUND_TOEI_6300_MITSUBISHI_IGBT_2_LEVEL) return calculate_toei_6300_mitsubishi_igbt_2_level(cv);
 
             //WMATA
