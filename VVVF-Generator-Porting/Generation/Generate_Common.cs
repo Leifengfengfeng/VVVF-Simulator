@@ -52,7 +52,7 @@ namespace VVVF_Generator_Porting.Generation
 
             if (get_Temp_Count() == 0)
             {
-                if (get_Sine_Angle_Freq() * M_1_2PI > 110 && !is_Braking() && is_Do_Freq_Change())
+                if (get_Sine_Angle_Freq() * M_1_2PI > 70 && !is_Braking() && is_Do_Freq_Change())
                 {
                     set_Do_Freq_Change(false);
                     set_Mascon_Off(true);

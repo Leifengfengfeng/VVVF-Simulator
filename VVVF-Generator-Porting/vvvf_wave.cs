@@ -13,39 +13,53 @@ namespace VVVF_Generator_Porting
 			Pulse_Mode pulse_mode = Pulse_Mode.Async;
 			Carrier_Freq carrier_freq = new Carrier_Freq(0, 0);
 
+			if (cv.wave_stat > 0 && cv.wave_stat < 2 && !cv.free_run && !cv.brake) cv.wave_stat = 2;
+
 			if (!cv.brake)
 			{
-				set_Mascon_Off_Div(18000);
-				amplitude = get_Amplitude(Amplitude_Mode.Linear, new General_Amplitude_Argument(0, 0, 59, 1, cv.wave_stat, false));
+				set_Mascon_Off_Div(20000);
 
-				if (cv.free_run && !cv.mascon_on && cv.wave_stat > 66)
-				{
-					cv.wave_stat = 66;
-					set_Control_Frequency(66);
-				}
-
-				else if (cv.free_run && cv.mascon_on && cv.wave_stat > 66)
-				{
-					double rolling_freq = get_Sine_Angle_Freq() * M_1_2PI;
-					cv.wave_stat = rolling_freq;
-					set_Control_Frequency(rolling_freq);
-				}
+				double mascon_off_check = check_for_mascon_off(cv, 66);
+				if (mascon_off_check != -1) cv.wave_stat = mascon_off_check;
 
 				if (53 <= cv.wave_stat || (cv.free_run && get_Sine_Angle_Freq() > 53 * M_2PI))
 				{
 					pulse_mode = Pulse_Mode.P_1;
-
-					//if (cv.free_run) amplitude = get_Amplitude(Amplitude_Mode.Exponential, new Amplitude_Argument(0, -1, 66, 3, cv.wave_stat, false));
-					if (cv.free_run) get_Amplitude(Amplitude_Mode.Level_3_1P_1, new General_Amplitude_Argument(0, 0.83, 66, 3, cv.wave_stat, false));
+					if (cv.free_run)
+					{
+						double target_amplitude = get_Amplitude(Amplitude_Mode.Level_3_1P_1, new General_Amplitude_Argument(53, 0.83, 66, 3, get_Sine_Freq(), false));
+						amplitude = get_Amplitude(Amplitude_Mode.Level_3_1P_2, new Level_3_1P_Amplitude_Argument(0, 0.5, (get_Sine_Freq() > 66) ? 66 : get_Sine_Freq(), target_amplitude, cv.wave_stat, -0.5, false));
+					}
 					else amplitude = get_Amplitude(Amplitude_Mode.Level_3_1P_1, new General_Amplitude_Argument(53, 0.83, 66, 3, cv.wave_stat, false));
 				}
-				else if (45 <= cv.wave_stat || (cv.free_run && get_Sine_Angle_Freq() > 45 * M_2PI)) pulse_mode = Pulse_Mode.P_3;
-				else if (29 <= cv.wave_stat || (cv.free_run && get_Sine_Angle_Freq() > 29 * M_2PI)) pulse_mode = Pulse_Mode.P_9;
-				else if (19 <= cv.wave_stat || (cv.free_run && get_Sine_Angle_Freq() > 19 * M_2PI)) pulse_mode = Pulse_Mode.P_21;
-				else if (9 <= cv.wave_stat || (cv.free_run && get_Sine_Angle_Freq() > 9 * M_2PI)) pulse_mode = Pulse_Mode.P_33;
-				else if (2 <= cv.wave_stat || (cv.free_run && get_Sine_Angle_Freq() > 2 * M_2PI)) pulse_mode = Pulse_Mode.P_57;
-				else
+				else if (45 <= cv.wave_stat || (cv.free_run && get_Sine_Angle_Freq() > 45 * M_2PI))
                 {
+					amplitude = get_Amplitude(Amplitude_Mode.Linear, new General_Amplitude_Argument(45, 0.7, 53, 0.9, cv.wave_stat, false));
+					pulse_mode = Pulse_Mode.P_3;
+				}
+				else if (29 <= cv.wave_stat || (cv.free_run && get_Sine_Angle_Freq() > 29 * M_2PI))
+                {
+					amplitude = get_Amplitude(Amplitude_Mode.Linear, new General_Amplitude_Argument(0, 0, 59, 1, cv.wave_stat, false));
+					pulse_mode = Pulse_Mode.P_9;
+				}
+				else if (19 <= cv.wave_stat || (cv.free_run && get_Sine_Angle_Freq() > 19 * M_2PI))
+                {
+					amplitude = get_Amplitude(Amplitude_Mode.Linear, new General_Amplitude_Argument(0, 0, 59, 1, cv.wave_stat, false));
+					pulse_mode = Pulse_Mode.P_21;
+				}
+				else if (9 <= cv.wave_stat || (cv.free_run && get_Sine_Angle_Freq() > 9 * M_2PI))
+                {
+					amplitude = get_Amplitude(Amplitude_Mode.Linear, new General_Amplitude_Argument(0, 0, 59, 1, cv.wave_stat, false));
+					pulse_mode = Pulse_Mode.P_33;
+				}
+				else if (2 <= cv.wave_stat || (cv.free_run && get_Sine_Angle_Freq() > 2 * M_2PI))
+				{
+					amplitude = get_Amplitude(Amplitude_Mode.Linear, new General_Amplitude_Argument(0, 0, 59, 1, cv.wave_stat, false));
+					pulse_mode = Pulse_Mode.P_57;
+				}
+				else
+				{
+					amplitude = get_Amplitude(Amplitude_Mode.Linear, new General_Amplitude_Argument(0, 0, 59, 1, cv.wave_stat, false));
 					carrier_freq = new Carrier_Freq(114, 0);
 					pulse_mode = Pulse_Mode.Async;
 				}
@@ -53,24 +67,44 @@ namespace VVVF_Generator_Porting
 
 			else
 			{
-				set_Mascon_Off_Div(24000);
-				amplitude = get_Amplitude(Amplitude_Mode.Linear, new General_Amplitude_Argument(0, 0, 66, 1, cv.wave_stat, false));
+				set_Mascon_Off_Div(20000);
+
+				double mascon_off_check = check_for_mascon_off(cv, 72);
+				if (mascon_off_check != -1) cv.wave_stat = mascon_off_check;
+
 				if (60 <= cv.wave_stat || (cv.free_run && get_Sine_Angle_Freq() > 60 * M_2PI))
 				{
 					pulse_mode = Pulse_Mode.P_1;
-
-					//if (cv.free_run) amplitude = get_Amplitude(Amplitude_Mode.Exponential, new Amplitude_Argument(0, -1, 72, 3, cv.wave_stat, false));
-					if (cv.free_run) amplitude = get_Amplitude(Amplitude_Mode.Level_3_1P_1, new General_Amplitude_Argument(0, 0.83, 72, 3, cv.wave_stat, false));
-					else amplitude = get_Amplitude(Amplitude_Mode.Level_3_1P_1, new General_Amplitude_Argument(60, 0.83, 72, 3, cv.wave_stat, false));
-					//get_overmodulation_amplitude(60, 72, 3, cv.wave_stat);
+					if (cv.free_run)
+					{
+						double target_amplitude = get_Amplitude(Amplitude_Mode.Level_3_1P_1, new General_Amplitude_Argument(60, 0.88, 72, 3, get_Sine_Freq(), false));
+						amplitude = get_Amplitude(Amplitude_Mode.Level_3_1P_2, new Level_3_1P_Amplitude_Argument(0, 0.5, (get_Sine_Freq() > 72) ? 72 : get_Sine_Freq(), target_amplitude, cv.wave_stat, -0.5, false));
+					}
+					else amplitude = get_Amplitude(Amplitude_Mode.Level_3_1P_1, new General_Amplitude_Argument(60, 0.88, 72, 3, cv.wave_stat, false));
 				}
-				else if (49 <= cv.wave_stat || (cv.free_run && get_Sine_Angle_Freq() > 49 * M_2PI)) pulse_mode = Pulse_Mode.P_3;
-				else if (40 <= cv.wave_stat || (cv.free_run && get_Sine_Angle_Freq() > 40 * M_2PI)) pulse_mode = Pulse_Mode.P_9;
-				else if (19 <= cv.wave_stat || (cv.free_run && get_Sine_Angle_Freq() > 19 * M_2PI)) pulse_mode = Pulse_Mode.P_21;
-				else if (7 <= cv.wave_stat || (cv.free_run && get_Sine_Angle_Freq() > 7 * M_2PI)) pulse_mode = Pulse_Mode.P_33;
-				else get_Wave_Values_None();
+				else if (49 <= cv.wave_stat || (cv.free_run && get_Sine_Angle_Freq() > 49 * M_2PI))
+				{
+					amplitude = get_Amplitude(Amplitude_Mode.Linear, new General_Amplitude_Argument(0, 0, 66, 1, cv.wave_stat, false));
+					pulse_mode = Pulse_Mode.P_3;
+				}
+				else if (40 <= cv.wave_stat || (cv.free_run && get_Sine_Angle_Freq() > 40 * M_2PI))
+				{
+					amplitude = get_Amplitude(Amplitude_Mode.Linear, new General_Amplitude_Argument(0, 0, 66, 1, cv.wave_stat, false));
+					pulse_mode = Pulse_Mode.P_9;
+				}
+				else if (19 <= cv.wave_stat || (cv.free_run && get_Sine_Angle_Freq() > 19 * M_2PI))
+				{
+					amplitude = get_Amplitude(Amplitude_Mode.Linear, new General_Amplitude_Argument(0, 0, 52, 1, cv.wave_stat, false));
+					pulse_mode = Pulse_Mode.P_21;
+				}
+				else if (7 <= cv.wave_stat || (cv.free_run && get_Sine_Angle_Freq() > 7 * M_2PI))
+				{
+					amplitude = get_Amplitude(Amplitude_Mode.Linear, new General_Amplitude_Argument(0, 0, 60, 1, cv.wave_stat, false));
+					pulse_mode = Pulse_Mode.P_33;
+				}
+				else amplitude = 0;
 			}
-			return calculate_three_level(pulse_mode, carrier_freq, new Sine_Control_Data(cv.initial_phase, amplitude,0), -1);
+			return calculate_three_level(pulse_mode, carrier_freq, new Sine_Control_Data(cv.initial_phase, amplitude, (cv.free_run) ? -1 : 2), -1);
 		}
 
 		public static Wave_Values calculate_jre_e231_mitsubishi_igbt_3_level(Control_Values cv)
@@ -86,26 +120,19 @@ namespace VVVF_Generator_Porting
 			if (cv.brake)
 			{
 				set_Mascon_Off_Div(24000);
-				if (cv.free_run && !cv.mascon_on && cv.wave_stat > 71)
-				{
-					cv.wave_stat = 71;
-					set_Control_Frequency(71);
-				}
-
-				else if (cv.free_run && cv.mascon_on && cv.wave_stat > 71)
-				{
-					double rolling_freq = get_Sine_Angle_Freq() * M_1_2PI;
-					cv.wave_stat = rolling_freq;
-					set_Control_Frequency(rolling_freq);
-				}
+				double mascon_off_check = check_for_mascon_off(cv, 71);
+				if (mascon_off_check != -1) cv.wave_stat = mascon_off_check;
 
 				amplitude = get_Amplitude(Amplitude_Mode.Linear, new General_Amplitude_Argument(0, 0, 68, 1, cv.wave_stat, false));
 				if (59 <= cv.wave_stat || (cv.free_run && get_Sine_Angle_Freq() > 59 * M_2PI))
                 {
 					if (cv.free_run)
 					{
-						if (cv.mascon_on) amplitude = get_Amplitude(Amplitude_Mode.Level_3_1P_1, new General_Amplitude_Argument(0, 0.5, 71, 3.8, cv.wave_stat, false));
-						else amplitude = get_Amplitude(Amplitude_Mode.Level_3_1P_2, new Level_3_1P_Amplitude_Argument(0, 0.5, 71, 3.8, cv.wave_stat, 0.43, false));
+						double target_amplitude = amplitude = get_Amplitude(Amplitude_Mode.Level_3_1P_1, new General_Amplitude_Argument(59, 0.83, 71, 3.8, get_Sine_Freq(), false));
+						double target_freq = (get_Sine_Freq() > 71) ? 71 : get_Sine_Freq();
+
+						if (cv.mascon_on) amplitude = get_Amplitude(Amplitude_Mode.Level_3_1P_1, new General_Amplitude_Argument(0, 0.5, target_freq, target_amplitude, cv.wave_stat, false));
+						else amplitude = get_Amplitude(Amplitude_Mode.Level_3_1P_2, new Level_3_1P_Amplitude_Argument(0, 0.5, target_freq, target_amplitude, cv.wave_stat, 0.43, false));
 					}
 					else amplitude = get_Amplitude(Amplitude_Mode.Level_3_1P_1, new General_Amplitude_Argument(59, 0.83, 71, 3.8, cv.wave_stat, false));
 					pulse_Mode = Pulse_Mode.P_1;
@@ -137,26 +164,20 @@ namespace VVVF_Generator_Porting
 				amplitude = get_Amplitude(Amplitude_Mode.Linear, new General_Amplitude_Argument(0, 0, 58, 1, cv.wave_stat, false));
 				set_Mascon_Off_Div(20000);
 
-				if (cv.free_run && !cv.mascon_on && cv.wave_stat > 61)
-				{
-					cv.wave_stat = 61;
-					set_Control_Frequency(61);
-				}
-
-				else if (cv.free_run && cv.mascon_on && cv.wave_stat > 61)
-				{
-					double rolling_freq = get_Sine_Angle_Freq() * M_1_2PI;
-					cv.wave_stat = rolling_freq;
-					set_Control_Frequency(rolling_freq);
-				}
+				double mascon_off_check = check_for_mascon_off(cv, 61);
+				if (mascon_off_check != -1) cv.wave_stat = mascon_off_check;
 
 				if (51 <= cv.wave_stat || (cv.free_run && get_Sine_Angle_Freq() > 51 * M_2PI))
 				{
 					if (cv.free_run)
-                    {
-						if(cv.mascon_on) amplitude = get_Amplitude(Amplitude_Mode.Level_3_1P_1, new General_Amplitude_Argument(0, 0.5, 61, 3.8, cv.wave_stat, false));
-						else amplitude = get_Amplitude(Amplitude_Mode.Level_3_1P_2, new Level_3_1P_Amplitude_Argument(0, 0.5, 61, 3.8, cv.wave_stat, 0.43, false));
+					{
+						double target_amplitude = get_Amplitude(Amplitude_Mode.Level_3_1P_1, new General_Amplitude_Argument(51, 0.83, 61, 3.8, get_Sine_Freq(), false));
+						double target_freq = (get_Sine_Freq() > 61) ? 61 : get_Sine_Freq();
+
+						if (cv.mascon_on) amplitude = get_Amplitude(Amplitude_Mode.Level_3_1P_1, new General_Amplitude_Argument(0, 0.5, target_freq, target_amplitude, cv.wave_stat, false));
+						else amplitude = get_Amplitude(Amplitude_Mode.Level_3_1P_2, new Level_3_1P_Amplitude_Argument(0, 0.5, target_freq, target_amplitude, cv.wave_stat, 0.43, false));
 					}
+
 					else amplitude = get_Amplitude(Amplitude_Mode.Level_3_1P_1, new General_Amplitude_Argument(51, 0.83, 61, 3.8, cv.wave_stat, false));
 					pulse_Mode = Pulse_Mode.P_1;
 				}
