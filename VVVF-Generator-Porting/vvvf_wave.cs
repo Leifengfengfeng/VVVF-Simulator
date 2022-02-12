@@ -16,7 +16,7 @@ namespace VVVF_Generator_Porting
 			if (!cv.brake)
 			{
 				set_Mascon_Off_Div(18000);
-				amplitude = get_Amplitude(Amplitude_Mode.Linear, new Amplitude_Argument(0, 0, 59, 1, cv.wave_stat, false));
+				amplitude = get_Amplitude(Amplitude_Mode.Linear, new General_Amplitude_Argument(0, 0, 59, 1, cv.wave_stat, false));
 
 				if (cv.free_run && !cv.mascon_on && cv.wave_stat > 66)
 				{
@@ -36,8 +36,8 @@ namespace VVVF_Generator_Porting
 					pulse_mode = Pulse_Mode.P_1;
 
 					//if (cv.free_run) amplitude = get_Amplitude(Amplitude_Mode.Exponential, new Amplitude_Argument(0, -1, 66, 3, cv.wave_stat, false));
-					if (cv.free_run) amplitude = get_Amplitude(Amplitude_Mode.Level_3_1P_2, new Amplitude_Argument(0, 0.5, 66, 3, cv.wave_stat, false));
-					else amplitude = get_Amplitude(Amplitude_Mode.Level_3_1P_1, new Amplitude_Argument(53, 0.83, 66, 3, cv.wave_stat, false));
+					if (cv.free_run) get_Amplitude(Amplitude_Mode.Level_3_1P_1, new General_Amplitude_Argument(0, 0.83, 66, 3, cv.wave_stat, false));
+					else amplitude = get_Amplitude(Amplitude_Mode.Level_3_1P_1, new General_Amplitude_Argument(53, 0.83, 66, 3, cv.wave_stat, false));
 				}
 				else if (45 <= cv.wave_stat || (cv.free_run && get_Sine_Angle_Freq() > 45 * M_2PI)) pulse_mode = Pulse_Mode.P_3;
 				else if (29 <= cv.wave_stat || (cv.free_run && get_Sine_Angle_Freq() > 29 * M_2PI)) pulse_mode = Pulse_Mode.P_9;
@@ -54,14 +54,14 @@ namespace VVVF_Generator_Porting
 			else
 			{
 				set_Mascon_Off_Div(24000);
-				amplitude = get_Amplitude(Amplitude_Mode.Linear, new Amplitude_Argument(0, 0, 66, 1, cv.wave_stat, false));
+				amplitude = get_Amplitude(Amplitude_Mode.Linear, new General_Amplitude_Argument(0, 0, 66, 1, cv.wave_stat, false));
 				if (60 <= cv.wave_stat || (cv.free_run && get_Sine_Angle_Freq() > 60 * M_2PI))
 				{
 					pulse_mode = Pulse_Mode.P_1;
 
 					//if (cv.free_run) amplitude = get_Amplitude(Amplitude_Mode.Exponential, new Amplitude_Argument(0, -1, 72, 3, cv.wave_stat, false));
-					if (cv.free_run) amplitude = get_Amplitude(Amplitude_Mode.Level_3_1P_2, new Amplitude_Argument(0, 0.5, 72, 3, cv.wave_stat, false));
-					else amplitude = get_Amplitude(Amplitude_Mode.Level_3_1P_1, new Amplitude_Argument(60, 0.83, 72, 3, cv.wave_stat, false));
+					if (cv.free_run) amplitude = get_Amplitude(Amplitude_Mode.Level_3_1P_1, new General_Amplitude_Argument(0, 0.83, 72, 3, cv.wave_stat, false));
+					else amplitude = get_Amplitude(Amplitude_Mode.Level_3_1P_1, new General_Amplitude_Argument(60, 0.83, 72, 3, cv.wave_stat, false));
 					//get_overmodulation_amplitude(60, 72, 3, cv.wave_stat);
 				}
 				else if (49 <= cv.wave_stat || (cv.free_run && get_Sine_Angle_Freq() > 49 * M_2PI)) pulse_mode = Pulse_Mode.P_3;
@@ -99,42 +99,42 @@ namespace VVVF_Generator_Porting
 					set_Control_Frequency(rolling_freq);
 				}
 
-				amplitude = get_Amplitude(Amplitude_Mode.Linear, new Amplitude_Argument(0, 0, 68, 1, cv.wave_stat, false));
+				amplitude = get_Amplitude(Amplitude_Mode.Linear, new General_Amplitude_Argument(0, 0, 68, 1, cv.wave_stat, false));
 				if (59 <= cv.wave_stat || (cv.free_run && get_Sine_Angle_Freq() > 59 * M_2PI))
                 {
 					if (cv.free_run)
 					{
-						if (cv.mascon_on) amplitude = get_Amplitude(Amplitude_Mode.Level_3_1P_1, new Amplitude_Argument(0, 0.5, 71, 3.8, cv.wave_stat, false));
-						else amplitude = get_Amplitude(Amplitude_Mode.Level_3_1P_2, new Amplitude_Argument(0, 0.5, 71, 3.8, cv.wave_stat, false));
+						if (cv.mascon_on) amplitude = get_Amplitude(Amplitude_Mode.Level_3_1P_1, new General_Amplitude_Argument(0, 0.5, 71, 3.8, cv.wave_stat, false));
+						else amplitude = get_Amplitude(Amplitude_Mode.Level_3_1P_2, new Level_3_1P_Amplitude_Argument(0, 0.5, 71, 3.8, cv.wave_stat, 0.43, false));
 					}
-					else amplitude = get_Amplitude(Amplitude_Mode.Level_3_1P_1, new Amplitude_Argument(59, 0.83, 71, 3.8, cv.wave_stat, false));
+					else amplitude = get_Amplitude(Amplitude_Mode.Level_3_1P_1, new General_Amplitude_Argument(59, 0.83, 71, 3.8, cv.wave_stat, false));
 					pulse_Mode = Pulse_Mode.P_1;
 				}
 				else if (50 <= cv.wave_stat || (cv.free_run && get_Sine_Angle_Freq() > 50 * M_2PI))
 					pulse_Mode = Pulse_Mode.P_3;
 				else if (40 <= cv.wave_stat || (cv.free_run && get_Sine_Angle_Freq() > 40 * M_2PI))
 				{
-					amplitude = get_Amplitude(Amplitude_Mode.Linear, new Amplitude_Argument(0, 0, 60, 1, cv.wave_stat, false));
+					amplitude = get_Amplitude(Amplitude_Mode.Linear, new General_Amplitude_Argument(0, 0, 60, 1, cv.wave_stat, false));
 					pulse_Mode = Pulse_Mode.Async;
 					carrier_freq = new Carrier_Freq(1000, 100);
 				}
 				else if (4 <= cv.wave_stat || (cv.free_run && get_Sine_Angle_Freq() > 4 * M_2PI))
 				{
-					amplitude = get_Amplitude(Amplitude_Mode.Linear, new Amplitude_Argument(0, 0, 60, 1, cv.wave_stat, false));
+					amplitude = get_Amplitude(Amplitude_Mode.Linear, new General_Amplitude_Argument(0, 0, 60, 1, cv.wave_stat, false));
 					pulse_Mode = Pulse_Mode.Async;
 					double expect_freq = get_Changing_freq(4, 169, 40, 1000, cv.wave_stat);
 					carrier_freq = new Carrier_Freq(expect_freq, 100);
 				}
 				else
 				{
-					amplitude = get_Amplitude(Amplitude_Mode.Linear, new Amplitude_Argument(0, 0, 60, 1, cv.wave_stat, false));
+					amplitude = get_Amplitude(Amplitude_Mode.Linear, new General_Amplitude_Argument(0, 0, 60, 1, cv.wave_stat, false));
 					pulse_Mode = Pulse_Mode.Async;
 					carrier_freq = new Carrier_Freq(169, 100);
 				}
 			}
 			else
 			{
-				amplitude = get_Amplitude(Amplitude_Mode.Linear, new Amplitude_Argument(0, 0, 58, 1, cv.wave_stat, false));
+				amplitude = get_Amplitude(Amplitude_Mode.Linear, new General_Amplitude_Argument(0, 0, 58, 1, cv.wave_stat, false));
 				set_Mascon_Off_Div(20000);
 
 				if (cv.free_run && !cv.mascon_on && cv.wave_stat > 61)
@@ -154,10 +154,10 @@ namespace VVVF_Generator_Porting
 				{
 					if (cv.free_run)
                     {
-						if(cv.mascon_on) amplitude = get_Amplitude(Amplitude_Mode.Level_3_1P_1, new Amplitude_Argument(0, 0.5, 61, 3.8, cv.wave_stat, false));
-						else amplitude = get_Amplitude(Amplitude_Mode.Level_3_1P_2, new Amplitude_Argument(0, 0.5, 61, 3.8, cv.wave_stat, false));
+						if(cv.mascon_on) amplitude = get_Amplitude(Amplitude_Mode.Level_3_1P_1, new General_Amplitude_Argument(0, 0.5, 61, 3.8, cv.wave_stat, false));
+						else amplitude = get_Amplitude(Amplitude_Mode.Level_3_1P_2, new Level_3_1P_Amplitude_Argument(0, 0.5, 61, 3.8, cv.wave_stat, 0.43, false));
 					}
-					else amplitude = get_Amplitude(Amplitude_Mode.Level_3_1P_1, new Amplitude_Argument(51, 0.83, 61, 3.8, cv.wave_stat, false));
+					else amplitude = get_Amplitude(Amplitude_Mode.Level_3_1P_1, new General_Amplitude_Argument(51, 0.83, 61, 3.8, cv.wave_stat, false));
 					pulse_Mode = Pulse_Mode.P_1;
 				}
 
@@ -165,20 +165,20 @@ namespace VVVF_Generator_Porting
 					pulse_Mode = Pulse_Mode.P_3;
 				else if (35 <= cv.wave_stat || (cv.free_run && get_Sine_Angle_Freq() > 35 * M_2PI))
 				{
-					amplitude = get_Amplitude(Amplitude_Mode.Linear, new Amplitude_Argument(0, 0, 50, 1, cv.wave_stat, false));
+					amplitude = get_Amplitude(Amplitude_Mode.Linear, new General_Amplitude_Argument(0, 0, 50, 1, cv.wave_stat, false));
 					pulse_Mode = Pulse_Mode.Async;
 					carrier_freq = new Carrier_Freq(880, 100);
 				}
 				else if (14 <= cv.wave_stat || (cv.free_run && get_Sine_Angle_Freq() > 14 * M_2PI))
 				{
-					amplitude = get_Amplitude(Amplitude_Mode.Linear, new Amplitude_Argument(0, 0, 50, 1, cv.wave_stat, false));
+					amplitude = get_Amplitude(Amplitude_Mode.Linear, new General_Amplitude_Argument(0, 0, 50, 1, cv.wave_stat, false));
 					pulse_Mode = Pulse_Mode.Async;
 					double expect_freq = get_Changing_freq(14, 460, 35, 880, cv.wave_stat);
 					carrier_freq = new Carrier_Freq(expect_freq, 100);
 				}
 				else if (2 <= cv.wave_stat || (cv.free_run && get_Sine_Angle_Freq() > 2 * M_2PI))
 				{
-					amplitude = get_Amplitude(Amplitude_Mode.Linear, new Amplitude_Argument(0, 0, 50, 1, cv.wave_stat, false));
+					amplitude = get_Amplitude(Amplitude_Mode.Linear, new General_Amplitude_Argument(0, 0, 50, 1, cv.wave_stat, false));
 					amplitude *= 2;
 					pulse_Mode = Pulse_Mode.Async;
 					double expect_freq = get_Changing_freq(2, 198, 14, 460, cv.wave_stat);
@@ -187,7 +187,7 @@ namespace VVVF_Generator_Porting
 				}
 				else
 				{
-					amplitude = get_Amplitude(Amplitude_Mode.Linear, new Amplitude_Argument(0, 0, 50, 1, cv.wave_stat, false));
+					amplitude = get_Amplitude(Amplitude_Mode.Linear, new General_Amplitude_Argument(0, 0, 50, 1, cv.wave_stat, false));
 					amplitude *= 2;
 					pulse_Mode = Pulse_Mode.Async;
 					carrier_freq = new Carrier_Freq(198, 100);
@@ -210,7 +210,7 @@ namespace VVVF_Generator_Porting
 				double mascon_off_check = check_for_mascon_off(cv, 73);
 				if (mascon_off_check != -1) cv.wave_stat = mascon_off_check;
 
-				amplitude = get_Amplitude(Amplitude_Mode.Linear, new Amplitude_Argument(0, 0, 73, 1, cv.wave_stat, false));
+				amplitude = get_Amplitude(Amplitude_Mode.Linear, new General_Amplitude_Argument(0, 0, 73, 1, cv.wave_stat, false));
 
 				if (cv.wave_stat > 73)
 					pulse_mode = Pulse_Mode.P_1;
@@ -244,7 +244,7 @@ namespace VVVF_Generator_Porting
 				double mascon_off_check = check_for_mascon_off(cv, 67);
 				if (mascon_off_check != -1) cv.wave_stat = mascon_off_check;
 
-				amplitude = get_Amplitude(Amplitude_Mode.Linear, new Amplitude_Argument(0, 0, 65, 1, cv.wave_stat, false));
+				amplitude = get_Amplitude(Amplitude_Mode.Linear, new General_Amplitude_Argument(0, 0, 65, 1, cv.wave_stat, false));
 				if (cv.wave_stat > 67)
 					pulse_mode = Pulse_Mode.P_1;
 				else if (cv.wave_stat > 60)
@@ -278,7 +278,7 @@ namespace VVVF_Generator_Porting
 		{
 			Pulse_Mode pulse_mode;
 			Carrier_Freq carrier_freq = new Carrier_Freq(0, 0);
-			double amplitude = get_Amplitude(Amplitude_Mode.Linear, new Amplitude_Argument(0, 0, 50, 1, cv.wave_stat, false));
+			double amplitude = get_Amplitude(Amplitude_Mode.Linear, new General_Amplitude_Argument(0, 0, 50, 1, cv.wave_stat, false));
 
 			if (cv.free_run && cv.mascon_on == false && amplitude < 0.85)
 			{
@@ -287,7 +287,7 @@ namespace VVVF_Generator_Porting
 
 			if (cv.brake)
 			{
-				amplitude = get_Amplitude(Amplitude_Mode.Linear, new Amplitude_Argument(0, 0, 73.5, 1, cv.wave_stat, false));
+				amplitude = get_Amplitude(Amplitude_Mode.Linear, new General_Amplitude_Argument(0, 0, 73.5, 1, cv.wave_stat, false));
 				if (73.5 <= cv.wave_stat)
 					pulse_mode = Pulse_Mode.P_1;
 				else if (62.5 <= cv.wave_stat || (cv.free_run && get_Sine_Angle_Freq() > 62.5 * M_2PI))
@@ -329,7 +329,7 @@ namespace VVVF_Generator_Porting
 
 			if (cv.brake)
 			{
-				amplitude = get_Amplitude(Amplitude_Mode.Linear, new Amplitude_Argument(0, 0, 69.5, 1, cv.wave_stat, false));
+				amplitude = get_Amplitude(Amplitude_Mode.Linear, new General_Amplitude_Argument(0, 0, 69.5, 1, cv.wave_stat, false));
 				if (69.5 <= cv.wave_stat) pulse_mode = Pulse_Mode.P_1;
 				else if (64.8 <= cv.wave_stat && cv.mascon_on)
 				{
@@ -338,7 +338,7 @@ namespace VVVF_Generator_Porting
 				}
 				else if (51.3 <= cv.wave_stat && cv.mascon_on)
 				{
-					amplitude = get_Amplitude(Amplitude_Mode.Linear, new Amplitude_Argument(51.3, 51.3 / 69.5 , 64.8, 1.3, cv.wave_stat, false));
+					amplitude = get_Amplitude(Amplitude_Mode.Linear, new General_Amplitude_Argument(51.3, 51.3 / 69.5 , 64.8, 1.3, cv.wave_stat, false));
 					pulse_mode = Pulse_Mode.SP_9;
 				}
 				else if (cv.wave_stat <= 4)
@@ -364,7 +364,7 @@ namespace VVVF_Generator_Porting
 			}
 			else
 			{
-				amplitude = get_Amplitude(Amplitude_Mode.Linear, new Amplitude_Argument(0, 0, 51, 1, cv.wave_stat, false));
+				amplitude = get_Amplitude(Amplitude_Mode.Linear, new General_Amplitude_Argument(0, 0, 51, 1, cv.wave_stat, false));
 				if (51 <= cv.wave_stat) pulse_mode = Pulse_Mode.P_1;
 				else if (46.8 <= cv.wave_stat && cv.mascon_on)
 				{
@@ -373,7 +373,7 @@ namespace VVVF_Generator_Porting
 				}
 				else if (42 <= cv.wave_stat && cv.mascon_on)
 				{
-					amplitude = get_Amplitude(Amplitude_Mode.Linear, new Amplitude_Argument(42, 42.0 / 51.0, 46.8, 1.3, cv.wave_stat, false));
+					amplitude = get_Amplitude(Amplitude_Mode.Linear, new General_Amplitude_Argument(42, 42.0 / 51.0, 46.8, 1.3, cv.wave_stat, false));
 					pulse_mode = Pulse_Mode.SP_9;
 				}
 				else if (19.7 <= cv.wave_stat)
@@ -397,7 +397,7 @@ namespace VVVF_Generator_Porting
 		{
 			Pulse_Mode pulse_mode;
 			Carrier_Freq carrier_freq = new Carrier_Freq(0, 0);
-			double amplitude = get_Amplitude(Amplitude_Mode.Linear, new Amplitude_Argument(0, 0, 54, 1, cv.wave_stat, false));
+			double amplitude = get_Amplitude(Amplitude_Mode.Linear, new General_Amplitude_Argument(0, 0, 54, 1, cv.wave_stat, false));
 
 			if (cv.wave_stat > 54)
 				pulse_mode = Pulse_Mode.P_15;
@@ -435,7 +435,7 @@ namespace VVVF_Generator_Porting
 				}
 				else
 				{
-					amplitude = get_Amplitude(Amplitude_Mode.Linear, new Amplitude_Argument(0, 0, 50, 1, cv.wave_stat, false));
+					amplitude = get_Amplitude(Amplitude_Mode.Linear, new General_Amplitude_Argument(0, 0, 50, 1, cv.wave_stat, false));
 					pulse_mode = Pulse_Mode.Async;
 					carrier_freq = new Carrier_Freq(1200, 200);
 				}
@@ -450,21 +450,21 @@ namespace VVVF_Generator_Porting
 				if (77 <= cv.wave_stat)
 				{
 					pulse_mode = Pulse_Mode.P_27;
-					amplitude = get_Amplitude(Amplitude_Mode.Linear, new Amplitude_Argument(77, 2.0, 80, 2.2, cv.wave_stat, false));
+					amplitude = get_Amplitude(Amplitude_Mode.Linear, new General_Amplitude_Argument(77, 2.0, 80, 2.2, cv.wave_stat, false));
 				}
 				else if (71.5 <= cv.wave_stat )
 				{
 					pulse_mode = Pulse_Mode.P_27;
-					amplitude = get_Amplitude(Amplitude_Mode.Linear, new Amplitude_Argument(71.5, 1.45, 77, 1.6, cv.wave_stat, false));
+					amplitude = get_Amplitude(Amplitude_Mode.Linear, new General_Amplitude_Argument(71.5, 1.45, 77, 1.6, cv.wave_stat, false));
 				}
 				else if (66 <= cv.wave_stat || (cv.free_run && get_Sine_Angle_Freq() > 66 * M_2PI))
                 {
-					amplitude = get_Amplitude(Amplitude_Mode.Linear, new Amplitude_Argument(66, 1.05, 71.5, 1.3, cv.wave_stat, false));
+					amplitude = get_Amplitude(Amplitude_Mode.Linear, new General_Amplitude_Argument(66, 1.05, 71.5, 1.3, cv.wave_stat, false));
 					pulse_mode = Pulse_Mode.P_27;
                 }
                 else
                 {
-                    amplitude = get_Amplitude(Amplitude_Mode.Linear, new Amplitude_Argument(0, 0, 66, 1.0, cv.wave_stat, false));
+                    amplitude = get_Amplitude(Amplitude_Mode.Linear, new General_Amplitude_Argument(0, 0, 66, 1.0, cv.wave_stat, false));
                     pulse_mode = Pulse_Mode.Async;
                     carrier_freq = new Carrier_Freq(1200, 200);
                 }
@@ -494,7 +494,7 @@ namespace VVVF_Generator_Porting
 			if (!cv.brake)
 			{
 				set_Mascon_Off_Div(15000);
-				amplitude = get_Amplitude(Amplitude_Mode.Linear, new Amplitude_Argument(0, 0, 60, 1, cv.wave_stat, false));
+				amplitude = get_Amplitude(Amplitude_Mode.Linear, new General_Amplitude_Argument(0, 0, 60, 1, cv.wave_stat, false));
 
 				if (cv.free_run && !cv.mascon_on && cv.wave_stat > 60)
 				{
@@ -513,7 +513,7 @@ namespace VVVF_Generator_Porting
 					pulse_mode = Pulse_Mode.P_1;
 				else if (53 <= cv.wave_stat || (cv.free_run && get_Sine_Angle_Freq() > 53 * M_2PI))
 				{
-					if (cv.free_run) amplitude = get_Amplitude(Amplitude_Mode.Linear, new Amplitude_Argument(0, 0, 50, 1, cv.wave_stat, false));
+					if (cv.free_run) amplitude = get_Amplitude(Amplitude_Mode.Linear, new General_Amplitude_Argument(0, 0, 50, 1, cv.wave_stat, false));
 					if (amplitude > 0.97) amplitude = 0.97;
 					pulse_mode = Pulse_Mode.P_3;
 				}
@@ -546,12 +546,12 @@ namespace VVVF_Generator_Porting
 					set_Control_Frequency(rolling_freq);
 				}
 
-				amplitude = get_Amplitude(Amplitude_Mode.Linear, new Amplitude_Argument(0, 0, 80, 1, cv.wave_stat, false));
+				amplitude = get_Amplitude(Amplitude_Mode.Linear, new General_Amplitude_Argument(0, 0, 80, 1, cv.wave_stat, false));
 				if (80 <= cv.wave_stat)
 					pulse_mode = Pulse_Mode.P_1;
 				else if (65 <= cv.wave_stat || (cv.free_run && get_Sine_Angle_Freq() > 65 * M_2PI))
 				{
-					if (cv.free_run) amplitude = get_Amplitude(Amplitude_Mode.Linear, new Amplitude_Argument(0, 0, 50, 1, cv.wave_stat, false));
+					if (cv.free_run) amplitude = get_Amplitude(Amplitude_Mode.Linear, new General_Amplitude_Argument(0, 0, 50, 1, cv.wave_stat, false));
 					if (amplitude > 0.97) amplitude = 0.97;
 					pulse_mode = Pulse_Mode.P_3;
 				}
@@ -579,7 +579,7 @@ namespace VVVF_Generator_Porting
 
 			if (!cv.brake)
 			{
-				amplitude = get_Amplitude(Amplitude_Mode.Linear, new Amplitude_Argument(0, 0, 60, 1, cv.wave_stat, false));
+				amplitude = get_Amplitude(Amplitude_Mode.Linear, new General_Amplitude_Argument(0, 0, 60, 1, cv.wave_stat, false));
 				if (60 <= cv.wave_stat)
 					pulse_mode = Pulse_Mode.P_1;
 				else if (59 <= cv.wave_stat)
@@ -604,7 +604,7 @@ namespace VVVF_Generator_Porting
 			}
 			else
 			{
-				amplitude = get_Amplitude(Amplitude_Mode.Linear, new Amplitude_Argument(0, 0, 80, 1, cv.wave_stat, false));
+				amplitude = get_Amplitude(Amplitude_Mode.Linear, new General_Amplitude_Argument(0, 0, 80, 1, cv.wave_stat, false));
 				if (80 <= cv.wave_stat)
 					pulse_mode = Pulse_Mode.P_1;
 				else if (72 <= cv.wave_stat)
@@ -675,25 +675,25 @@ namespace VVVF_Generator_Porting
 				}
 				else if (50 <= cv.wave_stat || (cv.free_run && get_Sine_Angle_Freq() > 50 * M_2PI))
                 {
-					amplitude = get_Amplitude(Amplitude_Mode.Linear, new Amplitude_Argument(0, 0, 68, 1, cv.wave_stat, false));
+					amplitude = get_Amplitude(Amplitude_Mode.Linear, new General_Amplitude_Argument(0, 0, 68, 1, cv.wave_stat, false));
 					pulse_Mode = Pulse_Mode.P_3;
 				}
 				else if (40 <= cv.wave_stat || (cv.free_run && get_Sine_Angle_Freq() > 40 * M_2PI))
 				{
-					amplitude = get_Amplitude(Amplitude_Mode.Linear, new Amplitude_Argument(0, 0, 60, 1, cv.wave_stat, false));
+					amplitude = get_Amplitude(Amplitude_Mode.Linear, new General_Amplitude_Argument(0, 0, 60, 1, cv.wave_stat, false));
 					pulse_Mode = Pulse_Mode.Async;
 					carrier_freq = new Carrier_Freq(1000, 100);
 				}
 				else if (4 <= cv.wave_stat || (cv.free_run && get_Sine_Angle_Freq() > 4 * M_2PI))
 				{
-					amplitude = get_Amplitude(Amplitude_Mode.Linear, new Amplitude_Argument(0, 0, 60, 1, cv.wave_stat, false));
+					amplitude = get_Amplitude(Amplitude_Mode.Linear, new General_Amplitude_Argument(0, 0, 60, 1, cv.wave_stat, false));
 					pulse_Mode = Pulse_Mode.Async;
 					double expect_freq = get_Changing_freq(4, 169, 40, 1000, cv.wave_stat);
 					carrier_freq = new Carrier_Freq(expect_freq, 100);
 				}
 				else
 				{
-					amplitude = get_Amplitude(Amplitude_Mode.Linear, new Amplitude_Argument(0, 0, 60, 1, cv.wave_stat, false));
+					amplitude = get_Amplitude(Amplitude_Mode.Linear, new General_Amplitude_Argument(0, 0, 60, 1, cv.wave_stat, false));
 					pulse_Mode = Pulse_Mode.Async;
 					carrier_freq = new Carrier_Freq(169, 100);
 				}
@@ -737,12 +737,12 @@ namespace VVVF_Generator_Porting
 
 				else if (42 <= cv.wave_stat || (cv.free_run && get_Sine_Angle_Freq() > 42 * M_2PI))
                 {
-					amplitude = get_Amplitude(Amplitude_Mode.Linear, new Amplitude_Argument(0, 0, 58, 1, cv.wave_stat, false));
+					amplitude = get_Amplitude(Amplitude_Mode.Linear, new General_Amplitude_Argument(0, 0, 58, 1, cv.wave_stat, false));
 					pulse_Mode = Pulse_Mode.SP_9;
 				}
 				else if (28 <= cv.wave_stat || (cv.free_run && get_Sine_Angle_Freq() > 28 * M_2PI))
 				{
-					amplitude = get_Amplitude(Amplitude_Mode.Linear, new Amplitude_Argument(0, 0, 50, 1, cv.wave_stat, false));
+					amplitude = get_Amplitude(Amplitude_Mode.Linear, new General_Amplitude_Argument(0, 0, 50, 1, cv.wave_stat, false));
 					amplitude *= 2;
 					pulse_Mode = Pulse_Mode.Async;
 					carrier_freq = new Carrier_Freq(1000, 0);
@@ -750,7 +750,7 @@ namespace VVVF_Generator_Porting
 				}
 				else if (19 <= cv.wave_stat || (cv.free_run && get_Sine_Angle_Freq() > 19 * M_2PI))
 				{
-					amplitude = get_Amplitude(Amplitude_Mode.Linear, new Amplitude_Argument(0, 0, 60, 1, cv.wave_stat, false));
+					amplitude = get_Amplitude(Amplitude_Mode.Linear, new General_Amplitude_Argument(0, 0, 60, 1, cv.wave_stat, false));
 					amplitude *= 2;
 					pulse_Mode = Pulse_Mode.Async;
 					double expect_freq = get_Changing_freq(19, 500, 28, 1000, cv.wave_stat);
@@ -759,7 +759,7 @@ namespace VVVF_Generator_Porting
 				}
 				else
 				{
-					amplitude = get_Amplitude(Amplitude_Mode.Linear, new Amplitude_Argument(0, 0, 60, 1, cv.wave_stat, false));
+					amplitude = get_Amplitude(Amplitude_Mode.Linear, new General_Amplitude_Argument(0, 0, 60, 1, cv.wave_stat, false));
 					amplitude *= 2;
 					pulse_Mode = Pulse_Mode.Async;
 					carrier_freq = new Carrier_Freq(500, 0);
@@ -784,11 +784,11 @@ namespace VVVF_Generator_Porting
 				else if (56 <= cv.wave_stat)
 				{
 					pulse_mode = Pulse_Mode.P_9;
-					amplitude = get_Amplitude(Amplitude_Mode.Linear, new Amplitude_Argument(56, 56.0 / 72.0, 72, 2, cv.wave_stat, false));
+					amplitude = get_Amplitude(Amplitude_Mode.Linear, new General_Amplitude_Argument(56, 56.0 / 72.0, 72, 2, cv.wave_stat, false));
 				}
 				else
 				{
-					amplitude = get_Amplitude(Amplitude_Mode.Linear, new Amplitude_Argument(0, 0, 72, 1, cv.wave_stat, false));
+					amplitude = get_Amplitude(Amplitude_Mode.Linear, new General_Amplitude_Argument(0, 0, 72, 1, cv.wave_stat, false));
 					pulse_mode = Pulse_Mode.Async;
 					double base_freq = 1050;
 					if (4 >= cv.wave_stat)
@@ -806,11 +806,11 @@ namespace VVVF_Generator_Porting
 				else if (40 <= cv.wave_stat)
 				{
 					pulse_mode = Pulse_Mode.P_9;
-					amplitude = get_Amplitude(Amplitude_Mode.Linear, new Amplitude_Argument(40, 40.0 / 55.0, 55, 2, cv.wave_stat, false));
+					amplitude = get_Amplitude(Amplitude_Mode.Linear, new General_Amplitude_Argument(40, 40.0 / 55.0, 55, 2, cv.wave_stat, false));
 				}
 				else
 				{
-					amplitude = get_Amplitude(Amplitude_Mode.Linear, new Amplitude_Argument(0, 0, 55, 1, cv.wave_stat, false));
+					amplitude = get_Amplitude(Amplitude_Mode.Linear, new General_Amplitude_Argument(0, 0, 55, 1, cv.wave_stat, false));
 					pulse_mode = Pulse_Mode.Async;
 					carrier_freq = new Carrier_Freq(1050, 60);
 				}
@@ -835,11 +835,11 @@ namespace VVVF_Generator_Porting
 				else if (48 <= cv.wave_stat)
 				{
 					pulse_mode = Pulse_Mode.P_9;
-					amplitude = get_Amplitude(Amplitude_Mode.Linear, new Amplitude_Argument(48, 1.1, 56, 2, cv.wave_stat, false));
+					amplitude = get_Amplitude(Amplitude_Mode.Linear, new General_Amplitude_Argument(48, 1.1, 56, 2, cv.wave_stat, false));
 				}
 				else
 				{
-					amplitude = get_Amplitude(Amplitude_Mode.Linear, new Amplitude_Argument(0, 0, 48, 1.1, cv.wave_stat, false));
+					amplitude = get_Amplitude(Amplitude_Mode.Linear, new General_Amplitude_Argument(0, 0, 48, 1.1, cv.wave_stat, false));
 					pulse_mode = Pulse_Mode.Async;
 					carrier_freq = new Carrier_Freq(1050, 100);
 				}
@@ -854,11 +854,11 @@ namespace VVVF_Generator_Porting
 				else if (59 <= cv.wave_stat)
 				{
 					pulse_mode = Pulse_Mode.P_9;
-					amplitude = get_Amplitude(Amplitude_Mode.Linear, new Amplitude_Argument(59, 0.8, 78, 2, cv.wave_stat, false));
+					amplitude = get_Amplitude(Amplitude_Mode.Linear, new General_Amplitude_Argument(59, 0.8, 78, 2, cv.wave_stat, false));
 				}
 				else
 				{
-					amplitude = get_Amplitude(Amplitude_Mode.Linear, new Amplitude_Argument(0, 0, 59, 0.8, cv.wave_stat, false));
+					amplitude = get_Amplitude(Amplitude_Mode.Linear, new General_Amplitude_Argument(0, 0, 59, 0.8, cv.wave_stat, false));
 					pulse_mode = Pulse_Mode.Async;
 					carrier_freq = new Carrier_Freq(1050, 100);
 				}
@@ -891,12 +891,12 @@ namespace VVVF_Generator_Porting
 
 			if (!cv.brake)
 			{
-				amplitude = get_Amplitude(Amplitude_Mode.Linear, new Amplitude_Argument(0, 0, 45, 1, cv.wave_stat, false));
+				amplitude = get_Amplitude(Amplitude_Mode.Linear, new General_Amplitude_Argument(0, 0, 45, 1, cv.wave_stat, false));
 				if (45 <= cv.wave_stat) pulse_mode = Pulse_Mode.P_1;
 				else if (43 <= cv.wave_stat)
 				{
 					pulse_mode = Pulse_Mode.P_Wide_3;
-					amplitude = get_Amplitude(Amplitude_Mode.Wide_3_Pulse, new Amplitude_Argument(43, 0.5, 45, 0.8, cv.wave_stat, false));
+					amplitude = get_Amplitude(Amplitude_Mode.Wide_3_Pulse, new General_Amplitude_Argument(43, 0.5, 45, 0.8, cv.wave_stat, false));
 				}
 				else if (37 <= cv.wave_stat || (cv.free_run && get_Sine_Angle_Freq() > 37 * M_2PI)) pulse_mode = Pulse_Mode.P_3;
 				else if (32 <= cv.wave_stat || (cv.free_run && get_Sine_Angle_Freq() > 32 * M_2PI)) pulse_mode = Pulse_Mode.P_5;
@@ -912,12 +912,12 @@ namespace VVVF_Generator_Porting
 			}
 			else
 			{
-				amplitude = get_Amplitude(Amplitude_Mode.Linear, new Amplitude_Argument(0, 0, 60, 1, cv.wave_stat, false));
+				amplitude = get_Amplitude(Amplitude_Mode.Linear, new General_Amplitude_Argument(0, 0, 60, 1, cv.wave_stat, false));
 				if (60 <= cv.wave_stat) pulse_mode = Pulse_Mode.P_1;
 				else if (54 <= cv.wave_stat)
 				{
 					pulse_mode = Pulse_Mode.P_Wide_3;
-					amplitude = get_Amplitude(Amplitude_Mode.Wide_3_Pulse, new Amplitude_Argument(54, 0.5, 60, 0.8, cv.wave_stat, false));
+					amplitude = get_Amplitude(Amplitude_Mode.Wide_3_Pulse, new General_Amplitude_Argument(54, 0.5, 60, 0.8, cv.wave_stat, false));
 				}
 				else if (50 <= cv.wave_stat || (cv.free_run && get_Sine_Angle_Freq() > 50 * M_2PI)) pulse_mode = Pulse_Mode.P_3;
 				else if (41 <= cv.wave_stat || (cv.free_run && get_Sine_Angle_Freq() > 41 * M_2PI)) pulse_mode = Pulse_Mode.P_5;
@@ -946,7 +946,7 @@ namespace VVVF_Generator_Porting
 
 			if (cv.brake)
 			{
-				amplitude = get_Amplitude(Amplitude_Mode.Linear, new Amplitude_Argument(0, 0, 65, 1, cv.wave_stat, false));
+				amplitude = get_Amplitude(Amplitude_Mode.Linear, new General_Amplitude_Argument(0, 0, 65, 1, cv.wave_stat, false));
 				if (65 <= cv.wave_stat)
 					pulse_mode = Pulse_Mode.P_1;
 				else if (61 <= cv.wave_stat)
@@ -979,7 +979,7 @@ namespace VVVF_Generator_Porting
 			}
 			else
 			{
-				amplitude = get_Amplitude(Amplitude_Mode.Linear, new Amplitude_Argument(0, 0, 58, 1, cv.wave_stat, false));
+				amplitude = get_Amplitude(Amplitude_Mode.Linear, new General_Amplitude_Argument(0, 0, 58, 1, cv.wave_stat, false));
 				if (58 <= cv.wave_stat)
 					pulse_mode = Pulse_Mode.P_1;
 				else if (55 <= cv.wave_stat)
@@ -1038,13 +1038,13 @@ namespace VVVF_Generator_Porting
 				else if (38.3 <= cv.wave_stat && !(cv.free_run && get_Sine_Angle_Freq() > 50 * M_2PI))
 				{
 					pulse_mode = Pulse_Mode.SP_15;
-					amplitude = get_Amplitude(Amplitude_Mode.Linear, new Amplitude_Argument(35.8, 35.8 / 50.0 , 50, 2, cv.wave_stat, false));
+					amplitude = get_Amplitude(Amplitude_Mode.Linear, new General_Amplitude_Argument(35.8, 35.8 / 50.0 , 50, 2, cv.wave_stat, false));
 				}
 				else
 				{
-					amplitude = get_Amplitude(Amplitude_Mode.Linear, new Amplitude_Argument(0, 0, 51, 1, cv.wave_stat, false));
+					amplitude = get_Amplitude(Amplitude_Mode.Linear, new General_Amplitude_Argument(0, 0, 51, 1, cv.wave_stat, false));
 					pulse_mode = Pulse_Mode.Async;
-					double base_freq = get_pattern_random_freq((int)(400 + 180 / 38.3 * cv.wave_stat), 600, 20000);
+					double base_freq = get_Pattern_Random_freq((int)(400 + 180 / 38.3 * cv.wave_stat), 600, 20000);
 					carrier_freq = new Carrier_Freq(base_freq, 0);
 				}
 			}
@@ -1058,18 +1058,18 @@ namespace VVVF_Generator_Porting
 				else if (44.4 <= cv.wave_stat)
 				{
 					pulse_mode = Pulse_Mode.P_Wide_3;
-					amplitude = get_Amplitude(Amplitude_Mode.Wide_3_Pulse, new Amplitude_Argument(44.4, 0, 47.3, 0.8, cv.wave_stat, false));//0.8 + 0.2 / 4.0 * (cv.wave_stat - 44.4);
+					amplitude = get_Amplitude(Amplitude_Mode.Wide_3_Pulse, new General_Amplitude_Argument(44.4, 0, 47.3, 0.8, cv.wave_stat, false));//0.8 + 0.2 / 4.0 * (cv.wave_stat - 44.4);
 				}
 				else if (35.8 <= cv.wave_stat && !(cv.free_run && get_Sine_Angle_Freq() > 44.4 * M_2PI))
 				{
 					pulse_mode = Pulse_Mode.SP_15;
-					amplitude = get_Amplitude(Amplitude_Mode.Linear, new Amplitude_Argument(35.8, 35.8 / 50, 44.4, 2, cv.wave_stat, false));
+					amplitude = get_Amplitude(Amplitude_Mode.Linear, new General_Amplitude_Argument(35.8, 35.8 / 50, 44.4, 2, cv.wave_stat, false));
 				}
 				else
 				{
-					amplitude = get_Amplitude(Amplitude_Mode.Linear, new Amplitude_Argument(0, 0, 47.3, 1, cv.wave_stat, false));
+					amplitude = get_Amplitude(Amplitude_Mode.Linear, new General_Amplitude_Argument(0, 0, 47.3, 1, cv.wave_stat, false));
 					pulse_mode = Pulse_Mode.Async;
-					double base_freq = get_pattern_random_freq((int)(400 + 180 / 34.0 * cv.wave_stat), 600, 20000); ;
+					double base_freq = get_Pattern_Random_freq((int)(400 + 180 / 34.0 * cv.wave_stat), 600, 20000); ;
 					carrier_freq = new Carrier_Freq(base_freq, 0);
 				}
 			}
@@ -1102,12 +1102,12 @@ namespace VVVF_Generator_Porting
 			if (!cv.brake)
 			{
 				set_Mascon_Off_Div(15000);
-				amplitude = get_Amplitude(Amplitude_Mode.Linear, new Amplitude_Argument(0, 0, 50, 1, cv.wave_stat, false));
+				amplitude = get_Amplitude(Amplitude_Mode.Linear, new General_Amplitude_Argument(0, 0, 50, 1, cv.wave_stat, false));
 				if (50 <= cv.wave_stat)
 					pulse_mode = Pulse_Mode.P_1;
 				else if (40 <= cv.wave_stat || (cv.free_run && get_Sine_Angle_Freq() > 40 * M_2PI))
 				{
-					if (cv.free_run) amplitude = get_Amplitude(Amplitude_Mode.Linear, new Amplitude_Argument(0, 0, 50, 1, cv.wave_stat, false));
+					if (cv.free_run) amplitude = get_Amplitude(Amplitude_Mode.Linear, new General_Amplitude_Argument(0, 0, 50, 1, cv.wave_stat, false));
 					if (amplitude > 0.97) amplitude = 0.97;
 					pulse_mode = Pulse_Mode.P_3;
 				}
@@ -1124,12 +1124,12 @@ namespace VVVF_Generator_Porting
 			else
 			{
 				set_Mascon_Off_Div(15000);
-				amplitude = get_Amplitude(Amplitude_Mode.Linear, new Amplitude_Argument(0, 0, 50, 1, cv.wave_stat, false));
+				amplitude = get_Amplitude(Amplitude_Mode.Linear, new General_Amplitude_Argument(0, 0, 50, 1, cv.wave_stat, false));
 				if (50 <= cv.wave_stat)
 					pulse_mode = Pulse_Mode.P_1;
 				else if (40 <= cv.wave_stat || (cv.free_run && get_Sine_Angle_Freq() > 40 * M_2PI))
 				{
-					if (cv.free_run) amplitude = get_Amplitude(Amplitude_Mode.Linear, new Amplitude_Argument(0, 0, 50, 1, cv.wave_stat, false));
+					if (cv.free_run) amplitude = get_Amplitude(Amplitude_Mode.Linear, new General_Amplitude_Argument(0, 0, 50, 1, cv.wave_stat, false));
 					if (amplitude > 0.97) amplitude = 0.97;
 					pulse_mode = Pulse_Mode.P_3;
 				}
@@ -1152,7 +1152,7 @@ namespace VVVF_Generator_Porting
 		}
 		public static Wave_Values calculate_kintetsu_9820_mitsubishi_igbt_2_level(Control_Values cv)
 		{
-			double amplitude = get_Amplitude(Amplitude_Mode.Linear, new Amplitude_Argument(0, 0, 55, 1, cv.wave_stat, false));
+			double amplitude = get_Amplitude(Amplitude_Mode.Linear, new General_Amplitude_Argument(0, 0, 55, 1, cv.wave_stat, false));
 			Pulse_Mode pulse_mode;
 			Carrier_Freq carrier_freq = new Carrier_Freq(0, 0);
 
@@ -1186,7 +1186,7 @@ namespace VVVF_Generator_Porting
 
 		public static Wave_Values calculate_kintetsu_9820_hitachi_igbt_2_level(Control_Values cv)
 		{
-			double amplitude = get_Amplitude(Amplitude_Mode.Linear, new Amplitude_Argument(0, 0, 65, 1, cv.wave_stat, false));
+			double amplitude = get_Amplitude(Amplitude_Mode.Linear, new General_Amplitude_Argument(0, 0, 65, 1, cv.wave_stat, false));
 			Pulse_Mode pulse_mode;
 			Carrier_Freq carrier_freq = new Carrier_Freq(0, 0);
 
@@ -1238,7 +1238,7 @@ namespace VVVF_Generator_Porting
 
 			if (cv.brake)
 			{
-				amplitude = get_Amplitude(Amplitude_Mode.Linear, new Amplitude_Argument(0, 0, 68.2, 1, cv.wave_stat, false));
+				amplitude = get_Amplitude(Amplitude_Mode.Linear, new General_Amplitude_Argument(0, 0, 68.2, 1, cv.wave_stat, false));
 				if (68.2 <= cv.wave_stat) pulse_mode = Pulse_Mode.P_1;
 				else if (63.5 <= cv.wave_stat && !cv.free_run)
 				{
@@ -1262,7 +1262,7 @@ namespace VVVF_Generator_Porting
 			}
 			else
 			{
-				amplitude = get_Amplitude(Amplitude_Mode.Linear, new Amplitude_Argument(0, 0, 50, 1, cv.wave_stat, false));
+				amplitude = get_Amplitude(Amplitude_Mode.Linear, new General_Amplitude_Argument(0, 0, 50, 1, cv.wave_stat, false));
 				if (50 <= cv.wave_stat) pulse_mode = Pulse_Mode.P_1;
 				else if (48.7 <= cv.wave_stat && !cv.free_run)
 				{
@@ -1665,29 +1665,29 @@ namespace VVVF_Generator_Porting
 				else if (65 <= cv.wave_stat)
 				{
 					pulse_mode = Pulse_Mode.P_Wide_3;
-					amplitude = get_Amplitude(Amplitude_Mode.Wide_3_Pulse, new Amplitude_Argument(65, 0.0, 69.5, 0.5, cv.wave_stat, false));
+					amplitude = get_Amplitude(Amplitude_Mode.Wide_3_Pulse, new General_Amplitude_Argument(65, 0.0, 69.5, 0.5, cv.wave_stat, false));
 				}
 				else if (56 <= cv.wave_stat)
 				{
-					amplitude = get_Amplitude(Amplitude_Mode.Linear, new Amplitude_Argument(0, 0, 65, 1.2, cv.wave_stat, false));
+					amplitude = get_Amplitude(Amplitude_Mode.Linear, new General_Amplitude_Argument(0, 0, 65, 1.2, cv.wave_stat, false));
 					pulse_mode = Pulse_Mode.Async;
 					carrier_freq = new Carrier_Freq(get_Changing_freq(56, 700, 65, 1620, cv.wave_stat), 0);
 				}
 				else if (53 <= cv.wave_stat)
 				{
-					amplitude = get_Amplitude(Amplitude_Mode.Linear, new Amplitude_Argument(0, 0, 65, 1.2, cv.wave_stat, false));
+					amplitude = get_Amplitude(Amplitude_Mode.Linear, new General_Amplitude_Argument(0, 0, 65, 1.2, cv.wave_stat, false));
 					pulse_mode = Pulse_Mode.Async;
 					carrier_freq = new Carrier_Freq(get_Changing_freq(0, 730, 53, 700, cv.wave_stat), 0);
 				}
 				else if(4 >= cv.wave_stat && !cv.free_run)
 				{
-					amplitude = get_Amplitude(Amplitude_Mode.Linear, new Amplitude_Argument(0, 0, 65, 1.2, cv.wave_stat, false));
+					amplitude = get_Amplitude(Amplitude_Mode.Linear, new General_Amplitude_Argument(0, 0, 65, 1.2, cv.wave_stat, false));
 					pulse_mode = Pulse_Mode.Async;
 					carrier_freq = new Carrier_Freq(200, 0);
                 }
                 else
                 {
-					amplitude = get_Amplitude(Amplitude_Mode.Linear, new Amplitude_Argument(0, 0, 65, 1.2, cv.wave_stat, false));
+					amplitude = get_Amplitude(Amplitude_Mode.Linear, new General_Amplitude_Argument(0, 0, 65, 1.2, cv.wave_stat, false));
 					pulse_mode = Pulse_Mode.Async;
 					carrier_freq = new Carrier_Freq(get_Changing_freq(0, 730, 53, 700, cv.wave_stat), 150);
 				}
@@ -1706,23 +1706,23 @@ namespace VVVF_Generator_Porting
 				else if (58 <= cv.wave_stat)
 				{
 					pulse_mode = Pulse_Mode.P_Wide_3;
-					amplitude = get_Amplitude(Amplitude_Mode.Wide_3_Pulse, new Amplitude_Argument(58, 0.0, 61, 0.8, cv.wave_stat, false));
+					amplitude = get_Amplitude(Amplitude_Mode.Wide_3_Pulse, new General_Amplitude_Argument(58, 0.0, 61, 0.8, cv.wave_stat, false));
 				}
 				else if (48 <= cv.wave_stat)
 				{
-					amplitude = get_Amplitude(Amplitude_Mode.Linear, new Amplitude_Argument(0, 0, 61, 1.2, cv.wave_stat, false));
+					amplitude = get_Amplitude(Amplitude_Mode.Linear, new General_Amplitude_Argument(0, 0, 61, 1.2, cv.wave_stat, false));
 					pulse_mode = Pulse_Mode.Async;
 					carrier_freq = new Carrier_Freq(get_Changing_freq(48 , 700, 58 , 1820, cv.wave_stat), 0);
 				}
 				else if (46 <= cv.wave_stat)
 				{
-					amplitude = get_Amplitude(Amplitude_Mode.Linear, new Amplitude_Argument(0, 0, 61, 1.2, cv.wave_stat, false));
+					amplitude = get_Amplitude(Amplitude_Mode.Linear, new General_Amplitude_Argument(0, 0, 61, 1.2, cv.wave_stat, false));
 					pulse_mode = Pulse_Mode.Async;
 					carrier_freq = new Carrier_Freq(get_Changing_freq(0, 730, 49, 700, cv.wave_stat), 0);
 				}
 				else
 				{
-					amplitude = get_Amplitude(Amplitude_Mode.Linear, new Amplitude_Argument(0, 0, 61, 1.2, cv.wave_stat, false));
+					amplitude = get_Amplitude(Amplitude_Mode.Linear, new General_Amplitude_Argument(0, 0, 61, 1.2, cv.wave_stat, false));
 					pulse_mode = Pulse_Mode.Async;
 					carrier_freq = new Carrier_Freq(get_Changing_freq(0,730,49, 700, cv.wave_stat), 150);
 				}
@@ -1751,7 +1751,7 @@ namespace VVVF_Generator_Porting
 		//Kyoto Subway
 		public static Wave_Values calculate_kyoto_subway_50_mitsubishi_gto_2_level(Control_Values cv)
 		{
-			double amplitude = get_Amplitude(Amplitude_Mode.Linear, new Amplitude_Argument(0, 0, 63, 1, cv.wave_stat, false));
+			double amplitude = get_Amplitude(Amplitude_Mode.Linear, new General_Amplitude_Argument(0, 0, 63, 1, cv.wave_stat, false));
 			Pulse_Mode pulse_mode;
 			Carrier_Freq carrier_freq = new Carrier_Freq(700, 0);
 
@@ -1822,7 +1822,7 @@ namespace VVVF_Generator_Porting
 						set_Control_Frequency(rolling_freq);
 					}
 
-					amplitude = get_Amplitude(Amplitude_Mode.Linear, new Amplitude_Argument(0, 0, 57, 1, cv.wave_stat, false));
+					amplitude = get_Amplitude(Amplitude_Mode.Linear, new General_Amplitude_Argument(0, 0, 57, 1, cv.wave_stat, false));
 					if (57 <= cv.wave_stat) pulse_mode = Pulse_Mode.P_1;
 					else if (52 <= cv.wave_stat && !cv.free_run)
 					{
@@ -1861,7 +1861,7 @@ namespace VVVF_Generator_Porting
 						set_Control_Frequency(rolling_freq);
 					}
 
-					amplitude = get_Amplitude(Amplitude_Mode.Linear, new Amplitude_Argument(0, 0, 32, 1, cv.wave_stat, false));
+					amplitude = get_Amplitude(Amplitude_Mode.Linear, new General_Amplitude_Argument(0, 0, 32, 1, cv.wave_stat, false));
 					if (32 <= cv.wave_stat) pulse_mode = Pulse_Mode.P_1;
 					else if (31 <= cv.wave_stat && !cv.free_run)
 					{
@@ -1902,9 +1902,9 @@ namespace VVVF_Generator_Porting
 			double amplitude;
 
 			if (53 <= cv.wave_stat && cv.wave_stat <= 55)
-				amplitude = get_Amplitude(Amplitude_Mode.Linear, new Amplitude_Argument(53, 0.963, 55, 5, cv.wave_stat, false));
+				amplitude = get_Amplitude(Amplitude_Mode.Linear, new General_Amplitude_Argument(53, 0.963, 55, 5, cv.wave_stat, false));
 			else
-				amplitude = get_Amplitude(Amplitude_Mode.Linear, new Amplitude_Argument(0, 0, 55, 1, cv.wave_stat, false));
+				amplitude = get_Amplitude(Amplitude_Mode.Linear, new General_Amplitude_Argument(0, 0, 55, 1, cv.wave_stat, false));
 
 			Pulse_Mode pulse_mode;
 			Carrier_Freq carrier_freq = new Carrier_Freq(700, 0);
@@ -1956,7 +1956,7 @@ namespace VVVF_Generator_Porting
 					double mascon_off_check = check_for_mascon_off(cv, 53);
 					if (mascon_off_check != -1) cv.wave_stat = mascon_off_check;
 
-					amplitude = get_Amplitude(Amplitude_Mode.Linear, new Amplitude_Argument(0, 0, 53, 1, cv.wave_stat, false));
+					amplitude = get_Amplitude(Amplitude_Mode.Linear, new General_Amplitude_Argument(0, 0, 53, 1, cv.wave_stat, false));
 					if (53 <= cv.wave_stat) pulse_mode = Pulse_Mode.P_1;
 					else if (43 <= cv.wave_stat || (cv.free_run && get_Sine_Angle_Freq() > 43 * M_2PI)) pulse_mode = Pulse_Mode.P_3;
 					else if (38 <= cv.wave_stat || (cv.free_run && get_Sine_Angle_Freq() > 38 * M_2PI)) pulse_mode = Pulse_Mode.P_5;
@@ -1985,7 +1985,7 @@ namespace VVVF_Generator_Porting
 					}
 					else
 					{
-						amplitude = get_Amplitude(Amplitude_Mode.Linear, new Amplitude_Argument(1, 0.05, 43, 0.98, cv.wave_stat, false));
+						amplitude = get_Amplitude(Amplitude_Mode.Linear, new General_Amplitude_Argument(1, 0.05, 43, 0.98, cv.wave_stat, false));
 						if (38 <= cv.wave_stat || (cv.free_run && get_Sine_Angle_Freq() > 38 * M_2PI)) pulse_mode = Pulse_Mode.P_3;
 						else if (35 <= cv.wave_stat || (cv.free_run && get_Sine_Angle_Freq() > 35 * M_2PI)) pulse_mode = Pulse_Mode.P_5;
 						else if (25 <= cv.wave_stat || (cv.free_run && get_Sine_Angle_Freq() > 25 * M_2PI)) pulse_mode = Pulse_Mode.P_9;
@@ -2032,12 +2032,12 @@ namespace VVVF_Generator_Porting
 					}
 					else if (52 <= cv.wave_stat || (cv.free_run && get_Sine_Angle_Freq() > 52 * M_2PI))
 					{
-						amplitude = get_Amplitude(Amplitude_Mode.Linear, new Amplitude_Argument(0, 0, 72, .98, cv.wave_stat, false));
+						amplitude = get_Amplitude(Amplitude_Mode.Linear, new General_Amplitude_Argument(0, 0, 72, .98, cv.wave_stat, false));
 						pulse_mode = Pulse_Mode.P_3;
 					}
 					else if (6 <= cv.wave_stat)
 					{
-						amplitude = get_Amplitude(Amplitude_Mode.Linear, new Amplitude_Argument(0, 0, 52, .73, cv.wave_stat, false));
+						amplitude = get_Amplitude(Amplitude_Mode.Linear, new General_Amplitude_Argument(0, 0, 52, .73, cv.wave_stat, false));
 						if (49 <= cv.wave_stat || (cv.free_run && get_Sine_Angle_Freq() > 49 * M_2PI))
 							carrier_freq = new Carrier_Freq(400, 0);
 						else
@@ -2062,12 +2062,12 @@ namespace VVVF_Generator_Porting
 					}
 					else if (46 <= cv.wave_stat || (cv.free_run && get_Sine_Angle_Freq() > 46 * M_2PI))
 					{
-						amplitude = get_Amplitude(Amplitude_Mode.Linear, new Amplitude_Argument(0, 0, 56, .98, cv.wave_stat, false));
+						amplitude = get_Amplitude(Amplitude_Mode.Linear, new General_Amplitude_Argument(0, 0, 56, .98, cv.wave_stat, false));
 						pulse_mode = Pulse_Mode.P_3;
 					}
 					else
 					{
-						amplitude = get_Amplitude(Amplitude_Mode.Linear, new Amplitude_Argument(1, 0.02, 46, .8, cv.wave_stat, false));
+						amplitude = get_Amplitude(Amplitude_Mode.Linear, new General_Amplitude_Argument(1, 0.02, 46, .8, cv.wave_stat, false));
 						if (7 <= cv.wave_stat || (cv.free_run && get_Sine_Angle_Freq() > 7 * M_2PI))
 							carrier_freq = new Carrier_Freq(get_Changing_freq(7, 250, 46, 380, get_Sine_Angle_Freq() / M_2PI), 0);
 						else if (1 <= cv.wave_stat || (cv.free_run && get_Sine_Angle_Freq() > 1 * M_2PI))
@@ -2124,12 +2124,12 @@ namespace VVVF_Generator_Porting
 					
 				else if (52.5 <= cv.wave_stat || (cv.free_run && get_Sine_Angle_Freq() > 52.5 * M_2PI))
                 {
-					amplitude = get_Amplitude(Amplitude_Mode.Linear, new Amplitude_Argument(0, 0, 61, 1, cv.wave_stat, false));
+					amplitude = get_Amplitude(Amplitude_Mode.Linear, new General_Amplitude_Argument(0, 0, 61, 1, cv.wave_stat, false));
 					pulse_mode = Pulse_Mode.P_3;
 				}
 				else
 				{
-					amplitude = get_Amplitude(Amplitude_Mode.Linear, new Amplitude_Argument(0, 0, 52.5, 1.1, cv.wave_stat, false));
+					amplitude = get_Amplitude(Amplitude_Mode.Linear, new General_Amplitude_Argument(0, 0, 52.5, 1.1, cv.wave_stat, false));
 					if (cv.wave_stat < 5)
 						carrier_freq = new Carrier_Freq(220, 110);
 					else if(cv.wave_stat < 15)
@@ -2164,11 +2164,11 @@ namespace VVVF_Generator_Porting
 				else if (52 <= cv.wave_stat || (cv.free_run && get_Sine_Angle_Freq() > 52 * M_2PI))
                 {
 					pulse_mode = Pulse_Mode.P_3;
-					amplitude = get_Amplitude(Amplitude_Mode.Linear, new Amplitude_Argument(0, 0, 63.5, 1, cv.wave_stat, false));
+					amplitude = get_Amplitude(Amplitude_Mode.Linear, new General_Amplitude_Argument(0, 0, 63.5, 1, cv.wave_stat, false));
 				}
 				else
 				{
-					amplitude = get_Amplitude(Amplitude_Mode.Linear, new Amplitude_Argument(0, 0, 52, 1.05, cv.wave_stat, false));
+					amplitude = get_Amplitude(Amplitude_Mode.Linear, new General_Amplitude_Argument(0, 0, 52, 1.05, cv.wave_stat, false));
 					if (cv.wave_stat < 1)
 						carrier_freq = new Carrier_Freq(205, 110);
 					else if (cv.wave_stat < 3)
@@ -2221,7 +2221,7 @@ namespace VVVF_Generator_Porting
 
 			if (cv.brake)
 			{
-				amplitude = get_Amplitude(Amplitude_Mode.Linear, new Amplitude_Argument(0, 0, 85, 1, cv.wave_stat, false));
+				amplitude = get_Amplitude(Amplitude_Mode.Linear, new General_Amplitude_Argument(0, 0, 85, 1, cv.wave_stat, false));
 				pulse_mode = Pulse_Mode.Async;
 
 				double expect_saw_freq = 1190;
@@ -2240,7 +2240,7 @@ namespace VVVF_Generator_Porting
 			}
 			else
 			{
-				amplitude = get_Amplitude(Amplitude_Mode.Linear, new Amplitude_Argument(0, 0, 85, 1, cv.wave_stat, false));
+				amplitude = get_Amplitude(Amplitude_Mode.Linear, new General_Amplitude_Argument(0, 0, 85, 1, cv.wave_stat, false));
 				pulse_mode = Pulse_Mode.Async;
 
 				double expect_saw_freq = 1190;
@@ -2276,7 +2276,7 @@ namespace VVVF_Generator_Porting
 
 			if (cv.brake)
 			{
-				amplitude = get_Amplitude(Amplitude_Mode.Linear, new Amplitude_Argument(0, 0, 90, 1, cv.wave_stat, false));
+				amplitude = get_Amplitude(Amplitude_Mode.Linear, new General_Amplitude_Argument(0, 0, 90, 1, cv.wave_stat, false));
 				if (98 <= cv.wave_stat) pulse_mode = Pulse_Mode.P_1;
 				else if (92 <= cv.wave_stat && cv.mascon_on)
 				{
@@ -2296,7 +2296,7 @@ namespace VVVF_Generator_Porting
 			}
 			else
 			{
-				amplitude = get_Amplitude(Amplitude_Mode.Linear, new Amplitude_Argument(0, 0, 85, 1, cv.wave_stat, false));
+				amplitude = get_Amplitude(Amplitude_Mode.Linear, new General_Amplitude_Argument(0, 0, 85, 1, cv.wave_stat, false));
 				if (88 <= cv.wave_stat) pulse_mode = Pulse_Mode.P_1;
 				else if (82 <= cv.wave_stat && cv.mascon_on)
 				{
@@ -2343,7 +2343,7 @@ namespace VVVF_Generator_Porting
 
 			if (cv.brake)
 			{
-				amplitude = get_Amplitude(Amplitude_Mode.Linear, new Amplitude_Argument(0, 0, 77, 1, cv.wave_stat, false));
+				amplitude = get_Amplitude(Amplitude_Mode.Linear, new General_Amplitude_Argument(0, 0, 77, 1, cv.wave_stat, false));
 
 				if (77 <= cv.wave_stat)
 					pulse_mode = Pulse_Mode.P_1;
@@ -2385,7 +2385,7 @@ namespace VVVF_Generator_Porting
 			}
 			else
 			{
-				amplitude = get_Amplitude(Amplitude_Mode.Linear, new Amplitude_Argument(0, 0, 60, 1, cv.wave_stat, false));
+				amplitude = get_Amplitude(Amplitude_Mode.Linear, new General_Amplitude_Argument(0, 0, 60, 1, cv.wave_stat, false));
 
 				if (60 <= cv.wave_stat)
 					pulse_mode = Pulse_Mode.P_1;
@@ -2429,9 +2429,9 @@ namespace VVVF_Generator_Porting
 			if (cv.brake)
 			{
 				if (96 <= cv.wave_stat && cv.wave_stat <= 98)
-					amplitude = get_Amplitude(Amplitude_Mode.Linear, new Amplitude_Argument(96, 0.979, 98, 5, cv.wave_stat, false));
+					amplitude = get_Amplitude(Amplitude_Mode.Linear, new General_Amplitude_Argument(96, 0.979, 98, 5, cv.wave_stat, false));
 				else
-					amplitude = get_Amplitude(Amplitude_Mode.Linear, new Amplitude_Argument(0, 0, 98, 1, cv.wave_stat, false));
+					amplitude = get_Amplitude(Amplitude_Mode.Linear, new General_Amplitude_Argument(0, 0, 98, 1, cv.wave_stat, false));
 
 				pulse_mode = Pulse_Mode.P_1;
 				if (98 <= cv.wave_stat)
@@ -2447,9 +2447,9 @@ namespace VVVF_Generator_Porting
 			else
 			{
 				if (53 <= cv.wave_stat && cv.wave_stat <= 55)
-					amplitude = get_Amplitude(Amplitude_Mode.Linear, new Amplitude_Argument(53, 0.979, 55, 5, cv.wave_stat, false));
+					amplitude = get_Amplitude(Amplitude_Mode.Linear, new General_Amplitude_Argument(53, 0.979, 55, 5, cv.wave_stat, false));
 				else
-					amplitude = get_Amplitude(Amplitude_Mode.Linear, new Amplitude_Argument(0, 0, 55, 1, cv.wave_stat, false));
+					amplitude = get_Amplitude(Amplitude_Mode.Linear, new General_Amplitude_Argument(0, 0, 55, 1, cv.wave_stat, false));
 
 				pulse_mode = Pulse_Mode.P_1;
 				if (55 <= cv.wave_stat)
@@ -2467,7 +2467,7 @@ namespace VVVF_Generator_Porting
 
 		public static Wave_Values calculate_silent_2_level(Control_Values cv)
 		{
-			double amplitude = get_Amplitude(Amplitude_Mode.Linear, new Amplitude_Argument(0, 0, 60, 1, cv.wave_stat, false));
+			double amplitude = get_Amplitude(Amplitude_Mode.Linear, new General_Amplitude_Argument(0, 0, 60, 1, cv.wave_stat, false));
 			Pulse_Mode pulse_mode;
 			Carrier_Freq carrier_freq = new Carrier_Freq(700, 0);
 
@@ -2483,7 +2483,7 @@ namespace VVVF_Generator_Porting
 		}
 		public static Wave_Values calculate_jre_209_mitsubishi_gto_2_level(Control_Values cv)
 		{
-			double amplitude = get_Amplitude(Amplitude_Mode.Linear, new Amplitude_Argument(0, 0, 53, 1, cv.wave_stat, false));
+			double amplitude = get_Amplitude(Amplitude_Mode.Linear, new General_Amplitude_Argument(0, 0, 53, 1, cv.wave_stat, false));
 			Pulse_Mode pulse_mode;
 			Carrier_Freq carrier_freq = new Carrier_Freq(700, 0);
 
@@ -2516,7 +2516,7 @@ namespace VVVF_Generator_Porting
 		public static Wave_Values calculate_famina_2_level(Control_Values cv)
 		{
 
-			double amplitude = get_Amplitude(Amplitude_Mode.Linear, new Amplitude_Argument(0, 0, 60, 1, cv.wave_stat, false));
+			double amplitude = get_Amplitude(Amplitude_Mode.Linear, new General_Amplitude_Argument(0, 0, 60, 1, cv.wave_stat, false));
 			Pulse_Mode pulse_mode;
 			Carrier_Freq carrier_freq = new Carrier_Freq(700, 0);
 
@@ -2562,7 +2562,7 @@ namespace VVVF_Generator_Porting
 		public static Wave_Values calculate_pulse_test_2_level(Control_Values cv)
 		{
 
-			double amplitude = get_Amplitude(Amplitude_Mode.Linear, new Amplitude_Argument(0, 0.1, 60, 1, cv.wave_stat, false));
+			double amplitude = get_Amplitude(Amplitude_Mode.Linear, new General_Amplitude_Argument(0, 0.1, 60, 1, cv.wave_stat, false));
 			Pulse_Mode pulse_mode;
 			Carrier_Freq carrier_freq = new Carrier_Freq(700, 0);
 

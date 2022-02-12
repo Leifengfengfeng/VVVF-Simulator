@@ -138,7 +138,7 @@ namespace VVVF_Generator_Porting
 			Linear, Wide_3_Pulse, Level_3_1P_1,Level_3_1P_2 , Exponential
 		}
 
-		public class Amplitude_Argument
+		public class General_Amplitude_Argument
         {
 			public double min_freq = 0;
 			public double min_amp = 0;
@@ -148,7 +148,7 @@ namespace VVVF_Generator_Porting
 
 			public double current = 0;
 
-			public Amplitude_Argument(double Minimum_Freq, double Minimum_Amplitude, double Maximum_Freq, double Maximum_Amplitude, double Current, bool Disable_Range_Limit)
+			public General_Amplitude_Argument(double Minimum_Freq, double Minimum_Amplitude, double Maximum_Freq, double Maximum_Amplitude, double Current, bool Disable_Range_Limit)
             {
 				min_freq = Minimum_Freq;
 				max_freq = Maximum_Freq;
@@ -162,30 +162,87 @@ namespace VVVF_Generator_Porting
 			}
 
 		}
-		
-		public static double get_Amplitude(Amplitude_Mode mode , Amplitude_Argument arg)
-        {
-			double val = 0;
 
-			if (!arg.disable_range_limit)
+		public class Level_3_1P_Amplitude_Argument
+		{
+			public double min_freq = 0;
+			public double min_amp = 0;
+			public double max_freq = 0;
+			public double max_amp = 0;
+			public bool disable_range_limit = true;
+
+			public double change_const = 0.43;
+
+			public double current = 0;
+
+			public Level_3_1P_Amplitude_Argument(double Minimum_Freq, double Minimum_Amplitude, double Maximum_Freq, double Maximum_Amplitude, double Current, double Change_Const, bool Disable_Range_Limit)
 			{
-				if (arg.current < arg.min_freq) arg.current = arg.min_freq;
-				if (arg.current > arg.max_freq) arg.current = arg.max_freq;
+				min_freq = Minimum_Freq;
+				max_freq = Maximum_Freq;
+
+				min_amp = Minimum_Amplitude;
+				max_amp = Maximum_Amplitude;
+
+				disable_range_limit = Disable_Range_Limit;
+
+				change_const = Change_Const;
+
+				current = Current;
 			}
 
+		}
+
+		public static double get_Amplitude(Amplitude_Mode mode , Object arg_o)
+        {
+			double val = 0;
 			if (mode == Amplitude_Mode.Linear)
+            {
+				General_Amplitude_Argument arg = (General_Amplitude_Argument)arg_o;
+
+				if (!arg.disable_range_limit)
+				{
+					if (arg.current < arg.min_freq) arg.current = arg.min_freq;
+					if (arg.current > arg.max_freq) arg.current = arg.max_freq;
+				}
 				val = (arg.max_amp - arg.min_amp) / (arg.max_freq - arg.min_freq) * (arg.current - arg.min_freq) + arg.min_amp;
+			}
+				
 			else if(mode == Amplitude_Mode.Wide_3_Pulse)
+            {
+				General_Amplitude_Argument arg = (General_Amplitude_Argument)arg_o;
+
+				if (!arg.disable_range_limit)
+				{
+					if (arg.current < arg.min_freq) arg.current = arg.min_freq;
+					if (arg.current > arg.max_freq) arg.current = arg.max_freq;
+				}
 				val = (0.2 * ((arg.current - arg.min_freq) * ((arg.max_amp - arg.min_amp) / (arg.max_freq - arg.min_freq)) + arg.min_amp)) + 0.8;
+			}
+				
 			else if(mode == Amplitude_Mode.Level_3_1P_1)
             {
-				val = 1 / get_Amplitude(Amplitude_Mode.Linear, new Amplitude_Argument(arg.min_freq, 1 / arg.min_amp, arg.max_freq, 1 / arg.max_amp, arg.current, arg.disable_range_limit));
+				General_Amplitude_Argument arg = (General_Amplitude_Argument)arg_o;
+
+				if (!arg.disable_range_limit)
+				{
+					if (arg.current < arg.min_freq) arg.current = arg.min_freq;
+					if (arg.current > arg.max_freq) arg.current = arg.max_freq;
+				}
+				val = 1 / get_Amplitude(Amplitude_Mode.Linear, new General_Amplitude_Argument(arg.min_freq, 1 / arg.min_amp, arg.max_freq, 1 / arg.max_amp, arg.current, arg.disable_range_limit));
 			}
 			else if(mode == Amplitude_Mode.Level_3_1P_2)
             {
-				double x = get_Amplitude(Amplitude_Mode.Linear, new Amplitude_Argument(arg.min_freq, 1 / arg.min_amp, arg.max_freq, 1 / arg.max_amp, arg.current, arg.disable_range_limit));
+				Level_3_1P_Amplitude_Argument arg = (Level_3_1P_Amplitude_Argument)arg_o;
 
-				double c = 0.43;
+				if (!arg.disable_range_limit)
+				{
+					if (arg.current < arg.min_freq) arg.current = arg.min_freq;
+					if (arg.current > arg.max_freq) arg.current = arg.max_freq;
+				}
+
+				double x = get_Amplitude(Amplitude_Mode.Linear, new General_Amplitude_Argument(arg.min_freq, 1 / arg.min_amp, arg.max_freq, 1 / arg.max_amp, arg.current, arg.disable_range_limit));
+
+				double c = arg.change_const;
 				double k = arg.max_amp;
 				double l = arg.min_amp;
 				double a = 1 / (2 - (1 / k)) * (1 / (l - c) - 1 / (k - c));
@@ -196,6 +253,14 @@ namespace VVVF_Generator_Porting
 			}
 			else if(mode == Amplitude_Mode.Exponential)
             {
+				General_Amplitude_Argument arg = (General_Amplitude_Argument)arg_o;
+
+				if (!arg.disable_range_limit)
+				{
+					if (arg.current < arg.min_freq) arg.current = arg.min_freq;
+					if (arg.current > arg.max_freq) arg.current = arg.max_freq;
+				}
+
 				val = my_math.exponential(arg.max_amp + 1, (arg.current - arg.min_freq) / (arg.max_freq - arg.min_freq)) - 1;//(arg.current - arg.min_freq) / (arg.max_freq - arg.min_freq) + arg.min_amp;
 			}
 
@@ -262,7 +327,7 @@ namespace VVVF_Generator_Porting
 			public double range;
         }
 
-		private static double get_random_freq(Carrier_Freq data)
+		private static double get_Random_freq(Carrier_Freq data)
 		{
             if (is_Allowed_Random_Freq_Move())
             {
@@ -299,7 +364,7 @@ namespace VVVF_Generator_Porting
 			return starting_carrier_freq + (ending_carrier_freq - starting_carrier_freq) / (ending_freq - starting_freq) * (current_frequency - starting_freq);
 		}
 
-		public static double get_pattern_random_freq(int lowest, int highest, int interval_count)
+		public static double get_Pattern_Random_freq(int lowest, int highest, int interval_count)
 		{
 			double random_freq = 0;
 			if (get_Random_Freq_Move_Count() < interval_count / 2.0)
@@ -372,7 +437,7 @@ namespace VVVF_Generator_Porting
 
 			if (pulse_mode == Pulse_Mode.Async)
             {
-				double desire_saw_angle_freq = (data.range == 0) ? data.base_freq * M_2PI : get_random_freq(data) * M_2PI;
+				double desire_saw_angle_freq = (data.range == 0) ? data.base_freq * M_2PI : get_Random_freq(data) * M_2PI;
 
 				set_Saw_Time(get_Saw_Angle_Freq() / desire_saw_angle_freq * get_Saw_Time());
 				set_Saw_Angle_Freq(desire_saw_angle_freq);
@@ -545,7 +610,7 @@ namespace VVVF_Generator_Porting
 
 			if (pulse_mode == Pulse_Mode.Async || pulse_mode == Pulse_Mode.Asyn_THI)
 			{
-				double desire_saw_angle_freq = (carrier_freq_data.range == 0) ? carrier_freq_data.base_freq * M_2PI : get_random_freq(carrier_freq_data) * M_2PI;
+				double desire_saw_angle_freq = (carrier_freq_data.range == 0) ? carrier_freq_data.base_freq * M_2PI : get_Random_freq(carrier_freq_data) * M_2PI;
 				saw_time = saw_angle_freq / desire_saw_angle_freq * saw_time;
 				saw_angle_freq = desire_saw_angle_freq;
 			}
