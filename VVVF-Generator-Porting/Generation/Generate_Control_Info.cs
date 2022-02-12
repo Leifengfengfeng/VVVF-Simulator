@@ -21,7 +21,7 @@ namespace VVVF_Generator_Porting.Generation
         private static String[] get_Pulse_Name(Pulse_Mode mode)
         {
             //Not in sync
-            if (mode == Pulse_Mode.Async || mode == Pulse_Mode.Asyn_THI)
+            if (mode == Pulse_Mode.Async || mode == Pulse_Mode.Async_THI)
             {
                 string[] names = new string[3];
                 int count = 0;
@@ -768,7 +768,7 @@ namespace VVVF_Generator_Porting.Generation
                     title_str_with_line_corner_curved_rectangle(info_g ,"Carrier", new SolidBrush(Color.FromArgb(190, 190, 190)), fnt_default, new Pen(Color.FromArgb(144, 144, 144), 4), new Point(30 * 2, 225 * 2), new Point(449 * 2, 428 * 2), 20, new Point(0, 0));
 
                     
-                    if (Video_Generate_Values.pulse_mode == Pulse_Mode.Async || Video_Generate_Values.pulse_mode == Pulse_Mode.Asyn_THI)
+                    if (Video_Generate_Values.pulse_mode == Pulse_Mode.Async || Video_Generate_Values.pulse_mode == Pulse_Mode.Async_THI)
                     {
                         String carrier_freq_str = String.Format("{0:f0}", Video_Generate_Values.carrier_freq_data.base_freq);
                         SizeF freq_str_size = info_g.MeasureString(carrier_freq_str, fnt_num);
@@ -799,12 +799,12 @@ namespace VVVF_Generator_Porting.Generation
 
                     title_str_with_line_corner_curved_rectangle(info_g, "Output", new SolidBrush(Color.FromArgb(190, 190, 190)), fnt_default , new Pen(Color.FromArgb(144, 144, 144),4), new Point(30 * 2, 474 * 2), new Point( 449 * 2, 731 * 2), 20, new Point(0,0));
                     
-                    if(Video_Generate_Values.pulse_mode == Pulse_Mode.Async || Video_Generate_Values.pulse_mode == Pulse_Mode.Asyn_THI)
+                    if(Video_Generate_Values.pulse_mode == Pulse_Mode.Async || Video_Generate_Values.pulse_mode == Pulse_Mode.Async_THI)
                         center_text_with_line_corner_curved_rectangle(info_g, "Freq", new SolidBrush(Color.White), fnt_default, new Pen(Color.White, 4), new Point(47 * 2, 507 * 2), new Point(182 * 2, 602 * 2), 10, new Point(0, 5));
                     else 
                         center_text_with_filled_corner_curved_rectangle(info_g, "Freq", new SolidBrush(Color.FromArgb(52,52,52)), fnt_default, new SolidBrush(Color.White), new Point(47 * 2, 507 * 2), new Point(182 * 2, 602 * 2), 10, new Point(0, 5));
                     
-                    if(!(Video_Generate_Values.pulse_mode == Pulse_Mode.Async || Video_Generate_Values.pulse_mode == Pulse_Mode.Asyn_THI)){
+                    if(!(Video_Generate_Values.pulse_mode == Pulse_Mode.Async || Video_Generate_Values.pulse_mode == Pulse_Mode.Async_THI)){
                         int connect_sync_box_size = 12;
                         for(int r = 0; r < 9; r++)
                         {

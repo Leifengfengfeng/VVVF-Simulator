@@ -389,7 +389,7 @@ namespace VVVF_Generator_Porting.Generation
 
             int movie_div = 3000;
             int wave_height = 100;
-            int calculate_div = 15;
+            int calculate_div = 30;
 
             VideoWriter vr = new VideoWriter(fileName, OpenCvSharp.FourCC.H264, div_freq / movie_div, new OpenCvSharp.Size(image_width, image_height));
 
@@ -412,9 +412,6 @@ namespace VVVF_Generator_Porting.Generation
                     byte[] img = ms.GetBuffer();
                     Mat mat = OpenCvSharp.Mat.FromImageData(img);
 
-                    Cv2.ImShow("Wave Form View", mat);
-                    Cv2.WaitKey(1);
-
                     vr.Write(mat);
 
                     g.Dispose();
@@ -436,7 +433,7 @@ namespace VVVF_Generator_Porting.Generation
                     Graphics g = Graphics.FromImage(image);
                     g.FillRectangle(new SolidBrush(Color.White), 0, 0, image_width, image_height);
 
-                    for (int i = 0; i < image_width * calculate_div; i++)
+                    for (int i = 0; i < (image_width-100) * calculate_div; i++)
                     {
                         Wave_Values[] values = new Wave_Values[4];
 
@@ -447,7 +444,7 @@ namespace VVVF_Generator_Porting.Generation
                                 brake = is_Braking(),
                                 mascon_on = !is_Mascon_Off(),
                                 free_run = is_Free_Running(),
-                                initial_phase = Math.PI * 2.0 / 3.0 * 0,
+                                initial_phase = Math.PI / 6.0,
                                 wave_stat = get_Control_Frequency()
                             };
                             Wave_Values wv_U = get_Calculated_Value(sound_name, cv_U);
@@ -456,7 +453,7 @@ namespace VVVF_Generator_Porting.Generation
                                 brake = is_Braking(),
                                 mascon_on = !is_Mascon_Off(),
                                 free_run = is_Free_Running(),
-                                initial_phase = Math.PI * 2.0 / 3.0 * 1,
+                                initial_phase = Math.PI / 6.0 + Math.PI * 2.0 / 3.0 * 1,
                                 wave_stat = get_Control_Frequency()
                             };
                             Wave_Values wv_V = get_Calculated_Value(sound_name, cv_V);
@@ -474,18 +471,27 @@ namespace VVVF_Generator_Porting.Generation
 
                         int curr_val = (int)(-(values[0].pwm_value - values[1].pwm_value) * wave_height + image_height / 2.0);
                         int next_val = (int)(-(values[2].pwm_value - values[3].pwm_value) * wave_height + image_height / 2.0);
-                        g.DrawLine(new Pen(Color.Black), (int)(i / (double)calculate_div), curr_val, (int)(((curr_val != next_val) ? i : i + 1) / (double)calculate_div), next_val);
+                        g.DrawLine(new Pen(Color.Black,2), (int)(i / (double)calculate_div) + 50 , curr_val, (int)(((curr_val != next_val) ? i : i + 1) / (double)calculate_div) + 50, next_val);
                     }
 
                     MemoryStream ms = new MemoryStream();
                     image.Save(ms, ImageFormat.Png);
                     byte[] img = ms.GetBuffer();
                     Mat mat = OpenCvSharp.Mat.FromImageData(img);
-
-                    Cv2.ImShow("Wave Form View", mat);
-                    Cv2.WaitKey(1);
-
                     vr.Write(mat);
+                    mat.Dispose();
+                    ms.Dispose();
+
+                    MemoryStream resized_ms = new MemoryStream();
+                    Bitmap resized = new Bitmap(image, image_width / 2, image_height / 2);
+                    resized.Save(resized_ms, ImageFormat.Png);
+                    byte[] resized_img = resized_ms.GetBuffer();
+                    Mat resized_mat = OpenCvSharp.Mat.FromImageData(resized_img);
+                    Cv2.ImShow("Wave Form", resized_mat);
+                    Cv2.WaitKey(1);
+                    resized_mat.Dispose();
+                    resized_ms.Dispose();
+                    
 
                     g.Dispose();
                     image.Dispose();
@@ -515,9 +521,6 @@ namespace VVVF_Generator_Porting.Generation
                     image.Save(ms, ImageFormat.Png);
                     byte[] img = ms.GetBuffer();
                     Mat mat = OpenCvSharp.Mat.FromImageData(img);
-
-                    Cv2.ImShow("Wave Form View", mat);
-                    Cv2.WaitKey(1);
 
                     vr.Write(mat);
 

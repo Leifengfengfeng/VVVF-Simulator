@@ -1415,7 +1415,7 @@ namespace VVVF_Generator_Porting
 				{
 					a = 1; b = 1;
 					double expect_saw_freq = 400;
-					pulse_mode = Pulse_Mode.Asyn_THI;
+					pulse_mode = Pulse_Mode.Async_THI;
 					if (5.6 <= cv.wave_stat || (cv.free_run && get_Sine_Angle_Freq() >= 5.6 * M_2PI))
 						expect_saw_freq = 400;
 					else if (5 <= cv.wave_stat || (cv.free_run && get_Sine_Angle_Freq() >= 5.0 * M_2PI))
@@ -1512,7 +1512,7 @@ namespace VVVF_Generator_Porting
 				{
 					a = 2; b = 3;
 					carrier_freq = new Carrier_Freq(400, 0);
-					pulse_mode = Pulse_Mode.Asyn_THI;
+					pulse_mode = Pulse_Mode.Async_THI;
 				}
 				else
 				{
@@ -1577,7 +1577,7 @@ namespace VVVF_Generator_Porting
 				{
 					a = 1; b = 1;
 					double expect_saw_freq = 600;
-					pulse_mode = Pulse_Mode.Asyn_THI;
+					pulse_mode = Pulse_Mode.Async_THI;
 					if (10 <= cv.wave_stat)
 						expect_saw_freq = 14.7297098247165 * cv.wave_stat + 452.70290175284;
 					else if (37.156 <= cv.wave_stat)
@@ -1624,7 +1624,7 @@ namespace VVVF_Generator_Porting
 				{
 					a = 2; b = 1;
 					double expect_saw_freq = 600;
-					pulse_mode = Pulse_Mode.Asyn_THI;
+					pulse_mode = Pulse_Mode.Async_THI;
 					if (10 <= cv.wave_stat)
 						expect_saw_freq = 14.7297098247165 * cv.wave_stat + 452.70290175284;
 					else if (37.156 <= cv.wave_stat)

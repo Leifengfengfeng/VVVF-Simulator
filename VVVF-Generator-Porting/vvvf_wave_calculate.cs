@@ -47,15 +47,15 @@ namespace VVVF_Generator_Porting
 			SP_21, SP_23, SP_25, SP_27, SP_29, SP_31, SP_33, SP_35, SP_37, SP_39, SP_41
 			, SP_43, SP_45, SP_47, SP_49, SP_51, SP_53, SP_55, SP_57, SP_59, SP_61
 
-			, Asyn_THI, CHMP_3, CHMP_Wide_3, CHMP_5, CHMP_Wide_5, CHMP_7, CHMP_Wide_7, CHMP_9, CHMP_Wide_9, CHMP_11, CHMP_13, CHMP_15
+			, Async_THI, CHMP_3, CHMP_Wide_3, CHMP_5, CHMP_Wide_5, CHMP_7, CHMP_Wide_7, CHMP_9, CHMP_Wide_9, CHMP_11, CHMP_13, CHMP_15
 
 			, SHEP_3, SHEP_5, SHEP_7, SHEP_9, SHEP_11, SHEP_13, SHEP_15
 		};
 
 		//function calculation
-		public static double get_saw_value(double time, double angle_frequency, double initial_phase)
+		public static double get_saw_value(double x)
 		{
-			double val,x = time * angle_frequency + initial_phase;
+			double val;
 			double fixed_x = x - (double)((int)(x * M_1_2PI) * M_2PI);
 			if (0 <= fixed_x && fixed_x < M_PI_2)
 				val = M_2_PI * fixed_x;
@@ -67,9 +67,9 @@ namespace VVVF_Generator_Porting
 			return -val;
 		}
 
-		public static double get_sin_value(double time, double angle_frequency, double initial_phase, double amplitude)
+		public static double get_sin_value(double x, double amplitude)
 		{
-			return my_math.sin(time * angle_frequency + initial_phase) * amplitude;
+			return my_math.sin(x) * amplitude;
 		}
 
 		public static int get_pwm_value(double sin_value, double saw_value)
@@ -82,8 +82,8 @@ namespace VVVF_Generator_Porting
 
 		public static Wave_Values get_Wide_P_3(double time, double angle_frequency, double initial_phase, double voltage, bool saw_oppose)
 		{
-			double sin = get_sin_value(time, angle_frequency, initial_phase, 1);
-			double saw = get_saw_value(time, angle_frequency, initial_phase);
+			double sin = get_sin_value(time * angle_frequency + initial_phase, 1);
+			double saw = get_saw_value(time * angle_frequency + initial_phase);
 			if (saw_oppose)
 				saw = -saw;
 			double pwm = ((sin - saw > 0) ? 1 : -1) * voltage;
@@ -97,8 +97,8 @@ namespace VVVF_Generator_Porting
 		}
 		public static Wave_Values get_P_with_saw(double time, double sin_angle_frequency, double initial_phase, double carrier_initial_phase, double voltage, double carrier_mul, bool saw_oppose)
 		{
-			double carrier_saw = -get_saw_value(time, carrier_mul * sin_angle_frequency, carrier_mul * initial_phase + carrier_initial_phase);
-			double saw = -get_saw_value(time, sin_angle_frequency, initial_phase);
+			double carrier_saw = -get_saw_value(carrier_mul * (time * sin_angle_frequency + initial_phase) + carrier_initial_phase);
+			double saw = -get_saw_value(time * sin_angle_frequency + initial_phase);
 			if (saw_oppose)
 				saw = -saw;
 			double pwm = (saw > 0) ? voltage : -voltage;
@@ -270,10 +270,10 @@ namespace VVVF_Generator_Porting
 
 		public static int get_Pulse_Num(Pulse_Mode mode)
 		{
-			if (mode == Pulse_Mode.Async || mode == Pulse_Mode.Asyn_THI)
-				return -1;
-			if (mode == Pulse_Mode.P_1)
+			if (mode == Pulse_Mode.Async || mode == Pulse_Mode.Async_THI)
 				return 0;
+			if (mode == Pulse_Mode.P_1)
+				return 1;
 			if (mode == Pulse_Mode.P_Wide_3 || mode == Pulse_Mode.CHMP_Wide_3 || mode == Pulse_Mode.CHMP_3)
 				return 0;
 			if (mode == Pulse_Mode.P_5 || mode == Pulse_Mode.SP_5 || mode == Pulse_Mode.CHMP_5 || mode == Pulse_Mode.CHMP_Wide_5)
@@ -442,25 +442,40 @@ namespace VVVF_Generator_Porting
 				set_Saw_Time(get_Saw_Angle_Freq() / desire_saw_angle_freq * get_Saw_Time());
 				set_Saw_Angle_Freq(desire_saw_angle_freq);
 
+				double sin_value = get_sin_value(sine_time * sine_angle_freq + sine_control.initial_phase, sine_control.amplitude);
+				double saw_value = get_saw_value(get_Saw_Time() * get_Saw_Angle_Freq());
+
+				double changed_saw = ((dipolar != -1) ? dipolar : 0.5) * saw_value;
+				int pwm_value = get_pwm_value(sin_value, changed_saw + 0.5) + get_pwm_value(sin_value, changed_saw - 0.5);
+
+				Wave_Values wv;
+				wv.sin_value = sin_value;
+				wv.saw_value = saw_value;
+				wv.pwm_value = pwm_value;
+				return wv;
+
 			}
 			else
 			{
+				
+
+				double sin_value = get_sin_value(sine_time * sine_angle_freq + sine_control.initial_phase, sine_control.amplitude);
+				double saw_value = get_saw_value(get_Pulse_Num(pulse_mode) * (sine_angle_freq * sine_time + sine_control.initial_phase));
+
+				double changed_saw = ((dipolar != -1) ? dipolar : 0.5) * saw_value;
+				int pwm_value = get_pwm_value(sin_value, changed_saw + 0.5) + get_pwm_value(sin_value, changed_saw - 0.5);
+
 				set_Saw_Angle_Freq(sine_angle_freq * get_Pulse_Num(pulse_mode));
 				set_Saw_Time(sine_time);
+
+				Wave_Values wv;
+				wv.sin_value = sin_value;
+				wv.saw_value = saw_value;
+				wv.pwm_value = pwm_value;
+				return wv;
 			}
 
-			double sin_value = get_sin_value(sine_time, sine_angle_freq, sine_control.initial_phase, sine_control.amplitude);
-
-			double saw_value = get_saw_value(get_Saw_Time(), get_Saw_Angle_Freq(), 0);
-
-			double changed_saw = ((dipolar != -1) ? dipolar : 0.5) * saw_value;
-			int pwm_value = get_pwm_value(sin_value, changed_saw + 0.5) + get_pwm_value(sin_value, changed_saw - 0.5);
-
-			Wave_Values wv;
-			wv.sin_value = sin_value;
-			wv.saw_value = saw_value;
-			wv.pwm_value = pwm_value;
-			return wv;
+			
 		}
 
 		public static Wave_Values calculate_two_level(Pulse_Mode pulse_mode, Carrier_Freq carrier_freq_data, Sine_Control_Data sine_control)
@@ -585,7 +600,7 @@ namespace VVVF_Generator_Porting
 
 			String[] pulse_name_split = pulse_mode.ToString().Split('_');
 			bool saw_go = false;
-			if (pulse_name_split.Length > 1 && Int32.Parse(pulse_name_split[pulse_name_split.Length - 1]) % 2 == 0)
+			if (!pulse_name_split[0].StartsWith("Async") &&pulse_name_split.Length > 1 && Int32.Parse(pulse_name_split[pulse_name_split.Length - 1]) % 2 == 0)
 				saw_go = true;
 			if (
 
@@ -608,38 +623,55 @@ namespace VVVF_Generator_Porting
 				return get_P_with_saw(sin_time, sin_angle_freq, initial_phase, pulse_initial_phase, amplitude, pulse_num, is_shift);
 			}
 
-			if (pulse_mode == Pulse_Mode.Async || pulse_mode == Pulse_Mode.Asyn_THI)
+			//is Async Mode?
+			if (pulse_mode == Pulse_Mode.Async || pulse_mode == Pulse_Mode.Async_THI)
 			{
 				double desire_saw_angle_freq = (carrier_freq_data.range == 0) ? carrier_freq_data.base_freq * M_2PI : get_Random_freq(carrier_freq_data) * M_2PI;
 				saw_time = saw_angle_freq / desire_saw_angle_freq * saw_time;
 				saw_angle_freq = desire_saw_angle_freq;
+
+				double sin_value = 
+					(pulse_mode == Pulse_Mode.Async_THI) ?
+						get_sin_value(sin_time * sin_angle_freq + initial_phase, amplitude) + 0.2 * get_sin_value(sin_time * 3 * sin_angle_freq + 3 * initial_phase, amplitude) :
+						get_sin_value(sin_time * sin_angle_freq + initial_phase, amplitude);
+
+				double saw_value = get_saw_value(saw_time * saw_angle_freq);
+				int pwm_value = get_pwm_value(sin_value, saw_value) * 2;
+
+				set_Saw_Angle_Freq(saw_angle_freq);
+				set_Saw_Time(saw_time);
+
+				Wave_Values wv;
+				wv.sin_value = sin_value;
+				wv.saw_value = saw_value;
+				wv.pwm_value = pwm_value;
+				return wv;
+
 			}
 			else
 			{
-				double desire_saw_angle_freq = sin_angle_freq * get_Pulse_Num(pulse_mode);
-				saw_time = sin_time;
-				saw_angle_freq = desire_saw_angle_freq;
+				int pulse_num = get_Pulse_Num(pulse_mode);
+
+				double sin_value = get_sin_value(sin_time * sin_angle_freq + initial_phase, amplitude);
+				double saw_value = get_saw_value(pulse_num * (sin_time * sin_angle_freq + initial_phase));
+
+				if (pulse_mode.ToString().StartsWith("SP"))
+					saw_value = -saw_value;
+
+				int pwm_value = get_pwm_value(sin_value, saw_value) * 2;
+				//Console.WriteLine(pwm_value);
+
+				set_Saw_Angle_Freq(sin_angle_freq * pulse_num);
+				set_Saw_Time(sin_time);
+
+				Wave_Values wv;
+				wv.sin_value = sin_value;
+				wv.saw_value = saw_value;
+				wv.pwm_value = pwm_value;
+				return wv;
 			}
 
-			double sin_value = pulse_mode == Pulse_Mode.Asyn_THI ?
-			get_sin_value(sin_time, sin_angle_freq, initial_phase, amplitude) + 0.2 * get_sin_value(sin_time, 3 * sin_angle_freq, 3 * initial_phase, amplitude) :
-			get_sin_value(sin_time, sin_angle_freq, initial_phase, amplitude);
-
-			double saw_value = get_saw_value(saw_time, saw_angle_freq, 0);
-			if (pulse_mode.ToString().StartsWith("SP"))
-				saw_value = -saw_value;
-
-			int pwm_value = get_pwm_value(sin_value, saw_value) * 2;
-			//Console.WriteLine(pwm_value);
-
-			set_Saw_Angle_Freq(saw_angle_freq);
-			set_Saw_Time(saw_time);
-
-			Wave_Values wv;
-			wv.sin_value = sin_value;
-			wv.saw_value = saw_value;
-			wv.pwm_value = pwm_value;
-			return wv;
+			
 		}
 	}
 }
