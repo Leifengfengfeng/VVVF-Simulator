@@ -1,6 +1,7 @@
 ﻿using static VVVF_Generator_Porting.vvvf_wave_calculate;
 using static VVVF_Generator_Porting.vvvf_wave_control;
 using static VVVF_Generator_Porting.my_math;
+using static VVVF_Generator_Porting.vvvf_wave_calculate.Amplitude_Argument;
 
 namespace VVVF_Generator_Porting
 {
@@ -27,11 +28,11 @@ namespace VVVF_Generator_Porting
 					pulse_mode = Pulse_Mode.P_1;
 					if (cv.free_run)
 					{
-						double target_amplitude = get_Amplitude(Amplitude_Mode.Level_3_1P, new Level_3_1P_Amplitude_Argument(53, 0.49, 66, 3, get_Sine_Freq(), 0, false));
-						amplitude = get_Amplitude(Amplitude_Mode.Level_3_1P, new Level_3_1P_Amplitude_Argument(0, 0.0001, (get_Sine_Freq() > 66) ? 66 : get_Sine_Freq(), target_amplitude, cv.wave_stat, 1, false));
+						double target_amplitude = get_Amplitude(Amplitude_Mode.Inv_Proportional, new Inv_Proportional_Amplitude_Argument(53, 0.49, 66, 3, get_Sine_Freq(), 0, false));
+						amplitude = get_Amplitude(Amplitude_Mode.Inv_Proportional, new Inv_Proportional_Amplitude_Argument(0, 0.0001, (get_Sine_Freq() > 66) ? 66 : get_Sine_Freq(), target_amplitude, cv.wave_stat, 1, false));
 						if (amplitude < 0.001) amplitude = 0.0;
 					}
-					else amplitude = get_Amplitude(Amplitude_Mode.Level_3_1P, new Level_3_1P_Amplitude_Argument(53, 0.49, 66, 3, cv.wave_stat,0, false));
+					else amplitude = get_Amplitude(Amplitude_Mode.Inv_Proportional, new Inv_Proportional_Amplitude_Argument(53, 0.49, 66, 3, cv.wave_stat,0, false));
 				}
 				else if (45 <= cv.wave_stat || (cv.free_run && get_Sine_Angle_Freq() > 45 * M_2PI))
                 {
@@ -78,11 +79,11 @@ namespace VVVF_Generator_Porting
 					pulse_mode = Pulse_Mode.P_1;
 					if (cv.free_run)
 					{
-						double target_amplitude = get_Amplitude(Amplitude_Mode.Level_3_1P, new Level_3_1P_Amplitude_Argument(60, 0.6, 72, 3, get_Sine_Freq(), 0, false));
-						amplitude = get_Amplitude(Amplitude_Mode.Level_3_1P, new Level_3_1P_Amplitude_Argument(0, 0.0001, (get_Sine_Freq() > 72) ? 72 : get_Sine_Freq(), target_amplitude, cv.wave_stat, 1, false));
+						double target_amplitude = get_Amplitude(Amplitude_Mode.Inv_Proportional, new Inv_Proportional_Amplitude_Argument(60, 0.6, 72, 3, get_Sine_Freq(), 0, false));
+						amplitude = get_Amplitude(Amplitude_Mode.Inv_Proportional, new Inv_Proportional_Amplitude_Argument(0, 0.0001, (get_Sine_Freq() > 72) ? 72 : get_Sine_Freq(), target_amplitude, cv.wave_stat, 1, false));
 						if (amplitude < 0.001) amplitude = 0.0;
 					}
-					else amplitude = get_Amplitude(Amplitude_Mode.Level_3_1P, new Level_3_1P_Amplitude_Argument(60, 0.6, 72, 3, cv.wave_stat, 0, false));
+					else amplitude = get_Amplitude(Amplitude_Mode.Inv_Proportional, new Inv_Proportional_Amplitude_Argument(60, 0.6, 72, 3, cv.wave_stat, 0, false));
 				}
 				else if (49 <= cv.wave_stat || (cv.free_run && get_Sine_Angle_Freq() > 49 * M_2PI))
 				{
@@ -130,15 +131,15 @@ namespace VVVF_Generator_Porting
                 {
 					if (cv.free_run)
 					{
-						double target_amplitude = get_Amplitude(Amplitude_Mode.Level_3_1P, new Level_3_1P_Amplitude_Argument(59, 0.5, 71, 3.8, get_Sine_Freq(), 0, false));
+						double target_amplitude = get_Amplitude(Amplitude_Mode.Inv_Proportional, new Inv_Proportional_Amplitude_Argument(59, 0.5, 71, 3.8, get_Sine_Freq(), 0, false));
 						double target_freq = (get_Sine_Freq() > 71) ? 71 : get_Sine_Freq();
 
-						if (cv.mascon_on) amplitude = get_Amplitude(Amplitude_Mode.Level_3_1P, new Level_3_1P_Amplitude_Argument(0, 0.00001, target_freq, target_amplitude, cv.wave_stat, 1, false));
-						else amplitude = get_Amplitude(Amplitude_Mode.Level_3_1P, new Level_3_1P_Amplitude_Argument(0, 0.0001, target_freq, target_amplitude, cv.wave_stat, 1, false));
+						if (cv.mascon_on) amplitude = get_Amplitude(Amplitude_Mode.Inv_Proportional, new Inv_Proportional_Amplitude_Argument(0, 0.1, target_freq, target_amplitude, cv.wave_stat, 0, false));
+						else amplitude = get_Amplitude(Amplitude_Mode.Inv_Proportional, new Inv_Proportional_Amplitude_Argument(0, 0.0001, target_freq, target_amplitude, cv.wave_stat, 1, false));
 
 						if (amplitude < 0.001) amplitude = 0.0;
 					}
-					else amplitude = get_Amplitude(Amplitude_Mode.Level_3_1P, new Level_3_1P_Amplitude_Argument(59, 0.5, 71, 3.8, cv.wave_stat, 0, false));
+					else amplitude = get_Amplitude(Amplitude_Mode.Inv_Proportional, new Inv_Proportional_Amplitude_Argument(59, 0.5, 71, 3.8, cv.wave_stat, 0, false));
 					pulse_Mode = Pulse_Mode.P_1;
 				}
 				else if (50 <= cv.wave_stat || (cv.free_run && get_Sine_Angle_Freq() > 50 * M_2PI))
@@ -175,16 +176,16 @@ namespace VVVF_Generator_Porting
 				{
 					if (cv.free_run)
 					{
-						double target_amplitude = get_Amplitude(Amplitude_Mode.Level_3_1P, new Level_3_1P_Amplitude_Argument(51, 0.5, 61, 3.8, get_Sine_Freq(), 0, false));
+						double target_amplitude = get_Amplitude(Amplitude_Mode.Inv_Proportional, new Inv_Proportional_Amplitude_Argument(51, 0.5, 61, 3.8, get_Sine_Freq(), 0, false));
 						double target_freq = (get_Sine_Freq() > 61) ? 61 : get_Sine_Freq();
 
-						if (cv.mascon_on) amplitude = get_Amplitude(Amplitude_Mode.Level_3_1P, new Level_3_1P_Amplitude_Argument(0, 0.0001, target_freq, target_amplitude, cv.wave_stat,1, false));
-						else amplitude = get_Amplitude(Amplitude_Mode.Level_3_1P, new Level_3_1P_Amplitude_Argument(0, 0.0001, target_freq, target_amplitude, cv.wave_stat, 0.4, false));
+						if (cv.mascon_on) amplitude = get_Amplitude(Amplitude_Mode.Inv_Proportional, new Inv_Proportional_Amplitude_Argument(0, 0.0001, target_freq, target_amplitude, cv.wave_stat,0, false));
+						else amplitude = get_Amplitude(Amplitude_Mode.Linear_Polynomial, new Linear_Polynomial_Amplitude_Argument(target_freq, target_amplitude, 2, cv.wave_stat, false));
 
 						if (amplitude < 0.001) amplitude = 0.0;
 					}
 
-					else amplitude = get_Amplitude(Amplitude_Mode.Level_3_1P, new Level_3_1P_Amplitude_Argument(51, 0.5, 61, 3.8, cv.wave_stat, 0, false));
+					else amplitude = get_Amplitude(Amplitude_Mode.Inv_Proportional, new Inv_Proportional_Amplitude_Argument(51, 0.5, 61, 3.8, cv.wave_stat, 0, false));
 					pulse_Mode = Pulse_Mode.P_1;
 				}
 

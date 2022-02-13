@@ -2,6 +2,7 @@
 using static VVVF_Generator_Porting.vvvf_wave_control;
 using static VVVF_Generator_Porting.my_math;
 using System;
+using static VVVF_Generator_Porting.vvvf_wave_calculate.Amplitude_Argument;
 
 namespace VVVF_Generator_Porting
 {
@@ -135,61 +136,115 @@ namespace VVVF_Generator_Porting
 		
 		public enum Amplitude_Mode
         {
-			Linear, Wide_3_Pulse, Level_3_1P , Exponential
+			Linear, Wide_3_Pulse, Inv_Proportional , Exponential,
+			Linear_Polynomial,
 		}
 
-		public class General_Amplitude_Argument
+		public class Amplitude_Argument
         {
-			public double min_freq = 0;
-			public double min_amp = 0;
-			public double max_freq = 0;
-			public double max_amp = 0;
-			public bool disable_range_limit = true;
-
-			public double current = 0;
-
-			public General_Amplitude_Argument(double Minimum_Freq, double Minimum_Amplitude, double Maximum_Freq, double Maximum_Amplitude, double Current, bool Disable_Range_Limit)
-            {
-				min_freq = Minimum_Freq;
-				max_freq = Maximum_Freq;
-
-				min_amp = Minimum_Amplitude;
-				max_amp = Maximum_Amplitude;
-
-				disable_range_limit = Disable_Range_Limit;
-
-				current = Current;
-			}
-
-		}
-
-		public class Level_3_1P_Amplitude_Argument
-		{
-			public double min_freq = 0;
-			public double min_amp = 0;
-			public double max_freq = 0;
-			public double max_amp = 0;
-			public bool disable_range_limit = true;
-
-			public double change_const = 0.43;
-
-			public double current = 0;
-
-			public Level_3_1P_Amplitude_Argument(double Minimum_Freq, double Minimum_Amplitude, double Maximum_Freq, double Maximum_Amplitude, double Current, double Change_Const, bool Disable_Range_Limit)
+			public class General_Amplitude_Argument
 			{
-				min_freq = Minimum_Freq;
-				max_freq = Maximum_Freq;
+				public double min_freq = 0;
+				public double min_amp = 0;
+				public double max_freq = 0;
+				public double max_amp = 0;
+				public bool disable_range_limit = true;
 
-				min_amp = Minimum_Amplitude;
-				max_amp = Maximum_Amplitude;
+				public double current = 0;
 
-				disable_range_limit = Disable_Range_Limit;
+				public General_Amplitude_Argument(double Minimum_Freq, double Minimum_Amplitude, double Maximum_Freq, double Maximum_Amplitude, double Current, bool Disable_Range_Limit)
+				{
+					min_freq = Minimum_Freq;
+					max_freq = Maximum_Freq;
 
-				change_const = Change_Const;
+					min_amp = Minimum_Amplitude;
+					max_amp = Maximum_Amplitude;
 
-				current = Current;
+					disable_range_limit = Disable_Range_Limit;
+
+					current = Current;
+				}
+
 			}
 
+			public class Inv_Proportional_Amplitude_Argument
+			{
+				public double min_freq = 0;
+				public double min_amp = 0;
+				public double max_freq = 0;
+				public double max_amp = 0;
+				public bool disable_range_limit = true;
+
+				public double change_const = 0.43;
+
+				public double current = 0;
+
+				public Inv_Proportional_Amplitude_Argument(double Minimum_Freq, double Minimum_Amplitude, double Maximum_Freq, double Maximum_Amplitude, double Current, double Change_Const, bool Disable_Range_Limit)
+				{
+					min_freq = Minimum_Freq;
+					max_freq = Maximum_Freq;
+
+					min_amp = Minimum_Amplitude;
+					max_amp = Maximum_Amplitude;
+
+					disable_range_limit = Disable_Range_Limit;
+
+					change_const = Change_Const;
+
+					current = Current;
+				}
+
+			}
+
+			public class Linear_Polynomial_Amplitude_Argument
+			{
+				public int polynomial = 2;
+
+				public double max_freq = 0;
+				public double max_amp = 0;
+				public bool disable_range_limit = true;
+
+				public double current = 0;
+
+				public Linear_Polynomial_Amplitude_Argument(double Maximum_Freq, double Maximum_Amplitude, int Polynomial, double Current, bool Disable_Range_Limit)
+				{
+					max_freq = Maximum_Freq;
+
+					max_amp = Maximum_Amplitude;
+
+					polynomial = Polynomial;
+
+					disable_range_limit = Disable_Range_Limit;
+
+					current = Current;
+				}
+
+			}
+
+			public class Exponential_Amplitude_Argument
+			{
+				public double base_val = 2;
+
+				public double max_freq = 0;
+				public double max_amp = 0;
+				public bool disable_range_limit = true;
+
+				public double current = 0;
+
+				public Exponential_Amplitude_Argument(double Maximum_Freq, double Maximum_Amplitude, double Base, double Current, bool Disable_Range_Limit)
+				{
+					max_freq = Maximum_Freq;
+
+					max_amp = Maximum_Amplitude;
+
+					base_val = Base;
+
+					disable_range_limit = Disable_Range_Limit;
+
+					current = Current;
+				}
+
+			}
 		}
 
 		public static double get_Amplitude(Amplitude_Mode mode , Object arg_o)
@@ -232,9 +287,9 @@ namespace VVVF_Generator_Porting
 				val = 1 / get_Amplitude(Amplitude_Mode.Linear, new General_Amplitude_Argument(arg.min_freq, 1 / arg.min_amp, arg.max_freq, 1 / arg.max_amp, arg.current, arg.disable_range_limit));
 			}
 			*/
-			else if(mode == Amplitude_Mode.Level_3_1P)
+			else if(mode == Amplitude_Mode.Inv_Proportional)
             {
-				Level_3_1P_Amplitude_Argument arg = (Level_3_1P_Amplitude_Argument)arg_o;
+				Inv_Proportional_Amplitude_Argument arg = (Inv_Proportional_Amplitude_Argument)arg_o;
 
 				if (!arg.disable_range_limit)
 				{
@@ -255,15 +310,28 @@ namespace VVVF_Generator_Porting
 			}
 			else if(mode == Amplitude_Mode.Exponential)
             {
-				General_Amplitude_Argument arg = (General_Amplitude_Argument)arg_o;
+				Exponential_Amplitude_Argument arg = (Exponential_Amplitude_Argument)arg_o;
 
 				if (!arg.disable_range_limit)
 				{
-					if (arg.current < arg.min_freq) arg.current = arg.min_freq;
 					if (arg.current > arg.max_freq) arg.current = arg.max_freq;
 				}
 
-				val = my_math.exponential(arg.max_amp + 1, (arg.current - arg.min_freq) / (arg.max_freq - arg.min_freq)) - 1;//(arg.current - arg.min_freq) / (arg.max_freq - arg.min_freq) + arg.min_amp;
+				double t = 1 / arg.max_freq *  Math.Log(arg.max_amp, arg.base_val);
+
+				val = Math.Pow(arg.base_val, t * arg.current);
+			}
+			else if(mode == Amplitude_Mode.Linear_Polynomial)
+            {
+				Linear_Polynomial_Amplitude_Argument arg = (Linear_Polynomial_Amplitude_Argument)arg_o;
+
+				if (!arg.disable_range_limit)
+				{
+					if (arg.current > arg.max_freq) arg.current = arg.max_freq;
+				}
+
+				val = Math.Pow(arg.current, arg.polynomial) / Math.Pow(arg.max_freq, arg.polynomial) * arg.max_amp;
+
 			}
 
             
