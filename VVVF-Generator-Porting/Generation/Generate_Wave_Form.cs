@@ -423,7 +423,6 @@ namespace VVVF_Generator_Porting.Generation
             while (loop)
             {
 
-
                 if (sound_block_count % movie_div == 0 && temp)
                 {
                     set_Sine_Time(0);
@@ -460,8 +459,8 @@ namespace VVVF_Generator_Porting.Generation
 
                             if (j == 0)
                             {
-                                add_Saw_Time(Math.PI / (120000.0 * calculate_div));
-                                add_Sine_Time(Math.PI / (120000.0 * calculate_div));
+                                add_Saw_Time(2 / (60.0 * calculate_div * (image_width - 100)));
+                                add_Sine_Time(2 / (60.0 * calculate_div * (image_width - 100)));
                             }
 
                             values[j * 2] = wv_U;
