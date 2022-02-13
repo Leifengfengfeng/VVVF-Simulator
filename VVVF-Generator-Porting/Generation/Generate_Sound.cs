@@ -70,10 +70,10 @@ namespace VVVF_Generator_Porting.Generation
                 {
                     double pwm_value = wv_U.pwm_value - wv_V.pwm_value;
                     byte sound_byte = 0x80;
-                    if (pwm_value == 2) sound_byte = 0xB0;
-                    else if (pwm_value == 1) sound_byte = 0x98;
-                    else if (pwm_value == -1) sound_byte = 0x68;
-                    else if (pwm_value == -2) sound_byte = 0x50;
+                    if (pwm_value == 2) sound_byte += 0x40;
+                    else if (pwm_value == 1) sound_byte += 0x20;
+                    else if (pwm_value == -1) sound_byte -= 0x20;
+                    else if (pwm_value == -2) sound_byte -= 0x40;
                     writer.Write(sound_byte);
                 }
                 sound_block_count++;

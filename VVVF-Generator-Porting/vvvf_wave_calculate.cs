@@ -223,7 +223,6 @@ namespace VVVF_Generator_Porting
 
 			public class Exponential_Amplitude_Argument
 			{
-				public double base_val = 2;
 
 				public double max_freq = 0;
 				public double max_amp = 0;
@@ -231,13 +230,11 @@ namespace VVVF_Generator_Porting
 
 				public double current = 0;
 
-				public Exponential_Amplitude_Argument(double Maximum_Freq, double Maximum_Amplitude, double Base, double Current, bool Disable_Range_Limit)
+				public Exponential_Amplitude_Argument(double Maximum_Freq, double Maximum_Amplitude, double Current, bool Disable_Range_Limit)
 				{
 					max_freq = Maximum_Freq;
 
 					max_amp = Maximum_Amplitude;
-
-					base_val = Base;
 
 					disable_range_limit = Disable_Range_Limit;
 
@@ -317,9 +314,9 @@ namespace VVVF_Generator_Porting
 					if (arg.current > arg.max_freq) arg.current = arg.max_freq;
 				}
 
-				double t = 1 / arg.max_freq *  Math.Log(arg.max_amp, arg.base_val);
+				double t = 1 / arg.max_freq *  Math.Log(arg.max_amp + 1);
 
-				val = Math.Pow(arg.base_val, t * arg.current);
+				val = Math.Pow(Math.E, t * arg.current) - 1;
 			}
 			else if(mode == Amplitude_Mode.Linear_Polynomial)
             {
