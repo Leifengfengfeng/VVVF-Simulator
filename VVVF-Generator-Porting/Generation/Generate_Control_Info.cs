@@ -366,7 +366,7 @@ namespace VVVF_Generator_Porting.Generation
 
         }
 
-        private static void center_text_with_filled_corner_curved_rectangle(Graphics g, String str, Brush str_br, Font fnt, Brush br,
+        private static Point center_text_with_filled_corner_curved_rectangle(Graphics g, String str, Brush str_br, Font fnt, Brush br,
                                                                  Point start, Point end, int round_radius, Point str_compen)
         {
             SizeF strSize = g.MeasureString(str, fnt);
@@ -376,9 +376,14 @@ namespace VVVF_Generator_Porting.Generation
 
             filled_corner_curved_rectangle(g, br, start, end, round_radius);
 
-            g.DrawString(str, fnt, str_br, start.X + width / 2 - strSize.Width / 2 + str_compen.X, start.Y + height / 2 - strSize.Height / 2 + str_compen.Y);
+            Point str_pos = new Point((int)Math.Round(start.X + width / 2 - strSize.Width / 2 + str_compen.X), (int)Math.Round(start.Y + height / 2 - strSize.Height / 2 + str_compen.Y));
 
-            
+            g.DrawString(str, fnt, str_br, str_pos);
+
+            return str_pos;
+
+
+
 
         }
 
@@ -387,11 +392,11 @@ namespace VVVF_Generator_Porting.Generation
             int width = (int)(end.X - start.X);
             int height = (int)(end.Y - start.Y);
 
-            g.DrawLine(pen, start.X + round_radius, start.Y, end.X -  round_radius, start.Y);
-            g.DrawLine(pen, start.X + round_radius, end.Y, end.X -  round_radius, end.Y);
+            g.DrawLine(pen, start.X + round_radius, start.Y, end.X -  round_radius + 1, start.Y);
+            g.DrawLine(pen, start.X + round_radius, end.Y, end.X -  round_radius + 1, end.Y);
 
-            g.DrawLine(pen, start.X, start.Y + round_radius, start.X, end.Y - round_radius);
-            g.DrawLine(pen, end.X, start.Y + round_radius, end.X, end.Y - round_radius);
+            g.DrawLine(pen, start.X, start.Y + round_radius, start.X, end.Y - round_radius + 1);
+            g.DrawLine(pen, end.X, start.Y + round_radius, end.X, end.Y - round_radius + 1);
 
             g.DrawArc(pen, start.X, start.Y, round_radius * 2, round_radius * 2 , -90, -90);
             g.DrawArc(pen, start.X, start.Y + height - round_radius * 2, round_radius * 2, round_radius * 2 , -180 , -90);
@@ -410,14 +415,14 @@ namespace VVVF_Generator_Porting.Generation
             int height = end.Y - start.Y;
 
             g.DrawLine(pen, start.X + round_radius, start.Y, start.X + width / 2 - strSize.Width / 2 - 10, start.Y);
-            g.DrawLine(pen, end.X - round_radius, start.Y, start.X + width / 2 + strSize.Width / 2 + 10, start.Y);
+            g.DrawLine(pen, end.X - round_radius + 1, start.Y, start.X + width / 2 + strSize.Width / 2 + 10, start.Y);
 
             g.DrawString(str, fnt, str_br, start.X + width / 2 - strSize.Width / 2 + str_compen.X, start.Y - fnt.Height / 2 + str_compen.Y);
 
-            g.DrawLine(pen, start.X + round_radius, end.Y, end.X - round_radius, end.Y);
+            g.DrawLine(pen, start.X + round_radius, end.Y, end.X - round_radius + 1, end.Y);
 
-            g.DrawLine(pen, start.X, start.Y + round_radius, start.X, end.Y - round_radius);
-            g.DrawLine(pen, end.X, start.Y + round_radius, end.X, end.Y - round_radius);
+            g.DrawLine(pen, start.X, start.Y + round_radius, start.X, end.Y - round_radius + 1);
+            g.DrawLine(pen, end.X, start.Y + round_radius, end.X, end.Y - round_radius + 1);
 
             g.DrawArc(pen, start.X, start.Y, round_radius * 2, round_radius * 2, -90, -90);
             g.DrawArc(pen, start.X, start.Y + height - round_radius * 2, round_radius * 2, round_radius * 2, -180, -90);
@@ -426,7 +431,7 @@ namespace VVVF_Generator_Porting.Generation
 
         }
 
-        private static void center_text_with_line_corner_curved_rectangle(Graphics g, String str, Brush str_br, Font fnt, Pen pen,
+        private static Point center_text_with_line_corner_curved_rectangle(Graphics g, String str, Brush str_br, Font fnt, Pen pen,
                                                                  Point start, Point end, int round_radius, Point str_compen)
             {
 
@@ -434,9 +439,39 @@ namespace VVVF_Generator_Porting.Generation
             int width = end.X - start.X;
             int height = end.Y - start.Y;
             line_corner_curved_rectangle(g, pen, start, end, round_radius);
-            g.DrawString(str, fnt, str_br, start.X + width / 2 - strSize.Width / 2 + str_compen.X, start.Y + height / 2 - strSize.Height / 2 + str_compen.Y);
+
+            Point string_pos = new Point((int)Math.Round(start.X + width / 2 - strSize.Width / 2 + str_compen.X), (int)Math.Round(start.Y + height / 2 - strSize.Height / 2 + str_compen.Y));
+            g.DrawString(str, fnt, str_br, string_pos);
+
+            return string_pos;
 
 
+        }
+
+        /// <summary>
+        /// 通常の大きさ(size=1)の時、横 160,縦200
+        /// </summary>
+        /// <param name="g"></param>
+        /// <param name="start"></param>
+        /// <param name="c"></param>
+        /// <param name="hole_c"></param>
+        /// <param name="locked"></param>
+        /// <param name="size"></param>
+        public static void draw_key(Graphics g,Point start, Color c, Color hole_c, Boolean locked, double size)
+        {
+            Pen default_pen = new Pen(c, (int)Math.Round(20 * size));
+            g.DrawArc(default_pen, (int)Math.Round(start.X + 42 * size), (int)Math.Round(start.Y + 20 * size) , (int)Math.Round(74 * size) , (int)Math.Round(74 * size), -180, 180);
+            g.DrawLine(default_pen, (int)Math.Round(start.X + 42 * size), (int)Math.Round(start.Y + 56 * size), (int)Math.Round(start.X + 42 * size), (int)Math.Round(start.Y + 103 * size));
+
+            if (locked)
+                g.DrawLine(default_pen, (int)Math.Round(start.X + 116 * size), (int)Math.Round(start.Y + 56 * size), (int)Math.Round(start.X + 116 * size), (int)Math.Round(start.Y + 103 * size));
+            else
+                g.FillEllipse(new SolidBrush(c), (int)Math.Round(start.X + 106 * size), (int)Math.Round(start.Y + 47 * size), (int)Math.Round((20) * size), (int)Math.Round((20) * size));
+
+            filled_corner_curved_rectangle(g, new SolidBrush(c), new Point((int)Math.Round(start.X + 8 * size), (int)Math.Round(start.Y + 90 * size)), new Point((int)Math.Round(start.X + 151 * size), (int)Math.Round(start.Y + 193 * size)), (int)Math.Round((10) * size));
+
+            g.FillEllipse(new SolidBrush(hole_c), (int)Math.Round(start.X + 64 * size), (int)Math.Round(start.Y + 124 * size), (int)Math.Round((28) * size), (int)Math.Round((28) * size));
+            g.DrawLine(new Pen(hole_c, (int)Math.Round((15)* size)), (int)Math.Round(start.X + 78.5 * size), (int)Math.Round(start.Y + 138 * size), (int)Math.Round(start.X + 78.5 * size), (int)Math.Round(start.Y + 173 * size));
         }
 
         public static double get_wave_form_voltage_rate_with_surface(VVVF_Sound_Names sound_name)
@@ -765,9 +800,26 @@ namespace VVVF_Generator_Porting.Generation
                     filled_corner_curved_rectangle(control_stat_g, new SolidBrush(control_color), new Point(30 * 2, 45 * 2), new Point(449 * 2, 163 * 2), 20);
                     control_stat_g.DrawString(status_str,fnt_default,new SolidBrush(control_str_color), text_point);
 
-                    title_str_with_line_corner_curved_rectangle(info_g ,"Carrier", new SolidBrush(Color.FromArgb(190, 190, 190)), fnt_default, new Pen(Color.FromArgb(144, 144, 144), 4), new Point(30 * 2, 225 * 2), new Point(449 * 2, 428 * 2), 20, new Point(0, 0));
+                    title_str_with_line_corner_curved_rectangle(info_g ,"Carrier", new SolidBrush(Color.FromArgb(144, 144, 144)), fnt_default, new Pen(Color.FromArgb(109, 109, 109), 4), new Point(30 * 2, 225 * 2), new Point(449 * 2, 428 * 2), 20, new Point(0, 0));
 
-                    
+                    if (!(Video_Generate_Values.pulse_mode == Pulse_Mode.Async || Video_Generate_Values.pulse_mode == Pulse_Mode.Async_THI))
+                    {
+                        int connect_sync_box_size = 12;
+                        for (int r = 0; r < 9; r++)
+                        {
+                            // 560 + 49 - 4 NO.5
+                            info_g.FillRectangle(new SolidBrush(Color.White), 47 * 2 + 67 * 2 - connect_sync_box_size / 2, 411 * 2 - connect_sync_box_size / 2 + connect_sync_box_size * 2 * r , connect_sync_box_size, connect_sync_box_size);
+                        }
+                    }
+                    else
+                    {
+                        int connect_sync_box_size = 12;
+                        for (int r = 0; r < 9; r++)
+                        {
+                            info_g.FillRectangle(new SolidBrush(Color.FromArgb(109, 109, 109)), 47 * 2 + 67 * 2 - connect_sync_box_size / 2, 411 * 2 - connect_sync_box_size / 2 + connect_sync_box_size * 2 * r + ((r == 0) ? 4 : 0), connect_sync_box_size, connect_sync_box_size - ((r == 0 || r == 8) ? 4 : 0));
+                        }
+                    }
+
                     if (Video_Generate_Values.pulse_mode == Pulse_Mode.Async || Video_Generate_Values.pulse_mode == Pulse_Mode.Async_THI)
                     {
                         String carrier_freq_str = String.Format("{0:f0}", Video_Generate_Values.carrier_freq_data.base_freq);
@@ -779,7 +831,11 @@ namespace VVVF_Generator_Porting.Generation
                         info_g.DrawString(carrier_freq_str, fnt_num, new SolidBrush(Color.White), image_width / 2 - total_width / 2, 250 * 2);
                         info_g.DrawString("Hz", fnt_unit, new SolidBrush(Color.White), image_width / 2 - total_width / 2 + freq_str_size.Width, 292 * 2);
 
-                        center_text_with_line_corner_curved_rectangle(info_g, "Async Mode", new SolidBrush(Color.FromArgb(190, 190, 190)), fnt_syncmode, new Pen(Color.FromArgb(144, 144, 144), 4), new Point(47 * 2, 359 * 2), new Point(431 * 2, 410 * 2), 20, new Point(0, 5));
+                        Point letter = center_text_with_line_corner_curved_rectangle(info_g, "Async Mode", new SolidBrush(Color.FromArgb(144, 144, 144)), fnt_syncmode, new Pen(Color.FromArgb(109, 109, 109), 4), new Point(47 * 2, 359 * 2), new Point(431 * 2, 410 * 2), 20, new Point(40, 5));
+
+                        //new Point(47 * 2, 359 * 2), new Point(431 * 2, 410 * 2)
+
+                        draw_key(info_g, new Point(letter.X - 50, letter.Y + 18), Color.FromArgb(103, 103, 103), Color.FromArgb(52, 52, 52), false, 0.25);
                     }
                     else
                     {
@@ -790,28 +846,21 @@ namespace VVVF_Generator_Porting.Generation
 
                         double total_width = freq_str_size.Width + freq_other_str_size.Width;
 
-                        info_g.DrawString(pulse_mode_name[0], fnt_num, new SolidBrush(Color.White), (int)Math.Round(920 / 2 - total_width / 2), 250 * 2);
-                        info_g.DrawString("Pulse", fnt_syncmode, new SolidBrush(Color.White), (int)Math.Round(920 / 2 - total_width / 2 + freq_str_size.Width), 580);
+                        info_g.DrawString(pulse_mode_name[0], fnt_num, new SolidBrush(Color.White), (int)Math.Round(920 / 2 - total_width / 2 + 5), 250 * 2);
+                        info_g.DrawString("Pulse", fnt_syncmode, new SolidBrush(Color.White), (int)Math.Round(920 / 2 - total_width / 2 + freq_str_size.Width + 5), 580);
 
-                        center_text_with_filled_corner_curved_rectangle(info_g, "Sync Mode", new SolidBrush(Color.FromArgb(52, 52, 52)), fnt_syncmode, new SolidBrush(Color.White), new Point(47 * 2, 359 * 2), new Point(431 * 2, 410 * 2), 20, new Point(0, 5));
+                        Point letter = center_text_with_filled_corner_curved_rectangle(info_g, "Sync Mode", new SolidBrush(Color.FromArgb(52, 52, 52)), fnt_syncmode, new SolidBrush(Color.White), new Point(47 * 2, 359 * 2), new Point(431 * 2, 410 * 2), 20, new Point(40, 5));
+
+                        draw_key(info_g, new Point(letter.X - 50, letter.Y + 18), Color.FromArgb(52, 52, 52), Color.White, true, 0.25);
                     }
 
 
-                    title_str_with_line_corner_curved_rectangle(info_g, "Output", new SolidBrush(Color.FromArgb(190, 190, 190)), fnt_default , new Pen(Color.FromArgb(144, 144, 144),4), new Point(30 * 2, 474 * 2), new Point( 449 * 2, 731 * 2), 20, new Point(0,0));
+                    title_str_with_line_corner_curved_rectangle(info_g, "Output", new SolidBrush(Color.FromArgb(144, 144, 144)), fnt_default , new Pen(Color.FromArgb(109, 109, 109),4), new Point(30 * 2, 474 * 2), new Point( 449 * 2, 731 * 2), 20, new Point(0,0));
                     
                     if(Video_Generate_Values.pulse_mode == Pulse_Mode.Async || Video_Generate_Values.pulse_mode == Pulse_Mode.Async_THI)
                         center_text_with_line_corner_curved_rectangle(info_g, "Freq", new SolidBrush(Color.White), fnt_default, new Pen(Color.White, 4), new Point(47 * 2, 507 * 2), new Point(182 * 2, 602 * 2), 10, new Point(0, 5));
                     else 
                         center_text_with_filled_corner_curved_rectangle(info_g, "Freq", new SolidBrush(Color.FromArgb(52,52,52)), fnt_default, new SolidBrush(Color.White), new Point(47 * 2, 507 * 2), new Point(182 * 2, 602 * 2), 10, new Point(0, 5));
-                    
-                    if(!(Video_Generate_Values.pulse_mode == Pulse_Mode.Async || Video_Generate_Values.pulse_mode == Pulse_Mode.Async_THI)){
-                        int connect_sync_box_size = 12;
-                        for(int r = 0; r < 9; r++)
-                        {
-                            // 560 + 49 - 4 NO.5
-                            info_g.FillRectangle(new SolidBrush(Color.White), 47 * 2 + 67*2 - connect_sync_box_size/2, 410 * 2 - connect_sync_box_size/2 + connect_sync_box_size*2 * r, connect_sync_box_size, connect_sync_box_size);
-                        }
-                    }
 
                     double sine_freq = Video_Generate_Values.sine_angle_freq / Math.PI / 2;
                     if (!final_show)
