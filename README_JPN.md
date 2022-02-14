@@ -40,9 +40,17 @@ https://github.com/cisco/openh264/releases<br>
 
 ## 波形動画出力
 このアプリケーションは、VVVFの波形を動画で出力できます。形式は .avi です。<br>
+![2022-02-14](https://user-images.githubusercontent.com/77259842/153803020-6615bcce-22a6-4839-b919-ea114dc12d03.png)
+
+## 電圧ベクトル動画出力
+このアプリケーションは、例の六角形を動画で出力できます。形式は .avi です。<br>
+![2022-02-14 (1)](https://user-images.githubusercontent.com/77259842/153803078-11798e5b-8d68-4a32-9d3b-4f954b8e910c.png)
 
 ## マスコン状況出力
 このアプリケーションは、マスコンの操作状況を動画で出力できます。形式は .avi です。<br>
+シンプルなものと、たろいも氏風があります。<br>
+![2022-02-13_7](https://user-images.githubusercontent.com/77259842/153803111-5ad44bb2-2531-48fb-95b4-8b9732fe59c9.png)
+![2022-02-14 (3)](https://user-images.githubusercontent.com/77259842/153803208-18692183-b1ae-4251-96dc-ccc4ce8b3c10.png)
 
 ## リアルタイム音声生成
 いろいろ、リアルタイムで遊べます。<br>
