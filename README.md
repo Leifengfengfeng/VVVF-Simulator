@@ -39,10 +39,22 @@ The sampling frequency is 192kHz.<br>
 
 ## Waveform Video Generation
 This application will export video as a `.avi` extension.
+![2022-02-14](https://user-images.githubusercontent.com/77259842/153803020-6615bcce-22a6-4839-b919-ea114dc12d03.png)
+
+## Voltage Vector Video Generation
+This application will export video as a `.avi` extension.
+![2022-02-14 (1)](https://user-images.githubusercontent.com/77259842/153803078-11798e5b-8d68-4a32-9d3b-4f954b8e910c.png)
 
 ## Control stat Video Generation
 This application can export video of the control stat values.<br>
 The file will be the`.avi` extension. <br>
+We have simple one and Taroimo like one.<br>
+![2022-02-13_7](https://user-images.githubusercontent.com/77259842/153803111-5ad44bb2-2531-48fb-95b4-8b9732fe59c9.png)
+![2022-02-14 (3)](https://user-images.githubusercontent.com/77259842/153803208-18692183-b1ae-4251-96dc-ccc4ce8b3c10.png)
+
+
+
+
 
 ## Realtime Audio Generation
 You can generate the audio in real time and control if the sound increases or decreases in frequency as well as the rate that the frequency increases or decreases. <br>
