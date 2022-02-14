@@ -399,10 +399,10 @@ namespace VVVF_Generator_Porting.Generation
                 return;
             }
 
-            Boolean START_F65_WAIT = true;
-            if (START_F65_WAIT)
+            Boolean START_F64_WAIT = true;
+            if (START_F64_WAIT)
             {
-                for (int i = 0; i < 65; i++)
+                for (int i = 0; i < 64; i++)
                 {
                     Bitmap image = new(image_width, image_height);
                     Graphics g = Graphics.FromImage(image);
