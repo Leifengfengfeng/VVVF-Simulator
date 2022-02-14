@@ -37,33 +37,34 @@ namespace VVVF_Generator_Porting
 						else amplitude = get_Amplitude(Amplitude_Mode.Inv_Proportional, new Inv_Proportional_Amplitude_Argument(0, 0.0001, target_freq, target_amplitude, cv.wave_stat, 0.8, false));
 						if (amplitude < 0.001) amplitude = 0.0;
 					}
-					else amplitude = get_Amplitude(Amplitude_Mode.Inv_Proportional, new Inv_Proportional_Amplitude_Argument(53, 0.49, 66, 3, cv.wave_stat,0, false));
+					else amplitude = get_Amplitude(Amplitude_Mode.Inv_Proportional, new Inv_Proportional_Amplitude_Argument(53, 0.49, 66, 3, cv.wave_stat, 0, false));
 				}
 				else if (45 <= cv.wave_stat || (cv.free_run && get_Sine_Angle_Freq() > 45 * M_2PI))
-                {
+				{
 					amplitude = get_Amplitude(Amplitude_Mode.Linear, new General_Amplitude_Argument(45, 0.7, 53, 0.84, cv.wave_stat, false));
 					pulse_mode = Pulse_Mode.P_3;
 				}
 				else if (29 <= cv.wave_stat || (cv.free_run && get_Sine_Angle_Freq() > 29 * M_2PI))
-                {
+				{
 					amplitude = get_Amplitude(Amplitude_Mode.Linear, new General_Amplitude_Argument(0, 0, 59, 1, cv.wave_stat, false));
 					pulse_mode = Pulse_Mode.P_9;
 				}
 				else if (19 <= cv.wave_stat || (cv.free_run && get_Sine_Angle_Freq() > 19 * M_2PI))
-                {
+				{
 					amplitude = get_Amplitude(Amplitude_Mode.Linear, new General_Amplitude_Argument(0, 0, 59, 1, cv.wave_stat, false));
 					pulse_mode = Pulse_Mode.P_21;
 				}
 				else if (9 <= cv.wave_stat || (cv.free_run && get_Sine_Angle_Freq() > 9 * M_2PI))
-                {
+				{
 					amplitude = get_Amplitude(Amplitude_Mode.Linear, new General_Amplitude_Argument(0, 0, 59, 1, cv.wave_stat, false));
 					pulse_mode = Pulse_Mode.P_33;
 				}
-				else
+				else if (0.01 <= cv.wave_stat || (cv.free_run && get_Sine_Angle_Freq() > 0.01 * M_2PI))
 				{
-					amplitude = get_Amplitude(Amplitude_Mode.Linear, new General_Amplitude_Argument(0, 0, 59, 1, original_wave_stat, false));
+					amplitude = get_Amplitude(Amplitude_Mode.Linear, new General_Amplitude_Argument(0, 0.02, 59, 1, original_wave_stat, false));
 					pulse_mode = Pulse_Mode.P_57;
 				}
+				else return get_Wave_Values_None();
 			}
 
 			else
