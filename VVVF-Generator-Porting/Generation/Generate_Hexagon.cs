@@ -648,18 +648,18 @@ namespace VVVF_Generator_Porting.Generation
 
             graphic_max_hexagon.FillRectangle(new SolidBrush(Color.FromArgb(226, 226, 226)), 0, 0, image_width, image_height);
             graphic_max_hexagon.FillPolygon(new SolidBrush(Color.White), new PointF[] {
-                new PointF(image_width / 2 - 200 , image_height / 2), new PointF(image_width / 2 - 100, image_height / 2 + 173) ,
-                new PointF(image_width / 2 + 100 , image_height / 2 + 173) , new PointF(image_width / 2 + 200 , image_height / 2) ,
-                new PointF(image_width / 2 + 100 , image_height / 2 - 173) , new PointF(image_width / 2 - 100 , image_height / 2 - 173) ,
+                new PointF(image_width / 2 - 240 , image_height / 2), new PointF(image_width / 2 - 120, image_height / 2 + 208) ,
+                new PointF(image_width / 2 + 120 , image_height / 2 + 208) , new PointF(image_width / 2 + 240 , image_height / 2) ,
+                new PointF(image_width / 2 + 120 , image_height / 2 - 208) , new PointF(image_width / 2 - 120 , image_height / 2 - 208) ,
             });
             int outline_edit = 0;
             graphic_max_hexagon.DrawPolygon(new Pen(Color.FromArgb(180, 180, 180)), new PointF[] { 
-                new PointF(image_width / 2 - (200 + outline_edit) , image_height / 2 + outline_edit), 
-                new PointF(image_width / 2 - (100 + outline_edit) , image_height / 2 + (173 + outline_edit)) ,
-                new PointF(image_width / 2 + (100 + outline_edit) , image_height / 2 + (173 + outline_edit)) , 
-                new PointF(image_width / 2 + (200 + outline_edit) , image_height / 2 + outline_edit) ,
-                new PointF(image_width / 2 + (100 + outline_edit) , image_height / 2 - (173 + outline_edit)) , 
-                new PointF(image_width / 2 - (100 + outline_edit) , image_height / 2 - (173 + outline_edit)) ,
+                new PointF(image_width / 2 - (120 * 2 + outline_edit) , image_height / 2 + outline_edit), 
+                new PointF(image_width / 2 - (120 + outline_edit)     , image_height / 2 + (208 + outline_edit)) ,
+                new PointF(image_width / 2 + (120 + outline_edit)     , image_height / 2 + (208 + outline_edit)) , 
+                new PointF(image_width / 2 + (120 * 2 + outline_edit) , image_height / 2 + outline_edit) ,
+                new PointF(image_width / 2 + (120 + outline_edit)     , image_height / 2 - (208 + outline_edit)) , 
+                new PointF(image_width / 2 - (120 + outline_edit)     , image_height / 2 - (208 + outline_edit)) ,
             });
             
 
@@ -753,8 +753,8 @@ namespace VVVF_Generator_Porting.Generation
                         double move_x = -0.5 * wv_W.pwm_value - 0.5 * wv_V.pwm_value + wv_U.pwm_value;
                         double move_y = -0.866025403784438646763 * wv_W.pwm_value + 0.866025403784438646763 * wv_V.pwm_value;
 
-                        double int_move_x = 100 * move_x / (double)hex_div_seed;
-                        double int_move_y = 100 * move_y / (double)hex_div_seed;
+                        double int_move_x = 120 * move_x / (double)hex_div_seed;
+                        double int_move_y = 120 * move_y / (double)hex_div_seed;
 
                         hexagon_g.DrawLine(new Pen(Color.Black),
                             (int)Math.Round(hexagon_coordinate[0]),
