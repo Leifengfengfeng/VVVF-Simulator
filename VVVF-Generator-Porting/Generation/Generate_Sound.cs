@@ -131,8 +131,7 @@ namespace VVVF_Generator_Porting.Generation
                 add_Sine_Time(1.00 / div_freq);
                 add_Saw_Time(1.00 / div_freq);
 
-                byte sound_byte = 0x80;
-
+                int sound_byte_int = 0x80;
                 Control_Values cv_U = new Control_Values
                 {
                     brake = is_Braking(),
@@ -154,15 +153,32 @@ namespace VVVF_Generator_Porting.Generation
                 Wave_Values wv_V = get_Calculated_Value(sound_name, cv_V);
 
                 double pwm_value = wv_U.pwm_value - wv_V.pwm_value;
-                if (pwm_value == 2) sound_byte += 0x40;
-                else if (pwm_value == 1) sound_byte += 0x20;
-                else if (pwm_value == -1) sound_byte -= 0x20;
-                else if (pwm_value == -2) sound_byte -= 0x40;
+                if (pwm_value == 2) sound_byte_int += 0x40;
+                else if (pwm_value == 1) sound_byte_int += 0x20;
+                else if (pwm_value == -1) sound_byte_int -= 0x20;
+                else if (pwm_value == -2) sound_byte_int -= 0x40;
+         
 
-                double sine_val = sin(get_Sine_Time() * get_Sine_Angle_Freq());
-                sine_val *= 0x40;
-                sine_val += 0x80;
-                sound_byte += (byte)(int)sine_val;
+                double[] harmonics = new double[] { 1, 3, 7, 9, 20, 50 ,14.9};
+                for(int harmonic = 0; harmonic < harmonics.Length; harmonic++)
+                {
+                    double sine_val = sin(get_Sine_Time() * get_Sine_Angle_Freq() * harmonics[harmonic]);
+                    sine_val *= 0x10;
+                    sine_val += 0x80;
+                    sound_byte_int += (byte)Math.Round(sine_val);
+                }
+
+                double[] saw_harmonics = new double[] { 3 };
+                for(int harmonic = 0; harmonic < saw_harmonics.Length; harmonic++)
+                {
+                    double saw_val = sin(get_Saw_Time() * get_Saw_Angle_Freq() * harmonic);
+                    saw_val *= 0x20;
+                    saw_val += 0x80;
+                    sound_byte_int += (byte)Math.Round(saw_val);
+                }
+
+                int total_sound_count = harmonics.Length + saw_harmonics.Length;
+                byte sound_byte = (byte)(sound_byte_int / total_sound_count);
 
                 writer.Write(sound_byte);
                 sound_block_count++;

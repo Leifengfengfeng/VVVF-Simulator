@@ -66,9 +66,10 @@ namespace VVVF_Generator_Porting
                 else
                 {
                     Console.WriteLine(count.ToString() + " : " + index_x);
+                    count++;
                 }
 
-                count++;
+                
                     
             }
 

@@ -59,12 +59,11 @@ namespace VVVF_Generator_Porting
 					amplitude = get_Amplitude(Amplitude_Mode.Linear, new General_Amplitude_Argument(0, 0, 59, 1, cv.wave_stat, false));
 					pulse_mode = Pulse_Mode.P_33;
 				}
-				else if (0.01 <= cv.wave_stat || (cv.free_run && get_Sine_Angle_Freq() > 0.01 * M_2PI))
+				else
 				{
 					amplitude = get_Amplitude(Amplitude_Mode.Linear, new General_Amplitude_Argument(0, 0.02, 59, 1, original_wave_stat, false));
 					pulse_mode = Pulse_Mode.P_57;
 				}
-				else return get_Wave_Values_None();
 			}
 
 			else
@@ -110,10 +109,10 @@ namespace VVVF_Generator_Porting
 					amplitude = get_Amplitude(Amplitude_Mode.Linear, new General_Amplitude_Argument(0, 0, 19, 0.34, original_wave_stat, false));
 					pulse_mode = Pulse_Mode.P_33;
 				}
-				else amplitude = 0;
+				else return get_Wave_Values_None();
 			}
 
-			if (!cv.mascon_on && amplitude < 0.1)
+			if (!cv.mascon_on && amplitude < 0.1 || cv.wave_stat == 0)
             {
 				amplitude = 0.0;
 				set_Control_Frequency(0);
