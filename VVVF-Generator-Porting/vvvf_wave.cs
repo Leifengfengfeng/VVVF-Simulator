@@ -19,8 +19,8 @@ namespace VVVF_Generator_Porting
 
 			if (!cv.brake)
 			{
-				if(cv.mascon_on) set_Mascon_Off_Div(20000);
-				else set_Mascon_Off_Div(30000);
+				if(cv.mascon_on) set_Mascon_Off_Div(19100);
+				else set_Mascon_Off_Div(40000);
 
 				double mascon_off_check = check_for_mascon_off(cv, 66);
 				if (mascon_off_check != -1) cv.wave_stat = mascon_off_check;
@@ -69,8 +69,8 @@ namespace VVVF_Generator_Porting
 
 			else
 			{
-				if (cv.mascon_on) set_Mascon_Off_Div(19000);
-				else set_Mascon_Off_Div(28000);
+				if (cv.mascon_on) set_Mascon_Off_Div(19100);
+				else set_Mascon_Off_Div(40000);
 
 				double mascon_off_check = check_for_mascon_off(cv, 72);
 				if (mascon_off_check != -1) cv.wave_stat = mascon_off_check;
@@ -113,7 +113,11 @@ namespace VVVF_Generator_Porting
 				else amplitude = 0;
 			}
 
-			if (!cv.mascon_on && amplitude < 0.1) amplitude = 0.0;
+			if (!cv.mascon_on && amplitude < 0.1)
+            {
+				amplitude = 0.0;
+				set_Control_Frequency(0);
+			}
 
 			return calculate_three_level(pulse_mode, carrier_freq, new Sine_Control_Data(cv.initial_phase, amplitude, (cv.free_run) ? -1 : 2), -1);
 		}
