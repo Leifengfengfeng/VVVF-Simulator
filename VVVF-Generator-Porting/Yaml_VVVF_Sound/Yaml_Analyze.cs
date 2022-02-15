@@ -29,25 +29,26 @@ namespace VVVF_Generator_Porting.Yaml_VVVF_Sound
 
         public override string ToString()
         {
-            String change_line = "\r\n";
-            String re = "[ " + change_line +
-                     "level : " + get_Value(level) + change_line +
-                     "mascon_data : " + get_Value(mascon_data) + change_line +
-                     "min_freq : " + get_Value(min_freq) + change_line +
-                     "accelerate_pattern : [[";
+            String final = "[\r\n";
+            final += "level : " + get_Value(level) + "\r\n";
+            final += "mascon_data : " + get_Value(mascon_data) + "\r\n";
+            final += "min_freq : " + get_Value(min_freq) + "\r\n";
+            final += "accelerate_pattern : [";
 
             for(int i = 0; i < accelerate_pattern.Count; i++)
             {
-                re += get_Value(accelerate_pattern[i]) + " , " + change_line;
+                final += get_Value(accelerate_pattern[i]) + "\r\n";
             }
-            re += "]" + change_line + "[";
+            final += "]";
+
+            final += "braking_pattern : [";
             for (int i = 0; i < braking_pattern.Count; i++)
             {
-                re += get_Value(braking_pattern[i]) + " , " + change_line;
+                final += get_Value(braking_pattern[i]) + "\r\n";
             }
-            re += "]" + change_line;
-            re += "]";
-            return re;
+            final += "]\r\n";
+            final += "]";
+            return final;
         }
 
         public class Yaml_Mascon_Data
@@ -57,11 +58,13 @@ namespace VVVF_Generator_Porting.Yaml_VVVF_Sound
 
             public override string ToString()
             {
-                String re = "[ " +
-                         "braking : " + get_Value(braking) + " , " +
-                         "accelerating : " + get_Value(accelerating) +
-                    "]";
-                return re;
+                String final;
+                final = "[\r\n";
+                final += "braking : " + get_Value(braking) + "\r\n";
+                final += "accelerate : " + get_Value(accelerating) + "\r\n";
+                final += "]";
+
+                return final;
             }
 
             public class Yaml_Mascon_Data_On_Off
@@ -71,11 +74,13 @@ namespace VVVF_Generator_Porting.Yaml_VVVF_Sound
 
                 public override string ToString()
                 {
-                    String re = "[ " +
-                             "on : " + get_Value(on) + " , " +
-                             "off : " + get_Value(off) +
-                        "]";
-                    return re;
+                    String final;
+                    final = "[\r\n";
+                    final += "on : " + get_Value(on) + "\r\n";
+                    final += "off : " + get_Value(off) + "\r\n";
+                    final += "]";
+  
+                    return final;
                 }
 
                 public class Yaml_Mascon_Data_Single
@@ -85,10 +90,7 @@ namespace VVVF_Generator_Porting.Yaml_VVVF_Sound
 
                     public override string ToString()
                     {
-                        String re = "[ " +
-                                 "div : " + get_Value(div) + " , " +
-                                 "control_freq_go_to : " + get_Value(control_freq_go_to) +
-                            "]";
+                        String re = "[div : " + get_Value(div) + " , " + "control_freq_go_to : " + get_Value(control_freq_go_to) + "]";
                         return re;
                     }
                 }
@@ -127,6 +129,31 @@ namespace VVVF_Generator_Porting.Yaml_VVVF_Sound
                     "amplitude_control : " + get_Value(amplitude_control) + change_line +
                     "async_data : " + get_Value(async_data);
                 return final;
+            }
+
+            public class Yaml_Moving_Value
+            {
+                public Moving_Value_Type type { get; set; }
+                public double start { get; set; }
+                public double start_value { get; set; }
+                public double end { get; set; }
+                public double end_value { get; set; }
+
+                public enum Moving_Value_Type
+                {
+                    Proportional,Quadratic
+                }
+
+                public override string ToString()
+                {
+                    String final = "[";
+                    final += "Type : " + type.ToString() + ",";
+                    final += "Start : " + String.Format("{0:f3}", start) + ",";
+                    final += "Start_Val : " + String.Format("{0:f3}", start_value) + ",";
+                    final += "End : " + String.Format("{0:f3}", end) + ",";
+                    final += "End_Val : " + String.Format("{0:f3}", end_value) + "]";
+                    return final;
+                }
             }
             public class Yaml_Control_Data_Mascon_Control
             {
@@ -175,125 +202,83 @@ namespace VVVF_Generator_Porting.Yaml_VVVF_Sound
 
                 public class Yaml_Async_Parameter_Carrier_Freq
                 {
+                    public Yaml_Async_Carrier_Mode carrier_mode { get; set; }
                     public double const_value { get; set; }
-                    public Yaml_Async_Parameter_Carrier_Freq_Move moving_value { get; set; }
+                    public Yaml_Moving_Value moving_value { get; set; }
                     public Yaml_Async_Parameter_Carrier_Freq_Vibrato vibrato_value { get; set; }
 
                     public override string ToString()
                     {
-                        String re = "[ " +
-                                 "const_value : " + String.Format("{0:f3}", const_value) + " , " +
-                                 "moving_value : " + get_Value(moving_value) + " , " +
-                                 "vibrato_value : " + get_Value(vibrato_value) + " , " +
-                            "]";
-                        return re;
+                        String final = "[\r\n";
+                        final += "carrier_mode : " + carrier_mode.ToString() + "\r\n";
+                        final += "const_value : " + String.Format("{0:f3}", const_value) + "\r\n";
+                        final += "moving_value : " + get_Value(moving_value) + "\r\n";
+                        final += "vibrato_value : " + get_Value(vibrato_value) + "\r\n";
+                        final += "]";
+                        return final;
                     }
 
-                    public class Yaml_Async_Parameter_Carrier_Freq_Move
+                    public enum Yaml_Async_Carrier_Mode
                     {
-                        double pos1 { get; set; }
-                        double pos1_freq { get; set; }
-                        double pos2 { get; set; }
-                        double pos2_freq { get; set; }
-
-                        public override string ToString()
-                        {
-                            String re = "[ " +
-                                 "pos1 : " + String.Format("{0:f3}", pos1) + " , " +
-                                 "pos1_freq : " + String.Format("{0:f3}", pos1_freq) + " , " +
-                                 "pos2 : " + String.Format("{0:f3}", pos2) + " , " +
-                                 "pos2_freq : " + String.Format("{0:f3}", pos2_freq) + " , " +
-
-                            "]";
-                            return re;
-                        }
+                        Const,Moving,Vibrato
                     }
 
                     public class Yaml_Async_Parameter_Carrier_Freq_Vibrato
                     {
-                        public Yaml_Async_Parameter_Carrier_Freq_Vibrato_Value highest { get; set; }
-                        public Yaml_Async_Parameter_Carrier_Freq_Vibrato_Value lowest { get; set; }
+                        public Yaml_Async_Parameter_Vibrato_Value highest { get; set; }
+                        public Yaml_Async_Parameter_Vibrato_Value lowest { get; set; }
                         public double interval { get; set; }
 
                         public override string ToString()
                         {
-                            String re = "[ " +
-                                         "interval : " + String.Format("{0:f3}", interval) + " , " +
-                                         "lowest : " + get_Value(lowest) + " , " +
-                                         "highest : " + get_Value(highest) + " , " +
-
-                                    "]";
-                            return re;
+                            String final = "[\r\n";
+                            final += "highest : " + get_Value(highest) + "\r\n";
+                            final += "lowest : " + get_Value(lowest) + "\r\n";
+                            final += "]";
+                            return final;
                         }
 
-                        public class Yaml_Async_Parameter_Carrier_Freq_Vibrato_Value
+                        public class Yaml_Async_Parameter_Vibrato_Value
                         {
+                            public Yaml_Async_Parameter_Vibrato_Mode mode { get; set; }
                             public double const_value { get; set; }
-                            public Yaml_Async_Parameter_Carrier_Freq_Vibrato_Value_Move moving_value { get; set; }
+                            public Yaml_Moving_Value moving_value { get; set; }
                             public override string ToString()
                             {
-                                String re = "[ " +
-                                         "const_value : " + String.Format("{0:f3}", const_value) + " , " +
-                                         "moving_value : " + get_Value(moving_value) +
-
-                                    "]";
-                                return re;
+                                String final = "[\r\n";
+                                final += "mode : " + mode.ToString() + "\r\n";
+                                final += "const_value : " + String.Format("{0:f3}", const_value) + "\r\n";
+                                final += "moving_value : " + get_Value(moving_value) + "\r\n";
+                                final += "]";
+                                return final;
                             }
-                            public class Yaml_Async_Parameter_Carrier_Freq_Vibrato_Value_Move
+                            public enum Yaml_Async_Parameter_Vibrato_Mode
                             {
-                                double start_freq { get; set; }
-                                double start_value { get; set; }
-                                double end_freq { get; set; }
-                                double end_value { get; set; }
-
-                                public override string ToString()
-                                {
-                                    String re = "[ " +
-                                         "start_freq : " + String.Format("{0:f3}", start_freq) + " , " +
-                                         "start_value : " + String.Format("{0:f3}", start_value) + " , " +
-                                         "end_freq : " + String.Format("{0:f3}", end_freq) + " , " +
-                                         "end_value : " + String.Format("{0:f3}", end_value) + " , " +
-
-                                    "]";
-                                    return re;
-                                }
-
+                                Const, Moving
                             }
                         }
                     }
                 }
                 public class Yaml_Async_Parameter_Dipolar
                 {
+                    public Yaml_Async_Parameter_Dipolar_Mode value_mode { get; set; }
                     public double const_value { get; set; }
-                    public Yaml_Async_Parameter_Dipoar_Move move_value { get; set; }
+                    public Yaml_Moving_Value move_value { get; set; }
                     public override string ToString()
                     {
-                        String re = "[ " +
-                                 "const_value : " + String.Format("{0:f3}", const_value) + " , " +
-                                 "move_value : " + get_Value(move_value) +
-                            "]";
-                        return re;
+                        String final = "[\r\n";
+                        final += "value_mode : " + value_mode.ToString() + "\r\n";
+                        final += "const_value : " + String.Format("{0:f3}", const_value) + "\r\n";
+                        final += "moving_value : " + get_Value(move_value) + "\r\n";
+                        final += "]";
+                        return final;
                     }
 
-                    public class Yaml_Async_Parameter_Dipoar_Move
-                    {
-                        public double start_freq { get; set; }
-                        public double start_value { get; set; }
-                        public double end_freq { get; set; }
-                        public double end_value { get; set; }
-
-                        public override string ToString()
-                        {
-                            String re = "[ " +
-                                 "start_freq : " + String.Format("{0:f3}", start_freq) + " , " +
-                                 "start_value : " + String.Format("{0:f3}", start_value) + " , " +
-                                 "end_freq : " + String.Format("{0:f3}", end_freq) + " , " +
-                                 "end_value : " + String.Format("{0:f3}", end_value) + " , " +
-
-                            "]";
-                            return re;
-                        }
+                    public enum Yaml_Async_Parameter_Dipolar_Mode { 
+                        Const,Moving
                     }
+
+
                 }
 
             }
