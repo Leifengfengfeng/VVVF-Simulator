@@ -107,5 +107,10 @@ namespace VVVF_Generator_Porting
         {
             return (a > b) ? a : b;
         }
+
+        public static double get_Changing_Value(double x1, double y1, double x2, double y2, double x)
+        {
+            return y1 + (y2 - y1) / (x2 - x1) * (x - x1);
+        }
     }
 }

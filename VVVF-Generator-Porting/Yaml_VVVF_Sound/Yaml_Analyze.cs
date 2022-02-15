@@ -8,7 +8,7 @@ using static VVVF_Generator_Porting.Yaml_VVVF_Sound.Yaml_Sound_Data;
 using static VVVF_Generator_Porting.Yaml_VVVF_Sound.Yaml_Sound_Data.Yaml_Control_Data;
 using static VVVF_Generator_Porting.Yaml_VVVF_Sound.Yaml_Sound_Data.Yaml_Control_Data.Yaml_Control_Data_Amplitude_Control;
 using static VVVF_Generator_Porting.Yaml_VVVF_Sound.Yaml_Sound_Data.Yaml_Control_Data.Yaml_Control_Data_Amplitude_Control.Yaml_Control_Data_Amplitude;
-using static VVVF_Generator_Porting.Yaml_VVVF_Sound.Yaml_Sound_Data.Yaml_Control_Data.Yaml_Control_Data_Mascon_Control;
+using static VVVF_Generator_Porting.Yaml_VVVF_Sound.Yaml_Sound_Data.Yaml_Control_Data.Yaml_Free_Run_Condition;
 using static VVVF_Generator_Porting.Yaml_VVVF_Sound.Yaml_Sound_Data.Yaml_Mascon_Data;
 using static VVVF_Generator_Porting.Yaml_VVVF_Sound.Yaml_Sound_Data.Yaml_Mascon_Data.Yaml_Mascon_Data_On_Off;
 
@@ -100,23 +100,23 @@ namespace VVVF_Generator_Porting.Yaml_VVVF_Sound
         }
 
         public class Yaml_Min_Sine_Freq {
-            public int accelerate { get; set; }
-            public int braking { get; set; }
+            public double accelerate { get; set; }
+            public double braking { get; set; }
 
             public override string ToString()
             {
-                String re = "[ " +
-                         "accelerate : " + get_Value(accelerate) + " , " +
-                         "braking : " + get_Value(braking) +
-                    "]";
-                return re;
+                String final = "[";
+                final += "accelerate : " + String.Format("{0:f3}", accelerate) + ",";
+                final += "braking : " + String.Format("{0:f3}", braking);
+                final += "]";
+                return final;
             }
         }
 
         public class Yaml_Control_Data {
             public int from { get; set; }
             public Pulse_Mode pulse_Mode { get; set; }
-            public Yaml_Control_Data_Mascon_Control when_mascon_switched { get; set; }
+            public Yaml_Free_Run_Condition when_freerun { get; set; }
             public Yaml_Control_Data_Amplitude_Control amplitude_control { get; set; }
             public Yaml_Async_Parameter async_data { get; set; }
 
@@ -125,7 +125,7 @@ namespace VVVF_Generator_Porting.Yaml_VVVF_Sound
                 String change_line = "\r\n";
                 String final = "From : " + get_Value(from) + change_line +
                     "PulseMode : " + get_Value(pulse_Mode) + change_line +
-                    "when_mascon_switched : " + get_Value(when_mascon_switched) + change_line +
+                    "when_freerun : " + get_Value(when_freerun) + change_line +
                     "amplitude_control : " + get_Value(amplitude_control) + change_line +
                     "async_data : " + get_Value(async_data);
                 return final;
@@ -155,10 +155,10 @@ namespace VVVF_Generator_Porting.Yaml_VVVF_Sound
                     return final;
                 }
             }
-            public class Yaml_Control_Data_Mascon_Control
+            public class Yaml_Free_Run_Condition
             {
-                public Yaml_Control_Data_Mascon_Control_Single on { get; set; }
-                public Yaml_Control_Data_Mascon_Control_Single off { get; set; }
+                public Yaml_Free_Run_Condition_Single on { get; set; }
+                public Yaml_Free_Run_Condition_Single off { get; set; }
 
                 public override string ToString()
                 {
@@ -169,7 +169,7 @@ namespace VVVF_Generator_Porting.Yaml_VVVF_Sound
                     return re;
                 }
 
-                public class Yaml_Control_Data_Mascon_Control_Single {
+                public class Yaml_Free_Run_Condition_Single {
                     public bool skip { get; set; }
                     public bool stuck_at_here { get; set; }
                     public override string ToString()
@@ -263,13 +263,13 @@ namespace VVVF_Generator_Porting.Yaml_VVVF_Sound
                 {
                     public Yaml_Async_Parameter_Dipolar_Mode value_mode { get; set; }
                     public double const_value { get; set; }
-                    public Yaml_Moving_Value move_value { get; set; }
+                    public Yaml_Moving_Value moving_value { get; set; }
                     public override string ToString()
                     {
                         String final = "[\r\n";
                         final += "value_mode : " + value_mode.ToString() + "\r\n";
                         final += "const_value : " + String.Format("{0:f3}", const_value) + "\r\n";
-                        final += "moving_value : " + get_Value(move_value) + "\r\n";
+                        final += "moving_value : " + get_Value(moving_value) + "\r\n";
                         final += "]";
                         return final;
                     }
@@ -403,10 +403,10 @@ namespace VVVF_Generator_Porting.Yaml_VVVF_Sound
             {
                 new Yaml_Control_Data
                 {
-                    when_mascon_switched = new Yaml_Control_Data_Mascon_Control
+                    when_freerun = new Yaml_Free_Run_Condition
                     {
-                        on = new Yaml_Control_Data_Mascon_Control_Single{ skip = false, stuck_at_here = true },
-                        off = new Yaml_Control_Data_Mascon_Control_Single{ skip = false, stuck_at_here = true }
+                        on = new Yaml_Free_Run_Condition_Single{ skip = false, stuck_at_here = true },
+                        off = new Yaml_Free_Run_Condition_Single{ skip = false, stuck_at_here = true }
                     },
                     from = 60,
                     pulse_Mode = Pulse_Mode.P_1,
@@ -465,10 +465,10 @@ namespace VVVF_Generator_Porting.Yaml_VVVF_Sound
 
                 new Yaml_Control_Data
                 {
-                    when_mascon_switched = new Yaml_Control_Data_Mascon_Control
+                    when_freerun = new Yaml_Free_Run_Condition
                     {
-                        on = new Yaml_Control_Data_Mascon_Control_Single{ skip = false, stuck_at_here = true },
-                        off = new Yaml_Control_Data_Mascon_Control_Single{ skip = false, stuck_at_here = true }
+                        on = new Yaml_Free_Run_Condition_Single{ skip = false, stuck_at_here = true },
+                        off = new Yaml_Free_Run_Condition_Single{ skip = false, stuck_at_here = true }
                     },
                     from = 49,
                     pulse_Mode = Pulse_Mode.P_3,
@@ -496,10 +496,10 @@ namespace VVVF_Generator_Porting.Yaml_VVVF_Sound
 
                 new Yaml_Control_Data
                 {
-                    when_mascon_switched = new Yaml_Control_Data_Mascon_Control
+                    when_freerun = new Yaml_Free_Run_Condition
                     {
-                        on = new Yaml_Control_Data_Mascon_Control_Single{ skip = false, stuck_at_here = true },
-                        off = new Yaml_Control_Data_Mascon_Control_Single{ skip = false, stuck_at_here = true }
+                        on = new Yaml_Free_Run_Condition_Single{ skip = false, stuck_at_here = true },
+                        off = new Yaml_Free_Run_Condition_Single{ skip = false, stuck_at_here = true }
                     },
                     from = 40,
                     pulse_Mode = Pulse_Mode.P_9,
@@ -527,10 +527,10 @@ namespace VVVF_Generator_Porting.Yaml_VVVF_Sound
 
                 new Yaml_Control_Data
                 {
-                    when_mascon_switched = new Yaml_Control_Data_Mascon_Control
+                    when_freerun = new Yaml_Free_Run_Condition
                     {
-                        on = new Yaml_Control_Data_Mascon_Control_Single{ skip = false, stuck_at_here = true },
-                        off = new Yaml_Control_Data_Mascon_Control_Single{ skip = false, stuck_at_here = true }
+                        on = new Yaml_Free_Run_Condition_Single{ skip = false, stuck_at_here = true },
+                        off = new Yaml_Free_Run_Condition_Single{ skip = false, stuck_at_here = true }
                     },
                     from = 19,
                     pulse_Mode = Pulse_Mode.P_21,
@@ -558,10 +558,10 @@ namespace VVVF_Generator_Porting.Yaml_VVVF_Sound
 
                 new Yaml_Control_Data
                 {
-                    when_mascon_switched = new Yaml_Control_Data_Mascon_Control
+                    when_freerun = new Yaml_Free_Run_Condition
                     {
-                        on = new Yaml_Control_Data_Mascon_Control_Single{ skip = false, stuck_at_here = true },
-                        off = new Yaml_Control_Data_Mascon_Control_Single{ skip = false, stuck_at_here = true }
+                        on = new Yaml_Free_Run_Condition_Single{ skip = false, stuck_at_here = true },
+                        off = new Yaml_Free_Run_Condition_Single{ skip = false, stuck_at_here = true }
                     },
                     from = 7,
                     pulse_Mode = Pulse_Mode.P_33,
@@ -588,10 +588,10 @@ namespace VVVF_Generator_Porting.Yaml_VVVF_Sound
                 },
                 new Yaml_Control_Data
                 {
-                    when_mascon_switched = new Yaml_Control_Data_Mascon_Control
+                    when_freerun = new Yaml_Free_Run_Condition
                     {
-                        on = new Yaml_Control_Data_Mascon_Control_Single{ skip = false, stuck_at_here = true },
-                        off = new Yaml_Control_Data_Mascon_Control_Single{ skip = false, stuck_at_here = true }
+                        on = new Yaml_Free_Run_Condition_Single{ skip = false, stuck_at_here = true },
+                        off = new Yaml_Free_Run_Condition_Single{ skip = false, stuck_at_here = true }
                     },
                     from = 0,
                     pulse_Mode = Pulse_Mode.P_33,
@@ -624,10 +624,10 @@ namespace VVVF_Generator_Porting.Yaml_VVVF_Sound
             {
                 new Yaml_Control_Data
                 {
-                    when_mascon_switched = new Yaml_Control_Data_Mascon_Control
+                    when_freerun = new Yaml_Free_Run_Condition
                     {
-                        on = new Yaml_Control_Data_Mascon_Control_Single{ skip = false, stuck_at_here = true },
-                        off = new Yaml_Control_Data_Mascon_Control_Single{ skip = false, stuck_at_here = true }
+                        on = new Yaml_Free_Run_Condition_Single{ skip = false, stuck_at_here = true },
+                        off = new Yaml_Free_Run_Condition_Single{ skip = false, stuck_at_here = true }
                     },
                     from = 53,
                     pulse_Mode = Pulse_Mode.P_1,
@@ -687,10 +687,10 @@ namespace VVVF_Generator_Porting.Yaml_VVVF_Sound
 
                 new Yaml_Control_Data
                 {
-                    when_mascon_switched = new Yaml_Control_Data_Mascon_Control
+                    when_freerun = new Yaml_Free_Run_Condition
                     {
-                        on = new Yaml_Control_Data_Mascon_Control_Single{ skip = false, stuck_at_here = true },
-                        off = new Yaml_Control_Data_Mascon_Control_Single{ skip = false, stuck_at_here = true }
+                        on = new Yaml_Free_Run_Condition_Single{ skip = false, stuck_at_here = true },
+                        off = new Yaml_Free_Run_Condition_Single{ skip = false, stuck_at_here = true }
                     },
                     from = 45,
                     pulse_Mode = Pulse_Mode.P_3,
@@ -718,10 +718,10 @@ namespace VVVF_Generator_Porting.Yaml_VVVF_Sound
 
                 new Yaml_Control_Data
                 {
-                    when_mascon_switched = new Yaml_Control_Data_Mascon_Control
+                    when_freerun = new Yaml_Free_Run_Condition
                     {
-                        on = new Yaml_Control_Data_Mascon_Control_Single{ skip = false, stuck_at_here = true },
-                        off = new Yaml_Control_Data_Mascon_Control_Single{ skip = false, stuck_at_here = true }
+                        on = new Yaml_Free_Run_Condition_Single{ skip = false, stuck_at_here = true },
+                        off = new Yaml_Free_Run_Condition_Single{ skip = false, stuck_at_here = true }
                     },
                     from = 29,
                     pulse_Mode = Pulse_Mode.P_9,
@@ -749,10 +749,10 @@ namespace VVVF_Generator_Porting.Yaml_VVVF_Sound
 
                 new Yaml_Control_Data
                 {
-                    when_mascon_switched = new Yaml_Control_Data_Mascon_Control
+                    when_freerun = new Yaml_Free_Run_Condition
                     {
-                        on = new Yaml_Control_Data_Mascon_Control_Single{ skip = false, stuck_at_here = true },
-                        off = new Yaml_Control_Data_Mascon_Control_Single{ skip = false, stuck_at_here = true }
+                        on = new Yaml_Free_Run_Condition_Single{ skip = false, stuck_at_here = true },
+                        off = new Yaml_Free_Run_Condition_Single{ skip = false, stuck_at_here = true }
                     },
                     from = 19,
                     pulse_Mode = Pulse_Mode.P_21,
@@ -780,10 +780,10 @@ namespace VVVF_Generator_Porting.Yaml_VVVF_Sound
 
                 new Yaml_Control_Data
                 {
-                    when_mascon_switched = new Yaml_Control_Data_Mascon_Control
+                    when_freerun = new Yaml_Free_Run_Condition
                     {
-                        on = new Yaml_Control_Data_Mascon_Control_Single{ skip = false, stuck_at_here = true },
-                        off = new Yaml_Control_Data_Mascon_Control_Single{ skip = false, stuck_at_here = true }
+                        on = new Yaml_Free_Run_Condition_Single{ skip = false, stuck_at_here = true },
+                        off = new Yaml_Free_Run_Condition_Single{ skip = false, stuck_at_here = true }
                     },
                     from = 9,
                     pulse_Mode = Pulse_Mode.P_33,
@@ -811,10 +811,10 @@ namespace VVVF_Generator_Porting.Yaml_VVVF_Sound
 
                  new Yaml_Control_Data
                 {
-                    when_mascon_switched = new Yaml_Control_Data_Mascon_Control
+                    when_freerun = new Yaml_Free_Run_Condition
                     {
-                        on = new Yaml_Control_Data_Mascon_Control_Single{ skip = false, stuck_at_here = true },
-                        off = new Yaml_Control_Data_Mascon_Control_Single{ skip = false, stuck_at_here = true }
+                        on = new Yaml_Free_Run_Condition_Single{ skip = false, stuck_at_here = true },
+                        off = new Yaml_Free_Run_Condition_Single{ skip = false, stuck_at_here = true }
                     },
                     from = 9,
                     pulse_Mode = Pulse_Mode.P_57,
