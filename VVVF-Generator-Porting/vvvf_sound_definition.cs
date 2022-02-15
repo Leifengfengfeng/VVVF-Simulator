@@ -57,6 +57,8 @@ namespace VVVF_Generator_Porting
             SOUND_JRE_209_MITSUBISHI_GTO_2_LEVEL,
             SOUND_X_FAMINA_2_LEVEL,
             SOUND_X_PULSE_TEST_2_LEVEL,
+            SOUND_DATA_FILE_2_LEVEL,
+            SOUND_DATA_FILE_3_LEVEL,
         }
 
         public static Wave_Values get_Calculated_Value(VVVF_Sound_Names name, Control_Values cv)
@@ -124,6 +126,8 @@ namespace VVVF_Generator_Porting
                 case VVVF_Sound_Names.SOUND_JRE_209_MITSUBISHI_GTO_2_LEVEL : return calculate_jre_209_mitsubishi_gto_2_level(cv);
                 case VVVF_Sound_Names.SOUND_X_FAMINA_2_LEVEL : return calculate_famina_2_level(cv);
                 case VVVF_Sound_Names.SOUND_X_PULSE_TEST_2_LEVEL : return calculate_pulse_test_2_level(cv);
+                case VVVF_Sound_Names.SOUND_DATA_FILE_2_LEVEL: return calculate_data_file_2_level(cv);
+                case VVVF_Sound_Names.SOUND_DATA_FILE_3_LEVEL: return calculate_data_file_3_level(cv);
                 default : return calculate_silent_2_level(cv);
             }
 

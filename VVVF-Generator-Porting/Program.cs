@@ -6,6 +6,8 @@ using static VVVF_Generator_Porting.Generation.Generate_Hexagon;
 using static VVVF_Generator_Porting.Generation.Generate_RealTime;
 using static VVVF_Generator_Porting.Generation.Generate_Sound;
 using static VVVF_Generator_Porting.Generation.Generate_Wave_Form;
+using static VVVF_Generator_Porting.Generation.Generate_PWM_Data;
+
 
 namespace VVVF_Generator_Porting
 {
@@ -51,6 +53,7 @@ namespace VVVF_Generator_Porting
                 "Generate Taroimo like Mascon Video",
 
                 "-OTHERS",
+                "PWM Data generation",
                 "Realtime VVVF Sound generation",
             };
 
@@ -81,6 +84,7 @@ namespace VVVF_Generator_Porting
             bool gen_U_V = false, gen_UVW = false, gen_U_V_taroimo = false;
             bool gen_hexagon = false , gen_hexagon_taroimo = false, gen_hexagon_explain = false, gen_hexagon_image = false;
             bool gen_mascon_video = false , gen_mascon_taroimo_video = false;
+            bool gen_pwm_data = false;
             bool realtime = false;
 
             int c = 1;
@@ -100,13 +104,14 @@ namespace VVVF_Generator_Porting
 
                 if (split[i] == c++.ToString()) gen_mascon_video = true;
                 if (split[i] == c++.ToString()) gen_mascon_taroimo_video = true;
+                if (split[i] == c++.ToString()) gen_pwm_data = true;
 
                 if (split[i] == c++.ToString()) realtime = true;
             }
 
             
             if(gen_audio || gen_U_V || gen_mascon_video || gen_UVW || gen_hexagon || gen_hexagon_explain || gen_hexagon_taroimo || gen_mascon_taroimo_video
-                || gen_U_V_taroimo || gen_hexagon_image || gen_env_audio)
+                || gen_U_V_taroimo || gen_hexagon_image || gen_env_audio || gen_pwm_data)
             {
                 VVVF_Sound_Names sound_name = get_Choosed_Sound();
                 String output_path = get_Path();
@@ -127,7 +132,7 @@ namespace VVVF_Generator_Porting
 
                 if (gen_mascon_video) generate_status_video(output_path, sound_name);
                 if (gen_mascon_taroimo_video) generate_status_taroimo_like_video(output_path, sound_name);
-
+                if (gen_pwm_data) generate_pwm_data(output_path, sound_name);
             }
 
             if (realtime) realtime_sound();

@@ -2622,7 +2622,22 @@ namespace VVVF_Generator_Porting
 				pulse_mode = Pulse_Mode.Async;
 			}
 
-			return calculate_two_level(pulse_mode, carrier_freq, new Sine_Control_Data(cv.initial_phase, amplitude, 0));
+			return calculate_two_level(pulse_mode, carrier_freq, new Sine_Control_Data(cv.initial_phase, amplitude, (cv.free_run) ? -1 : 2));
+		}
+
+		public static Wave_Values calculate_data_file_2_level(Control_Values cv)
+		{
+			double amplitude = 0.5;
+			Pulse_Mode pulse_mode = Pulse_Mode.P_9;
+			Carrier_Freq carrier_freq = new Carrier_Freq(0, 0);
+			return calculate_two_level(pulse_mode, carrier_freq, new Sine_Control_Data(cv.initial_phase, amplitude, (cv.free_run) ? -1 : 2));
+		}
+		public static Wave_Values calculate_data_file_3_level(Control_Values cv)
+		{
+			double amplitude = 0.5;
+			Pulse_Mode pulse_mode = Pulse_Mode.P_9;
+			Carrier_Freq carrier_freq = new Carrier_Freq(0, 0);
+			return calculate_three_level(pulse_mode, carrier_freq, new Sine_Control_Data(cv.initial_phase, amplitude, (cv.free_run) ? -1 : 2), -1);
 		}
 	}
 }
