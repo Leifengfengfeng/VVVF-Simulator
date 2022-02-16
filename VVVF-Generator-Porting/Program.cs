@@ -145,7 +145,12 @@ namespace VVVF_Generator_Porting
                 String load_path = get_Path("Enter the yaml file path");
                 String output_path = get_Path("Enter the output path");
                 yaml_generate_sound(output_path, load_path);
-                //if (yaml_test) output_yaml(output_path);
+            }
+
+            if (yaml_test)
+            {
+                String output_path = get_Path("Enter the output path");
+                output_yaml(output_path);
             }
 
             if (realtime) realtime_sound();
