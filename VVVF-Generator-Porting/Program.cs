@@ -8,6 +8,8 @@ using static VVVF_Generator_Porting.Generation.Generate_Sound;
 using static VVVF_Generator_Porting.Generation.Generate_Wave_Form;
 
 using static VVVF_Generator_Porting.Yaml_VVVF_Sound.Yaml_Analyze;
+using System.Drawing.Text;
+using System.Drawing;
 
 namespace VVVF_Generator_Porting
 {
