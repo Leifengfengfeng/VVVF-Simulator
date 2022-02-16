@@ -747,7 +747,7 @@ namespace VVVF_Generator_Porting.Generation
             Font[] lng_fonts = font_jpn ? jpn_fonts : eng_fonts;
             //Control stat , Carrier , Async , Sync , Output, Freq ,Volt , Carrier_Num, Key , Carrier_Unit
             Point[] jpn_f_jpn_str_compen = new Point[] { 
-                new Point(0, 37), // control stat
+                new Point(0, 43), // control stat
                 new Point(2, 19), // "Carrier"
                 new Point(36, 5), // "Async"
                 new Point(36, 5), // "Sync"
@@ -764,7 +764,7 @@ namespace VVVF_Generator_Porting.Generation
             };
             Point[] eng_f_eng_str_compen = new Point[] { new Point(0, 0), new Point(0, 0), new Point(40, 5), new Point(40, 5), new Point(0, 0), new Point(0, 5), new Point(0, 5) , new Point(0, 0), new Point(0, 0), new Point(0, 0), new Point(0, 0), new Point(0, 0), new Point(0, 0), new Point(0, 0) };
             Point[] eng_f_jpn_str_compen = new Point[] {
-                new Point(0, -4), // control stat
+                new Point(0, 0), // control stat
                 new Point(0, 19), // "Carrier"
                 new Point(36, -1), // "Async"
                 new Point(36, -1), // "Sync"
