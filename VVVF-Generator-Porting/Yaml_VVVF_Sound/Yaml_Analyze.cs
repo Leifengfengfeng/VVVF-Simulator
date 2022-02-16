@@ -731,7 +731,7 @@ namespace VVVF_Generator_Porting.Yaml_VVVF_Sound
                         }
                     },
                 },
-                
+
                 new Yaml_Control_Data
                 {
                     when_freerun = new Yaml_Free_Run_Condition
@@ -1211,9 +1211,18 @@ namespace VVVF_Generator_Porting.Yaml_VVVF_Sound
 
         public static void yaml_generate_sound(String output_path,String path)
         {
-            var input = new StreamReader(path, Encoding.UTF8);
-            var deserializer = new Deserializer();
-            Yaml_Sound_Data deserializeObject = deserializer.Deserialize<Yaml_Sound_Data>(input);
+            
+            Yaml_Sound_Data deserializeObject;
+            try
+            {
+                var input = new StreamReader(path, Encoding.UTF8);
+                var deserializer = new Deserializer();
+                deserializeObject = deserializer.Deserialize<Yaml_Sound_Data>(input);
+            }catch(Exception)
+            {
+                Console.WriteLine("Invalid yaml or Invalid path");
+                return;
+            }
 
             reset_control_variables();
             reset_all_variables();

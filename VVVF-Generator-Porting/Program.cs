@@ -13,12 +13,12 @@ namespace VVVF_Generator_Porting
 {
     internal class Program
     {
-        public static String get_Path()
+        public static String get_Path(String message)
         {
             String output_path = "";
             while (output_path.Length == 0)
             {
-                Console.Write("Enter the export path : ");
+                Console.Write(message + " : ");
                 output_path = Console.ReadLine();
                 if (output_path.Length == 0)
                 {
@@ -52,9 +52,12 @@ namespace VVVF_Generator_Porting
                 "Generate Mascon Video",
                 "Generate Taroimo like Mascon Video",
 
+                "-YAML RELATE",
+                "Generate from Yaml File",
+                "Yaml File Test",
+
                 "-OTHERS",
                 "Realtime VVVF Sound generation",
-                "Yaml Test",
             };
 
             int count = 1;
@@ -84,7 +87,8 @@ namespace VVVF_Generator_Porting
             bool gen_U_V = false, gen_UVW = false, gen_U_V_taroimo = false;
             bool gen_hexagon = false , gen_hexagon_taroimo = false, gen_hexagon_explain = false, gen_hexagon_image = false;
             bool gen_mascon_video = false , gen_mascon_taroimo_video = false;
-            bool realtime = false,yaml_test = false;
+            bool realtime = false;
+            bool yaml_load = false,yaml_test = false;
 
             int c = 1;
             for(int i = 0; i < split.Length; i++)
@@ -104,16 +108,19 @@ namespace VVVF_Generator_Porting
                 if (split[i] == c++.ToString()) gen_mascon_video = true;
                 if (split[i] == c++.ToString()) gen_mascon_taroimo_video = true;
 
-                if (split[i] == c++.ToString()) realtime = true;
+                if (split[i] == c++.ToString()) yaml_load = true;
                 if (split[i] == c++.ToString()) yaml_test = true;
+
+                if (split[i] == c++.ToString()) realtime = true;
+                
             }
 
             
             if(gen_audio || gen_U_V || gen_mascon_video || gen_UVW || gen_hexagon || gen_hexagon_explain || gen_hexagon_taroimo || gen_mascon_taroimo_video
-                || gen_U_V_taroimo || gen_hexagon_image || gen_env_audio || yaml_test)
+                || gen_U_V_taroimo || gen_hexagon_image || gen_env_audio)
             {
                 VVVF_Sound_Names sound_name = get_Choosed_Sound();
-                String output_path = get_Path();
+                String output_path = get_Path("Enter the export path");
 
                 if (gen_audio) generate_sound(output_path, sound_name);
                 if (gen_env_audio) generate_env_sound(output_path, sound_name);
@@ -131,9 +138,14 @@ namespace VVVF_Generator_Porting
 
                 if (gen_mascon_video) generate_status_video(output_path, sound_name);
                 if (gen_mascon_taroimo_video) generate_status_taroimo_like_video(output_path, sound_name);
+            }
 
-                if (yaml_test) output_yaml(output_path);
-
+            if (yaml_load)
+            {
+                String load_path = get_Path("Enter the yaml file path");
+                String output_path = get_Path("Enter the output path");
+                yaml_generate_sound(output_path, load_path);
+                //if (yaml_test) output_yaml(output_path);
             }
 
             if (realtime) realtime_sound();
