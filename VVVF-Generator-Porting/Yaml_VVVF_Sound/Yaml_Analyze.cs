@@ -14,6 +14,9 @@ using static VVVF_Generator_Porting.Yaml_VVVF_Sound.Yaml_Sound_Data.Yaml_Mascon_
 using static VVVF_Generator_Porting.vvvf_wave_control;
 using static VVVF_Generator_Porting.Generation.Generate_Common;
 using static VVVF_Generator_Porting.Yaml_VVVF_Sound.Yaml_VVVF_Wave;
+using static VVVF_Generator_Porting.Yaml_VVVF_Sound.Yaml_Sound_Data.Yaml_Control_Data.Yaml_Async_Parameter;
+using static VVVF_Generator_Porting.Yaml_VVVF_Sound.Yaml_Sound_Data.Yaml_Control_Data.Yaml_Async_Parameter.Yaml_Async_Parameter_Carrier_Freq;
+using static VVVF_Generator_Porting.Yaml_VVVF_Sound.Yaml_Sound_Data.Yaml_Control_Data.Yaml_Async_Parameter.Yaml_Async_Parameter_Carrier_Freq.Yaml_Async_Parameter_Carrier_Freq_Table;
 
 namespace VVVF_Generator_Porting.Yaml_VVVF_Sound
 {
@@ -89,11 +92,11 @@ namespace VVVF_Generator_Porting.Yaml_VVVF_Sound
                 public class Yaml_Mascon_Data_Single
                 {
                     public int div { get; set; }
-                    public int control_freq_go_to { get; set; }
+                    public double control_freq_go_to { get; set; }
 
                     public override string ToString()
                     {
-                        String re = "[div : " + get_Value(div) + " , " + "control_freq_go_to : " + get_Value(control_freq_go_to) + "]";
+                        String re = "[div : " + get_Value(div) + " , " + "control_freq_go_to : " + String.Format("{0:f3}", control_freq_go_to) + "]";
                         return re;
                     }
                 }
@@ -117,7 +120,9 @@ namespace VVVF_Generator_Porting.Yaml_VVVF_Sound
         }
 
         public class Yaml_Control_Data {
-            public int from { get; set; }
+            public double from { get; set; }
+            public bool enable_on_free_run { get; set; }
+            public bool enable_on_not_free_run { get; set; }
             public Pulse_Mode pulse_Mode { get; set; }
             public Yaml_Free_Run_Condition when_freerun { get; set; }
             public Yaml_Control_Data_Amplitude_Control amplitude_control { get; set; }
@@ -126,11 +131,13 @@ namespace VVVF_Generator_Porting.Yaml_VVVF_Sound
             public override string ToString()
             {
                 String change_line = "\r\n";
-                String final = "From : " + get_Value(from) + change_line +
-                    "PulseMode : " + get_Value(pulse_Mode) + change_line +
-                    "when_freerun : " + get_Value(when_freerun) + change_line +
-                    "amplitude_control : " + get_Value(amplitude_control) + change_line +
-                    "async_data : " + get_Value(async_data);
+                String final = "From : " + String.Format("{0:f3}", from) + change_line;
+                final += "enable_on_free_run : " + get_Value(enable_on_free_run) + change_line;
+                final += "enable_on_not_free_run : " + get_Value(enable_on_not_free_run) + change_line;
+                final += "PulseMode : " + get_Value(pulse_Mode) + change_line;
+                final += "when_freerun : " + get_Value(when_freerun) + change_line;
+                final += "amplitude_control : " + get_Value(amplitude_control) + change_line;
+                final += "async_data : " + get_Value(async_data);
                 return final;
             }
 
@@ -209,6 +216,7 @@ namespace VVVF_Generator_Porting.Yaml_VVVF_Sound
                     public double const_value { get; set; }
                     public Yaml_Moving_Value moving_value { get; set; }
                     public Yaml_Async_Parameter_Carrier_Freq_Vibrato vibrato_value { get; set; }
+                    public Yaml_Async_Parameter_Carrier_Freq_Table carrier_table_value { get; set; }
 
                     public override string ToString()
                     {
@@ -217,13 +225,14 @@ namespace VVVF_Generator_Porting.Yaml_VVVF_Sound
                         final += "const_value : " + String.Format("{0:f3}", const_value) + "\r\n";
                         final += "moving_value : " + get_Value(moving_value) + "\r\n";
                         final += "vibrato_value : " + get_Value(vibrato_value) + "\r\n";
+                        final += "carrier_table_value : " + get_Value(carrier_table_value) + "\r\n";
                         final += "]";
                         return final;
                     }
 
                     public enum Yaml_Async_Carrier_Mode
                     {
-                        Const,Moving,Vibrato
+                        Const,Moving,Vibrato,Table
                     }
 
                     public class Yaml_Async_Parameter_Carrier_Freq_Vibrato
@@ -259,6 +268,38 @@ namespace VVVF_Generator_Porting.Yaml_VVVF_Sound
                             {
                                 Const, Moving
                             }
+                        }
+                    }
+               
+                    public class Yaml_Async_Parameter_Carrier_Freq_Table
+                    {
+                        public List<Yaml_Async_Parameter_Carrier_Freq_Table_Single> carrier_freq_table { get; set; }
+                        public class Yaml_Async_Parameter_Carrier_Freq_Table_Single
+                        {
+                            public double from { get; set; }
+                            public double carrier_freq { get; set; }
+                            publicbool free_run_stuck_here { get; set; }
+
+                            public override string ToString()
+                            {
+                                String final = "[\r\n";
+                                final += "from : " + String.Format("{0:f3}", from) + ",";
+                                final += "carrier_freq : " + String.Format("{0:f3}", carrier_freq) + ",";
+                                final += "free_run_stuck_here : " + get_Value(free_run_stuck_here) + ",";
+                                final += "]";
+                                return final;
+                            }
+                        }
+
+                        public override string ToString()
+                        {
+                            String final = "[\r\n";
+                            for(int i = 0; i < carrier_freq_table.Count; i++)
+                            {
+                                final += carrier_freq_table[i].ToString() + "\r\n";
+                            }
+                            final += "]";
+                            return final;
                         }
                     }
                 }
@@ -364,12 +405,12 @@ namespace VVVF_Generator_Porting.Yaml_VVVF_Sound
         public static void output_yaml(String path)
         {
             Yaml_Sound_Data obj = new Yaml_Sound_Data();
-            obj.level = 3;
+            obj.level = 2;
 
             Yaml_Min_Sine_Freq ymsf = new Yaml_Min_Sine_Freq
             {
-                accelerate = 2,
-                braking = -1
+                accelerate = 0,
+                braking = 0
             };
             obj.min_freq = ymsf;
 
@@ -379,26 +420,26 @@ namespace VVVF_Generator_Porting.Yaml_VVVF_Sound
                 {
                     on = new Yaml_Mascon_Data_Single
                     {
-                        control_freq_go_to = 53,
-                        div = 19100
+                        control_freq_go_to = 80,
+                        div = 12000
                     },
                     off = new Yaml_Mascon_Data_Single
                     {
-                        control_freq_go_to = 53,
-                        div = 40000
+                        control_freq_go_to = 80,
+                        div = 12000
                     }
                 },
                 braking = new Yaml_Mascon_Data_On_Off
                 {
                     on = new Yaml_Mascon_Data_Single
                     {
-                        control_freq_go_to = 60,
-                        div = 19100
+                        control_freq_go_to = 79.5,
+                        div = 20000
                     },
                     off = new Yaml_Mascon_Data_Single
                     {
-                        control_freq_go_to = 60,
-                        div = 40000
+                        control_freq_go_to = 79.5,
+                        div = 20000
                     }
                 }
             };
@@ -410,61 +451,30 @@ namespace VVVF_Generator_Porting.Yaml_VVVF_Sound
                 {
                     when_freerun = new Yaml_Free_Run_Condition
                     {
-                        on = new Yaml_Free_Run_Condition_Single{ skip = false, stuck_at_here = true },
-                        off = new Yaml_Free_Run_Condition_Single{ skip = false, stuck_at_here = true }
+                        on = new Yaml_Free_Run_Condition_Single{ skip = false, stuck_at_here = false },
+                        off = new Yaml_Free_Run_Condition_Single{ skip = false, stuck_at_here = false }
                     },
-                    from = 60,
+                    from = 79.5,
                     pulse_Mode = Pulse_Mode.P_1,
                     async_data= null,
+                    enable_on_free_run = true,
+                    enable_on_not_free_run = true,
                     amplitude_control = new Yaml_Control_Data_Amplitude_Control
                     {
                         default_data = new Yaml_Control_Data_Amplitude
                         {
-                            mode = Amplitude_Mode.Inv_Proportional,
+                            mode = Amplitude_Mode.Linear,
                             parameter = new Yaml_Control_Data_Amplitude_Single_Parameter
                             {
                                 start_freq = 60,
-                                start_amp = 0.6,
+                                start_amp = 1,
                                 end_freq = 72,
-                                end_amp = 3,
-                                curve_change_rate = 0,
+                                end_amp = 1,
+                                curve_change_rate = -1,
                                 cut_off_amp = -1,
                                 disable_range_limit = false
                             }
                         },
-                        free_run_data = new Yaml_Control_Data_Amplitude_Free_Run
-                        {
-                            mascon_on = new Yaml_Control_Data_Amplitude
-                            {
-                                //0, 0.0001, target_freq, target_amplitude, cv.wave_stat, 0.8, false
-                                mode = Amplitude_Mode.Inv_Proportional,
-                                parameter = new Yaml_Control_Data_Amplitude_Single_Parameter
-                                {
-                                    start_freq = 0,
-                                    start_amp = 0.0001,
-                                    end_freq = -1,
-                                    end_amp = -1,
-                                    curve_change_rate = 0.8,
-                                    cut_off_amp = 0.001,
-                                    disable_range_limit = false
-                                }
-                            },
-                            mascon_off = new Yaml_Control_Data_Amplitude
-                            {
-                                //0, 0.0001, target_freq, target_amplitude, cv.wave_stat, 0.06, false
-                                mode = Amplitude_Mode.Inv_Proportional,
-                                parameter = new Yaml_Control_Data_Amplitude_Single_Parameter
-                                {
-                                    start_freq = 0,
-                                    start_amp = 0.0001,
-                                    end_freq = -1,
-                                    end_amp = -1,
-                                    curve_change_rate = 0.06,
-                                    cut_off_amp = 0.1,
-                                    disable_range_limit = false
-                                }
-                            }
-                        }
                     },
                 },
 
@@ -472,12 +482,14 @@ namespace VVVF_Generator_Porting.Yaml_VVVF_Sound
                 {
                     when_freerun = new Yaml_Free_Run_Condition
                     {
-                        on = new Yaml_Free_Run_Condition_Single{ skip = false, stuck_at_here = true },
-                        off = new Yaml_Free_Run_Condition_Single{ skip = false, stuck_at_here = true }
+                        on = new Yaml_Free_Run_Condition_Single{ skip = false, stuck_at_here = false },
+                        off = new Yaml_Free_Run_Condition_Single{ skip = false, stuck_at_here = false }
                     },
-                    from = 49,
-                    pulse_Mode = Pulse_Mode.P_3,
+                    from = 70.7,
+                    pulse_Mode = Pulse_Mode.CHMP_Wide_3,
                     async_data= null,
+                    enable_on_free_run = true,
+                    enable_on_not_free_run = true,
                     amplitude_control = new Yaml_Control_Data_Amplitude_Control
                     {
                         default_data = new Yaml_Control_Data_Amplitude
@@ -486,51 +498,15 @@ namespace VVVF_Generator_Porting.Yaml_VVVF_Sound
                             parameter = new Yaml_Control_Data_Amplitude_Single_Parameter
                             {
                                 //0, 0, 68.5, 1, cv.wave_stat, false
-                                start_freq = 0,
-                                start_amp = 0,
-                                end_freq = 68.5,
-                                end_amp = 1,
+                                start_freq = 70.7,
+                                start_amp = 1.2102388,
+                                end_freq = 79.5,
+                                end_amp = 0.018464 * 68.5 -0.095166,
                                 curve_change_rate = -1,
                                 cut_off_amp = -1,
                                 disable_range_limit = false
                             }
                         },
-                        free_run_data = new Yaml_Control_Data_Amplitude_Free_Run
-                        {
-                            mascon_on = new Yaml_Control_Data_Amplitude
-                            {
-                                mode = Amplitude_Mode.Linear,
-                                parameter = new Yaml_Control_Data_Amplitude_Single_Parameter
-                                {
-                                    //45, 0.7, 53, 0.84, cv.wave_stat, false
-                                    start_freq = 0,
-                                    start_amp = 0,
-                                    end_freq = -1,
-                                    end_amp = -1,
-                                    curve_change_rate = -1,
-                                    cut_off_amp = -1,
-                                    disable_range_limit = false,
-                                    polynomial = -1
-                                }
-                            },
-                            mascon_off = new Yaml_Control_Data_Amplitude
-                            {
-                                //0, 0.0001, target_freq, target_amplitude, cv.wave_stat, 0.06, false
-                                mode = Amplitude_Mode.Linear,
-                                parameter = new Yaml_Control_Data_Amplitude_Single_Parameter
-                                {
-                                    //45, 0.7, 53, 0.84, cv.wave_stat, false
-                                    start_freq = 0,
-                                    start_amp = 0,
-                                    end_freq = -1,
-                                    end_amp = -1,
-                                    curve_change_rate = -1,
-                                    cut_off_amp = -1,
-                                    disable_range_limit = false,
-                                    polynomial = -1
-                                }
-                            }
-                        }
                     },
                 },
 
@@ -541,9 +517,11 @@ namespace VVVF_Generator_Porting.Yaml_VVVF_Sound
                         on = new Yaml_Free_Run_Condition_Single{ skip = false, stuck_at_here = true },
                         off = new Yaml_Free_Run_Condition_Single{ skip = false, stuck_at_here = true }
                     },
-                    from = 40,
-                    pulse_Mode = Pulse_Mode.P_9,
+                    from = 63.35,
+                    pulse_Mode = Pulse_Mode.P_3,
                     async_data= null,
+                    enable_on_free_run = true,
+                    enable_on_not_free_run = false,
                     amplitude_control = new Yaml_Control_Data_Amplitude_Control
                     {
                         default_data = new Yaml_Control_Data_Amplitude
@@ -551,52 +529,15 @@ namespace VVVF_Generator_Porting.Yaml_VVVF_Sound
                             mode = Amplitude_Mode.Linear,
                             parameter = new Yaml_Control_Data_Amplitude_Single_Parameter
                             {
-                                //40, 0.725, 49, 0.79, cv.wave_stat, false
-                                start_freq = 40,
-                                start_amp = 0.725,
-                                end_freq = 59,
-                                end_amp = 0.79,
+                                start_freq = 0,
+                                start_amp = 0,
+                                end_freq = 79.5,
+                                end_amp = 1,
                                 curve_change_rate = -1,
                                 cut_off_amp = -1,
                                 disable_range_limit = false
                             }
                         },
-                        free_run_data = new Yaml_Control_Data_Amplitude_Free_Run
-                        {
-                            mascon_on = new Yaml_Control_Data_Amplitude
-                            {
-                                mode = Amplitude_Mode.Linear,
-                                parameter = new Yaml_Control_Data_Amplitude_Single_Parameter
-                                {
-                                    //45, 0.7, 53, 0.84, cv.wave_stat, false
-                                    start_freq = 0,
-                                    start_amp = 0,
-                                    end_freq = -1,
-                                    end_amp = -1,
-                                    curve_change_rate = -1,
-                                    cut_off_amp = -1,
-                                    disable_range_limit = false,
-                                    polynomial = -1
-                                }
-                            },
-                            mascon_off = new Yaml_Control_Data_Amplitude
-                            {
-                                //0, 0.0001, target_freq, target_amplitude, cv.wave_stat, 0.06, false
-                                mode = Amplitude_Mode.Linear,
-                                parameter = new Yaml_Control_Data_Amplitude_Single_Parameter
-                                {
-                                    //45, 0.7, 53, 0.84, cv.wave_stat, false
-                                    start_freq = 0,
-                                    start_amp = 0,
-                                    end_freq = -1,
-                                    end_amp = -1,
-                                    curve_change_rate = -1,
-                                    cut_off_amp = -1,
-                                    disable_range_limit = false,
-                                    polynomial = -1
-                                }
-                            }
-                        }
                     },
                 },
 
@@ -607,8 +548,10 @@ namespace VVVF_Generator_Porting.Yaml_VVVF_Sound
                         on = new Yaml_Free_Run_Condition_Single{ skip = false, stuck_at_here = true },
                         off = new Yaml_Free_Run_Condition_Single{ skip = false, stuck_at_here = true }
                     },
-                    from = 19,
-                    pulse_Mode = Pulse_Mode.P_21,
+                    from = 63.35,
+                    pulse_Mode = Pulse_Mode.CHMP_Wide_5,
+                    enable_on_not_free_run = true,
+                    enable_on_free_run = false,
                     async_data= null,
                     amplitude_control = new Yaml_Control_Data_Amplitude_Control
                     {
@@ -618,10 +561,10 @@ namespace VVVF_Generator_Porting.Yaml_VVVF_Sound
                             parameter = new Yaml_Control_Data_Amplitude_Single_Parameter
                             {
                                 //0, 0, 58, 1.02, cv.wave_stat, false
-                                start_freq = 0,
-                                start_amp = 0,
-                                end_freq = 58,
-                                end_amp = 1.02,
+                                start_freq = 63.35,
+                                start_amp = 0.018464 * 63.35 -0.095166,
+                                end_freq = 70.7,
+                                end_amp = 0.018464 * 70.7 -0.095166,
                                 curve_change_rate = -1,
                                 cut_off_amp = -1,
                                 disable_range_limit = false
@@ -632,35 +575,32 @@ namespace VVVF_Generator_Porting.Yaml_VVVF_Sound
                             mascon_on = new Yaml_Control_Data_Amplitude
                             {
                                 mode = Amplitude_Mode.Linear,
-                                parameter = new Yaml_Control_Data_Amplitude_Single_Parameter
-                                {
-                                    //45, 0.7, 53, 0.84, cv.wave_stat, false
-                                    start_freq = 0,
-                                    start_amp = 0,
-                                    end_freq = -1,
-                                    end_amp = -1,
-                                    curve_change_rate = -1,
-                                    cut_off_amp = -1,
-                                    disable_range_limit = false,
-                                    polynomial = -1
-                                }
+                            parameter = new Yaml_Control_Data_Amplitude_Single_Parameter
+                            {
+                                //0, 0, 58, 1.02, cv.wave_stat, false
+                                start_freq = 0,
+                                start_amp = 0,
+                                end_freq = 70.7,
+                                end_amp = 0.018464 * 70.7 -0.095166,
+                                curve_change_rate = -1,
+                                cut_off_amp = -1,
+                                disable_range_limit = false
+                            }
                             },
                             mascon_off = new Yaml_Control_Data_Amplitude
                             {
-                                //0, 0.0001, target_freq, target_amplitude, cv.wave_stat, 0.06, false
                                 mode = Amplitude_Mode.Linear,
-                                parameter = new Yaml_Control_Data_Amplitude_Single_Parameter
-                                {
-                                    //45, 0.7, 53, 0.84, cv.wave_stat, false
-                                    start_freq = 0,
-                                    start_amp = 0,
-                                    end_freq = -1,
-                                    end_amp = -1,
-                                    curve_change_rate = -1,
-                                    cut_off_amp = -1,
-                                    disable_range_limit = false,
-                                    polynomial = -1
-                                }
+                            parameter = new Yaml_Control_Data_Amplitude_Single_Parameter
+                            {
+                                //0, 0, 58, 1.02, cv.wave_stat, false
+                                start_freq =0,
+                                start_amp = 06,
+                                end_freq = 70.7,
+                                end_amp = 0.018464 * 70.7 -0.095166,
+                                curve_change_rate = -1,
+                                cut_off_amp = 0.498,
+                                disable_range_limit = false
+                            }
                             }
                         }
                     },
@@ -673,8 +613,10 @@ namespace VVVF_Generator_Porting.Yaml_VVVF_Sound
                         on = new Yaml_Free_Run_Condition_Single{ skip = false, stuck_at_here = true },
                         off = new Yaml_Free_Run_Condition_Single{ skip = false, stuck_at_here = true }
                     },
-                    from = 7,
-                    pulse_Mode = Pulse_Mode.P_33,
+                    from = 56.84,
+                    pulse_Mode = Pulse_Mode.CHMP_Wide_7,
+                    enable_on_free_run = true,
+                    enable_on_not_free_run = true,
                     async_data= null,
                     amplitude_control = new Yaml_Control_Data_Amplitude_Control
                     {
@@ -684,10 +626,10 @@ namespace VVVF_Generator_Porting.Yaml_VVVF_Sound
                             parameter = new Yaml_Control_Data_Amplitude_Single_Parameter
                             {
                                 //0, 0, 19, 0.34, original_wave_stat, false
-                                start_freq = 0,
-                                start_amp = 0,
-                                end_freq = 19,
-                                end_amp = 0.34,
+                                start_freq = 56.84,
+                                start_amp = 0.018464 * 56.84 -0.095166,
+                                end_freq = 63.35,
+                                end_amp = 0.018464 * 63.35 -0.095166,
                                 curve_change_rate = -1,
                                 cut_off_amp = -1,
                                 disable_range_limit = false
@@ -698,35 +640,32 @@ namespace VVVF_Generator_Porting.Yaml_VVVF_Sound
                             mascon_on = new Yaml_Control_Data_Amplitude
                             {
                                 mode = Amplitude_Mode.Linear,
-                                parameter = new Yaml_Control_Data_Amplitude_Single_Parameter
-                                {
-                                    //45, 0.7, 53, 0.84, cv.wave_stat, false
-                                    start_freq = 0,
-                                    start_amp = 0,
-                                    end_freq = -1,
-                                    end_amp = -1,
-                                    curve_change_rate = -1,
-                                    cut_off_amp = -1,
-                                    disable_range_limit = false,
-                                    polynomial = -1
-                                }
+                            parameter = new Yaml_Control_Data_Amplitude_Single_Parameter
+                            {
+                                //0, 0, 19, 0.34, original_wave_stat, false
+                                start_freq = 0,
+                                start_amp = 0,
+                                end_freq = 63.35,
+                                end_amp = 0.018464 * 63.35 -0.095166,
+                                curve_change_rate = -1,
+                                cut_off_amp = -1,
+                                disable_range_limit = false
+                            }
                             },
                             mascon_off = new Yaml_Control_Data_Amplitude
                             {
-                                //0, 0.0001, target_freq, target_amplitude, cv.wave_stat, 0.06, false
                                 mode = Amplitude_Mode.Linear,
-                                parameter = new Yaml_Control_Data_Amplitude_Single_Parameter
-                                {
-                                    //45, 0.7, 53, 0.84, cv.wave_stat, false
-                                    start_freq = 0,
-                                    start_amp = 0,
-                                    end_freq = -1,
-                                    end_amp = -1,
-                                    curve_change_rate = -1,
-                                    cut_off_amp = -1,
-                                    disable_range_limit = false,
-                                    polynomial = -1
-                                }
+                            parameter = new Yaml_Control_Data_Amplitude_Single_Parameter
+                            {
+                                //0, 0, 19, 0.34, original_wave_stat, false
+                                start_freq = 0,
+                                start_amp = 0,
+                                end_freq = 63.35,
+                                end_amp = 0.018464 * 63.35 -0.095166,
+                                curve_change_rate = -1,
+                                cut_off_amp = 0.498,
+                                disable_range_limit = false
+                            }
                             }
                         }
                     },
@@ -739,8 +678,10 @@ namespace VVVF_Generator_Porting.Yaml_VVVF_Sound
                         on = new Yaml_Free_Run_Condition_Single{ skip = false, stuck_at_here = true },
                         off = new Yaml_Free_Run_Condition_Single{ skip = false, stuck_at_here = true }
                     },
-                    from = 0,
-                    pulse_Mode = Pulse_Mode.P_33,
+                    from = 53.5,
+                    pulse_Mode = Pulse_Mode.CHMP_7,
+                    enable_on_free_run = true,
+                    enable_on_not_free_run = true,
                     async_data= null,
                     amplitude_control = new Yaml_Control_Data_Amplitude_Control
                     {
@@ -750,10 +691,10 @@ namespace VVVF_Generator_Porting.Yaml_VVVF_Sound
                             parameter = new Yaml_Control_Data_Amplitude_Single_Parameter
                             {
                                 //0, 0, 19, 0.34, original_wave_stat, false
-                                start_freq = 0,
-                                start_amp = 0,
-                                end_freq = 0,
-                                end_amp = 100,
+                                start_freq = 53.5,
+                                start_amp = 0.014763975813 * 53.5 + 0.10000000000,
+                                end_freq = 56.84,
+                                end_amp = 0.014763975813 * 56.84 + 0.10000000000,
                                 curve_change_rate = -1,
                                 cut_off_amp = -1,
                                 disable_range_limit = false
@@ -764,39 +705,477 @@ namespace VVVF_Generator_Porting.Yaml_VVVF_Sound
                             mascon_on = new Yaml_Control_Data_Amplitude
                             {
                                 mode = Amplitude_Mode.Linear,
-                                parameter = new Yaml_Control_Data_Amplitude_Single_Parameter
-                                {
-                                    //45, 0.7, 53, 0.84, cv.wave_stat, false
-                                    start_freq = 0,
-                                    start_amp = 0,
-                                    end_freq = -1,
-                                    end_amp = -1,
-                                    curve_change_rate = -1,
-                                    cut_off_amp = -1,
-                                    disable_range_limit = false,
-                                    polynomial = -1
-                                }
+                            parameter = new Yaml_Control_Data_Amplitude_Single_Parameter
+                            {
+                                //0, 0, 19, 0.34, original_wave_stat, false
+                                start_freq = 0,
+                                start_amp = 0,
+                                end_freq = 56.84,
+                                end_amp = 0.014763975813 * 56.84 + 0.10000000000,
+                                curve_change_rate = -1,
+                                cut_off_amp = -1,
+                                disable_range_limit = false
+                            }
                             },
                             mascon_off = new Yaml_Control_Data_Amplitude
                             {
-                                //0, 0.0001, target_freq, target_amplitude, cv.wave_stat, 0.06, false
                                 mode = Amplitude_Mode.Linear,
-                                parameter = new Yaml_Control_Data_Amplitude_Single_Parameter
-                                {
-                                    //45, 0.7, 53, 0.84, cv.wave_stat, false
-                                    start_freq = 0,
-                                    start_amp = 0,
-                                    end_freq = -1,
-                                    end_amp = -1,
-                                    curve_change_rate = -1,
-                                    cut_off_amp = -1,
-                                    disable_range_limit = false,
-                                    polynomial = -1
-                                }
+                            parameter = new Yaml_Control_Data_Amplitude_Single_Parameter
+                            {
+                                //0, 0, 19, 0.34, original_wave_stat, false
+                                start_freq = 0,
+                                start_amp = 0,
+                                end_freq = 56.84,
+                                end_amp = 0.014763975813 * 56.84 + 0.10000000000,
+                                curve_change_rate = -1,
+                                cut_off_amp = 0.498,
+                                disable_range_limit = false
+                            }
                             }
                         }
                     },
-                }
+                },
+
+                new Yaml_Control_Data
+                {
+                    when_freerun = new Yaml_Free_Run_Condition
+                    {
+                        on = new Yaml_Free_Run_Condition_Single{ skip = false, stuck_at_here = true },
+                        off = new Yaml_Free_Run_Condition_Single{ skip = false, stuck_at_here = true }
+                    },
+                    from = 41,
+                    pulse_Mode = Pulse_Mode.CHMP_7,
+                    enable_on_free_run = true,
+                    enable_on_not_free_run = true,
+                    async_data= null,
+                    amplitude_control = new Yaml_Control_Data_Amplitude_Control
+                    {
+                        default_data = new Yaml_Control_Data_Amplitude
+                        {
+                            mode = Amplitude_Mode.Linear,
+                            parameter = new Yaml_Control_Data_Amplitude_Single_Parameter
+                            {
+                                //0, 0, 19, 0.34, original_wave_stat, false
+                                start_freq = 41,
+                                start_amp = 0.013504901961 * 41 + 0.100000000000,
+                                end_freq = 53.5,
+                                end_amp = 0.013504901961 * 53.5 + 0.100000000000,
+                                curve_change_rate = -1,
+                                cut_off_amp = -1,
+                                disable_range_limit = false
+                            }
+                        },
+                        free_run_data = new Yaml_Control_Data_Amplitude_Free_Run
+                        {
+                            mascon_on = new Yaml_Control_Data_Amplitude
+                            {
+                                mode = Amplitude_Mode.Linear,
+                            parameter = new Yaml_Control_Data_Amplitude_Single_Parameter
+                            {
+                                //0, 0, 19, 0.34, original_wave_stat, false
+                                start_freq = 0,
+                                start_amp = 0,
+                                end_freq = 53.5,
+                                end_amp = 0.013504901961 * 53.5 + 0.100000000000,
+                                curve_change_rate = -1,
+                                cut_off_amp = -1,
+                                disable_range_limit = false
+                            }
+                            },mascon_off = new Yaml_Control_Data_Amplitude
+                            {
+                                mode = Amplitude_Mode.Linear,
+                            parameter = new Yaml_Control_Data_Amplitude_Single_Parameter
+                            {
+                                //0, 0, 19, 0.34, original_wave_stat, false
+                                start_freq = 0,
+                                start_amp = 0,
+                                end_freq = 53.5,
+                                end_amp = 0.013504901961 * 53.5 + 0.100000000000,
+                                curve_change_rate = -1,
+                                cut_off_amp = 0.498,
+                                disable_range_limit = false
+                            }
+                            }
+                        }
+                    },
+                },
+
+                new Yaml_Control_Data
+                {
+                    when_freerun = new Yaml_Free_Run_Condition
+                    {
+                        on = new Yaml_Free_Run_Condition_Single{ skip = false, stuck_at_here = true },
+                        off = new Yaml_Free_Run_Condition_Single{ skip = false, stuck_at_here = true }
+                    },
+                    from = 34.5,
+                    pulse_Mode = Pulse_Mode.CHMP_9,
+                    enable_on_free_run = true,
+                    enable_on_not_free_run = true,
+                    async_data= null,
+                    amplitude_control = new Yaml_Control_Data_Amplitude_Control
+                    {
+                        default_data = new Yaml_Control_Data_Amplitude
+                        {
+                            mode = Amplitude_Mode.Linear,
+                            parameter = new Yaml_Control_Data_Amplitude_Single_Parameter
+                            {
+                                //0, 0, 19, 0.34, original_wave_stat, false
+                                start_freq = 34.5,
+                                start_amp = 0.013504901961 * 34.5 + 0.100000000000,
+                                end_freq = 41,
+                                end_amp = 0.013504901961 * 41 + 0.100000000000,
+                                curve_change_rate = -1,
+                                cut_off_amp = -1,
+                                disable_range_limit = false
+                            }
+                        },
+                        free_run_data = new Yaml_Control_Data_Amplitude_Free_Run
+                        {
+                            mascon_on = new Yaml_Control_Data_Amplitude
+                            {
+                                mode = Amplitude_Mode.Linear,
+                            parameter = new Yaml_Control_Data_Amplitude_Single_Parameter
+                            {
+                                //0, 0, 19, 0.34, original_wave_stat, false
+                                start_freq = 0,
+                                start_amp = 0,
+                                end_freq = 41,
+                                end_amp = 0.013504901961 * 41 + 0.100000000000,
+                                curve_change_rate = -1,
+                                cut_off_amp = -1,
+                                disable_range_limit = false
+                            }
+                            },
+                            mascon_off = new Yaml_Control_Data_Amplitude
+                            {
+                                mode = Amplitude_Mode.Linear,
+                            parameter = new Yaml_Control_Data_Amplitude_Single_Parameter
+                            {
+                                //0, 0, 19, 0.34, original_wave_stat, false
+                                start_freq = 0,
+                                start_amp = 0,
+                                end_freq = 41,
+                                end_amp = 0.013504901961 * 41 + 0.100000000000,
+                                curve_change_rate = -1,
+                                cut_off_amp = 0.498,
+                                disable_range_limit = false
+                            }
+                            }
+                        }
+                    },
+                },
+
+                new Yaml_Control_Data
+                {
+                    when_freerun = new Yaml_Free_Run_Condition
+                    {
+                        on = new Yaml_Free_Run_Condition_Single{ skip = false, stuck_at_here = true },
+                        off = new Yaml_Free_Run_Condition_Single{ skip = false, stuck_at_here = true }
+                    },
+                    from = 28.9,
+                    pulse_Mode = Pulse_Mode.CHMP_11,
+                    enable_on_free_run = true,
+                    enable_on_not_free_run = true,
+                    async_data= null,
+                    amplitude_control = new Yaml_Control_Data_Amplitude_Control
+                    {
+                        default_data = new Yaml_Control_Data_Amplitude
+                        {
+                            mode = Amplitude_Mode.Linear,
+                            parameter = new Yaml_Control_Data_Amplitude_Single_Parameter
+                            {
+                                //0, 0, 19, 0.34, original_wave_stat, false
+                                start_freq = 28.9,
+                                start_amp = 0.013504901961 * 28.9 + 0.100000000000,
+                                end_freq = 34.5,
+                                end_amp = 0.013504901961 * 34.5 + 0.100000000000,
+                                curve_change_rate = -1,
+                                cut_off_amp = -1,
+                                disable_range_limit = false
+                            }
+                        },
+                        free_run_data = new Yaml_Control_Data_Amplitude_Free_Run
+                        {
+                            mascon_on = new Yaml_Control_Data_Amplitude
+                            {
+                                mode = Amplitude_Mode.Linear,
+                            parameter = new Yaml_Control_Data_Amplitude_Single_Parameter
+                            {
+                                //0, 0, 19, 0.34, original_wave_stat, false
+                                start_freq = 0,
+                                start_amp = 0,
+                                end_freq = 34.5,
+                                end_amp = 0.013504901961 * 34.5 + 0.100000000000,
+                                curve_change_rate = -1,
+                                cut_off_amp = -1,
+                                disable_range_limit = false
+                            }
+                            },
+                            mascon_off = new Yaml_Control_Data_Amplitude
+                            {
+                                mode = Amplitude_Mode.Linear,
+                            parameter = new Yaml_Control_Data_Amplitude_Single_Parameter
+                            {
+                                //0, 0, 19, 0.34, original_wave_stat, false
+                                start_freq = 0,
+                                start_amp = 0,
+                                end_freq = 34.5,
+                                end_amp = 0.013504901961 * 34.5 + 0.100000000000,
+                                curve_change_rate = -1,
+                                cut_off_amp = 0.498,
+                                disable_range_limit = false
+                            }
+                            }
+                        }
+                    },
+                },
+                new Yaml_Control_Data
+                {
+                    when_freerun = new Yaml_Free_Run_Condition
+                    {
+                        on = new Yaml_Free_Run_Condition_Single{ skip = false, stuck_at_here = true },
+                        off = new Yaml_Free_Run_Condition_Single{ skip = false, stuck_at_here = true }
+                    },
+                    from = 24.9,
+                    pulse_Mode = Pulse_Mode.CHMP_13,
+                    enable_on_free_run = true,
+                    enable_on_not_free_run = true,
+                    async_data= null,
+                    amplitude_control = new Yaml_Control_Data_Amplitude_Control
+                    {
+                        default_data = new Yaml_Control_Data_Amplitude
+                        {
+                            mode = Amplitude_Mode.Linear,
+                            parameter = new Yaml_Control_Data_Amplitude_Single_Parameter
+                            {
+                                //0, 0, 19, 0.34, original_wave_stat, false
+                                start_freq = 24.9,
+                                start_amp = 0.013504901961 * 24.9 + 0.100000000000,
+                                end_freq = 28.9,
+                                end_amp = 0.013504901961 * 28.9 + 0.100000000000,
+                                curve_change_rate = -1,
+                                cut_off_amp = -1,
+                                disable_range_limit = false
+                            }
+                        },
+                        free_run_data = new Yaml_Control_Data_Amplitude_Free_Run
+                        {
+                            mascon_on = new Yaml_Control_Data_Amplitude
+                            {
+                                mode = Amplitude_Mode.Linear,
+                            parameter = new Yaml_Control_Data_Amplitude_Single_Parameter
+                            {
+                                //0, 0, 19, 0.34, original_wave_stat, false
+                                start_freq = 0,
+                                start_amp = 0,
+                                end_freq = 28.9,
+                                end_amp = 0.013504901961 * 28.9 + 0.100000000000,
+                                curve_change_rate = -1,
+                                cut_off_amp = -1,
+                                disable_range_limit = false
+                            }
+                            },
+                            mascon_off = new Yaml_Control_Data_Amplitude
+                            {
+                                mode = Amplitude_Mode.Linear,
+                            parameter = new Yaml_Control_Data_Amplitude_Single_Parameter
+                            {
+                                //0, 0, 19, 0.34, original_wave_stat, false
+                                start_freq = 0,
+                                start_amp = 0,
+                                end_freq = 28.9,
+                                end_amp = 0.013504901961 * 28.9 + 0.100000000000,
+                                curve_change_rate = -1,
+                                cut_off_amp = 0.498,
+                                disable_range_limit = false
+                            }
+                            }
+                        }
+                    },
+                },
+
+                new Yaml_Control_Data
+                {
+                    when_freerun = new Yaml_Free_Run_Condition
+                    {
+                        on = new Yaml_Free_Run_Condition_Single{ skip = false, stuck_at_here = true },
+                        off = new Yaml_Free_Run_Condition_Single{ skip = false, stuck_at_here = true }
+                    },
+                    from = 22.4,
+                    pulse_Mode = Pulse_Mode.CHMP_15,
+                    enable_on_free_run = true,
+                    enable_on_not_free_run = true,
+                    async_data= null,
+                    amplitude_control = new Yaml_Control_Data_Amplitude_Control
+                    {
+                        default_data = new Yaml_Control_Data_Amplitude
+                        {
+                            mode = Amplitude_Mode.Linear,
+                            parameter = new Yaml_Control_Data_Amplitude_Single_Parameter
+                            {
+                                //0, 0, 19, 0.34, original_wave_stat, false
+                                start_freq = 22.4,
+                                start_amp = 0.013504901961 * 22.4 + 0.100000000000,
+                                end_freq = 24.9,
+                                end_amp = 0.013504901961 * 24.9 + 0.100000000000,
+                                curve_change_rate = -1,
+                                cut_off_amp = -1,
+                                disable_range_limit = false
+                            }
+                        },
+                        free_run_data = new Yaml_Control_Data_Amplitude_Free_Run
+                        {
+                            mascon_off = new Yaml_Control_Data_Amplitude
+                            {
+                                mode = Amplitude_Mode.Linear,
+                            parameter = new Yaml_Control_Data_Amplitude_Single_Parameter
+                            {
+                                //0, 0, 19, 0.34, original_wave_stat, false
+                                start_freq = 0,
+                                start_amp = 0,
+                                end_freq = 24.9,
+                                end_amp = 0.013504901961 * 24.9 + 0.100000000000,
+                                curve_change_rate = -1,
+                                cut_off_amp = 0.498,
+                                disable_range_limit = false
+                            }
+                            },
+                            mascon_on = new Yaml_Control_Data_Amplitude
+                            {
+                                mode = Amplitude_Mode.Linear,
+                            parameter = new Yaml_Control_Data_Amplitude_Single_Parameter
+                            {
+                                //0, 0, 19, 0.34, original_wave_stat, false
+                                start_freq = 0,
+                                start_amp = 0,
+                                end_freq = 24.9,
+                                end_amp = 0.013504901961 * 24.9 + 0.100000000000,
+                                curve_change_rate = -1,
+                                cut_off_amp = -1,
+                                disable_range_limit = false
+                            }
+                            }
+                        }
+                    },
+                },
+
+                new Yaml_Control_Data
+                {
+                    when_freerun = new Yaml_Free_Run_Condition
+                    {
+                        on = new Yaml_Free_Run_Condition_Single{ skip = false, stuck_at_here = true },
+                        off = new Yaml_Free_Run_Condition_Single{ skip = false, stuck_at_here = true }
+                    },
+                    from = 4,
+                    pulse_Mode = Pulse_Mode.Async_THI,
+                    enable_on_free_run = true,
+                    enable_on_not_free_run = true,
+                    async_data= new Yaml_Async_Parameter
+                    {
+                        dipoar_data = null,
+                        random_range = 0,
+                        carrier_wave_data = new Yaml_Async_Parameter_Carrier_Freq{
+                            carrier_mode = Yaml_Async_Parameter_Carrier_Freq.Yaml_Async_Carrier_Mode.Const,
+                            const_value = 400,
+                            moving_value = null,
+                            vibrato_value = null,
+                        }
+                    },
+                    amplitude_control = new Yaml_Control_Data_Amplitude_Control
+                    {
+                        default_data = new Yaml_Control_Data_Amplitude
+                        {
+                            mode = Amplitude_Mode.Linear,
+                            parameter = new Yaml_Control_Data_Amplitude_Single_Parameter
+                            {
+                                //0, 0, 19, 0.34, original_wave_stat, false
+                                start_freq = 4,
+                                start_amp = 0.013504901961 * 4 + 0.100000000000,
+                                end_freq = 22.4,
+                                end_amp = 0.013504901961 * 22.4 + 0.100000000000,
+                                curve_change_rate = -1,
+                                cut_off_amp = -1,
+                                disable_range_limit = false
+                            }
+                        },
+                        free_run_data = new Yaml_Control_Data_Amplitude_Free_Run
+                        {
+                            mascon_on = new Yaml_Control_Data_Amplitude
+                            {
+                                mode = Amplitude_Mode.Linear,
+                            parameter = new Yaml_Control_Data_Amplitude_Single_Parameter
+                            {
+                                //0, 0, 19, 0.34, original_wave_stat, false
+                                start_freq = 0,
+                                start_amp = 0,
+                                end_freq = 22.4,
+                                end_amp = 0.013504901961 * 22.4 + 0.100000000000,
+                                curve_change_rate = -1,
+                                cut_off_amp = -1,
+                                disable_range_limit = false
+                            }
+                            },
+                            mascon_off = new Yaml_Control_Data_Amplitude
+                            {
+                                mode = Amplitude_Mode.Linear,
+                            parameter = new Yaml_Control_Data_Amplitude_Single_Parameter
+                            {
+                                //0, 0, 19, 0.34, original_wave_stat, false
+                                start_freq = 0,
+                                start_amp = 0,
+                                end_freq = 22.4,
+                                end_amp = 0.013504901961 * 22.4 + 0.100000000000,
+                                curve_change_rate = -1,
+                                cut_off_amp = 0.498,
+                                disable_range_limit = false
+                            }
+                            }
+                        }
+                    },
+                },
+
+
+                new Yaml_Control_Data
+                {
+                    when_freerun = new Yaml_Free_Run_Condition
+                    {
+                        on = new Yaml_Free_Run_Condition_Single{ skip = false, stuck_at_here = true },
+                        off = new Yaml_Free_Run_Condition_Single{ skip = false, stuck_at_here = true }
+                    },
+                    from = -1,
+                    pulse_Mode = Pulse_Mode.Async_THI,
+                    enable_on_free_run = true,
+                    enable_on_not_free_run = true,
+                    async_data= new Yaml_Async_Parameter
+                    {
+                        dipoar_data = null,
+                        random_range = 0,
+                        carrier_wave_data = new Yaml_Async_Parameter_Carrier_Freq{
+                            carrier_mode = Yaml_Async_Parameter_Carrier_Freq.Yaml_Async_Carrier_Mode.Const,
+                            const_value = 400,
+                            moving_value = null,
+                            vibrato_value = null,
+                        }
+                    },
+                    amplitude_control = new Yaml_Control_Data_Amplitude_Control
+                    {
+                        default_data = new Yaml_Control_Data_Amplitude
+                        {
+                            mode = Amplitude_Mode.Linear,
+                            parameter = new Yaml_Control_Data_Amplitude_Single_Parameter
+                            {
+                                //0, 0, 19, 0.34, original_wave_stat, false
+                                start_freq = -1,
+                                start_amp = 0,
+                                end_freq = 20,
+                                end_amp = 0,
+                                curve_change_rate = -1,
+                                cut_off_amp = -1,
+                                disable_range_limit = false
+                            }
+                        },
+                    },
+                },
 
             };
             obj.braking_pattern = braking_data;
@@ -805,77 +1184,80 @@ namespace VVVF_Generator_Porting.Yaml_VVVF_Sound
             {
                 new Yaml_Control_Data
                 {
-                    when_freerun = new Yaml_Free_Run_Condition
-                    {
-                        on = new Yaml_Free_Run_Condition_Single{ skip = false, stuck_at_here = true },
-                        off = new Yaml_Free_Run_Condition_Single{ skip = false, stuck_at_here = true }
-                    },
-                    from = 53,
+                    from = 80,
                     pulse_Mode = Pulse_Mode.P_1,
-                    async_data= null,
+                    enable_on_free_run = true,
+                    enable_on_not_free_run = true,
+                    when_freerun = new Yaml_Free_Run_Condition
+                    {
+                        on = new Yaml_Free_Run_Condition_Single{ skip = false , stuck_at_here = false },
+                        off = new Yaml_Free_Run_Condition_Single{ skip = false , stuck_at_here = false },
+                    },
                     amplitude_control = new Yaml_Control_Data_Amplitude_Control
                     {
                         default_data = new Yaml_Control_Data_Amplitude
                         {
-                            //53, 0.49, 66, 3, cv.wave_stat, 0, false
-                            mode = Amplitude_Mode.Inv_Proportional,
+                            mode = Amplitude_Mode.Linear,
                             parameter = new Yaml_Control_Data_Amplitude_Single_Parameter
                             {
-                                start_freq = 53,
-                                start_amp = 0.49,
-                                end_freq = 66,
-                                end_amp = 3,
-                                curve_change_rate = 0,
+                                start_amp = 1,
+                                start_freq = 0,
+                                end_amp = 1,
+                                end_freq = 10,
+                                curve_change_rate = -1,
                                 cut_off_amp = -1,
-                                disable_range_limit = false
-                            }
-                        },
-                        free_run_data = new Yaml_Control_Data_Amplitude_Free_Run
-                        {
-                            mascon_on = new Yaml_Control_Data_Amplitude
-                            {
-                                //0, 0.0001, target_freq, target_amplitude, cv.wave_stat, 0.8, false
-                                mode = Amplitude_Mode.Inv_Proportional,
-                                parameter = new Yaml_Control_Data_Amplitude_Single_Parameter
-                                {
-                                    start_freq = 0,
-                                    start_amp = 0.0001,
-                                    end_freq = -1,
-                                    end_amp = -1,
-                                    curve_change_rate = 0.8,
-                                    cut_off_amp = 0.001,
-                                    disable_range_limit = false
-                                }
-                            },
-                            mascon_off = new Yaml_Control_Data_Amplitude
-                            {
-                                //0, 0.0001, target_freq, target_amplitude, cv.wave_stat, 0.06, false
-                                mode = Amplitude_Mode.Inv_Proportional,
-                                parameter = new Yaml_Control_Data_Amplitude_Single_Parameter
-                                {
-                                    start_freq = 0,
-                                    start_amp = 0.0001,
-                                    end_freq = -1,
-                                    end_amp = -1,
-                                    curve_change_rate = 0.06,
-                                    cut_off_amp = 0.1,
-                                    disable_range_limit = false
-                                }
+                                disable_range_limit = false,
+                                polynomial = -1
                             }
                         }
                     },
+                    async_data = null
+                },
+
+
+                new Yaml_Control_Data
+                {
+                    from = 59,
+                    pulse_Mode = Pulse_Mode.CHMP_Wide_3,
+                    enable_on_free_run = true,
+                    enable_on_not_free_run = true,
+                    when_freerun = new Yaml_Free_Run_Condition
+                    {
+                        on = new Yaml_Free_Run_Condition_Single{ skip = false , stuck_at_here = false },
+                        off = new Yaml_Free_Run_Condition_Single{ skip = false , stuck_at_here = false },
+                    },
+                    amplitude_control = new Yaml_Control_Data_Amplitude_Control
+                    {
+                        default_data = new Yaml_Control_Data_Amplitude
+                        {
+                            mode = Amplitude_Mode.Linear,
+                            parameter = new Yaml_Control_Data_Amplitude_Single_Parameter
+                            {
+                                start_amp = 0.0222656250000 * 59 -0.07467187500,
+                                start_freq = 59,
+                                end_amp = 0.0222656250000 * 80 -0.07467187500,
+                                end_freq = 80,
+                                curve_change_rate = -1,
+                                cut_off_amp = -1,
+                                disable_range_limit = false,
+                                polynomial = -1
+                            }
+                        }
+                    },
+                    async_data = null
                 },
 
                 new Yaml_Control_Data
                 {
-                    when_freerun = new Yaml_Free_Run_Condition
-                    {
-                        on = new Yaml_Free_Run_Condition_Single{ skip = false, stuck_at_here = true },
-                        off = new Yaml_Free_Run_Condition_Single{ skip = false, stuck_at_here = true }
-                    },
-                    from = 45,
+                    from = 57,
                     pulse_Mode = Pulse_Mode.P_3,
-                    async_data= null,
+                    enable_on_free_run = true,
+                    enable_on_not_free_run = false,
+                    when_freerun = new Yaml_Free_Run_Condition
+                    {
+                        on = new Yaml_Free_Run_Condition_Single{ skip = false , stuck_at_here = true },
+                        off = new Yaml_Free_Run_Condition_Single{ skip = false , stuck_at_here = true },
+                    },
                     amplitude_control = new Yaml_Control_Data_Amplitude_Control
                     {
                         default_data = new Yaml_Control_Data_Amplitude
@@ -883,65 +1265,31 @@ namespace VVVF_Generator_Porting.Yaml_VVVF_Sound
                             mode = Amplitude_Mode.Linear,
                             parameter = new Yaml_Control_Data_Amplitude_Single_Parameter
                             {
-                                //45, 0.7, 53, 0.84, cv.wave_stat, false
-                                start_freq = 45,
-                                start_amp = 0.7,
-                                end_freq = 53,
-                                end_amp = 0.84,
+                                start_amp = 0,
+                                start_freq = 0,
+                                end_amp = 1,
+                                end_freq = 80,
                                 curve_change_rate = -1,
                                 cut_off_amp = -1,
-                                disable_range_limit = false
-                            }
-                        },
-                        free_run_data = new Yaml_Control_Data_Amplitude_Free_Run
-                        {
-                            mascon_on = new Yaml_Control_Data_Amplitude
-                            {
-                                mode = Amplitude_Mode.Linear,
-                                parameter = new Yaml_Control_Data_Amplitude_Single_Parameter
-                                {
-                                    //45, 0.7, 53, 0.84, cv.wave_stat, false
-                                    start_freq = 0,
-                                    start_amp = 0,
-                                    end_freq = -1,
-                                    end_amp = -1,
-                                    curve_change_rate = -1,
-                                    cut_off_amp = -1,
-                                    disable_range_limit = false,
-                                    polynomial = -1
-                                }
-                            },
-                            mascon_off = new Yaml_Control_Data_Amplitude
-                            {
-                                //0, 0.0001, target_freq, target_amplitude, cv.wave_stat, 0.06, false
-                                mode = Amplitude_Mode.Linear,
-                                parameter = new Yaml_Control_Data_Amplitude_Single_Parameter
-                                {
-                                    //45, 0.7, 53, 0.84, cv.wave_stat, false
-                                    start_freq = 0,
-                                    start_amp = 0,
-                                    end_freq = -1,
-                                    end_amp = -1,
-                                    curve_change_rate = -1,
-                                    cut_off_amp = -1,
-                                    disable_range_limit = false,
-                                    polynomial = -1
-                                }
+                                disable_range_limit = false,
+                                polynomial = -1
                             }
                         }
                     },
+                    async_data = null
                 },
 
                 new Yaml_Control_Data
                 {
+                    from = 57,
+                    pulse_Mode = Pulse_Mode.CHMP_Wide_5,
+                    enable_on_free_run = false,
+                    enable_on_not_free_run = true,
                     when_freerun = new Yaml_Free_Run_Condition
                     {
-                        on = new Yaml_Free_Run_Condition_Single{ skip = false, stuck_at_here = true },
-                        off = new Yaml_Free_Run_Condition_Single{ skip = false, stuck_at_here = true }
+                        on = new Yaml_Free_Run_Condition_Single{ skip = false , stuck_at_here = true },
+                        off = new Yaml_Free_Run_Condition_Single{ skip = false , stuck_at_here = true },
                     },
-                    from = 29,
-                    pulse_Mode = Pulse_Mode.P_9,
-                    async_data= null,
                     amplitude_control = new Yaml_Control_Data_Amplitude_Control
                     {
                         default_data = new Yaml_Control_Data_Amplitude
@@ -949,65 +1297,31 @@ namespace VVVF_Generator_Porting.Yaml_VVVF_Sound
                             mode = Amplitude_Mode.Linear,
                             parameter = new Yaml_Control_Data_Amplitude_Single_Parameter
                             {
-                                //0, 0, 59, 1, cv.wave_stat, false
-                                start_freq = 0,
-                                start_amp = 0,
+                                start_amp = 0.0222656250000 * 57 -0.07467187500,
+                                start_freq = 57,
+                                end_amp = 0.0222656250000 * 59 -0.07467187500,
                                 end_freq = 59,
-                                end_amp = 1,
                                 curve_change_rate = -1,
                                 cut_off_amp = -1,
-                                disable_range_limit = false
-                            }
-                        },
-                        free_run_data = new Yaml_Control_Data_Amplitude_Free_Run
-                        {
-                            mascon_on = new Yaml_Control_Data_Amplitude
-                            {
-                                mode = Amplitude_Mode.Linear,
-                                parameter = new Yaml_Control_Data_Amplitude_Single_Parameter
-                                {
-                                    //45, 0.7, 53, 0.84, cv.wave_stat, false
-                                    start_freq = 0,
-                                    start_amp = 0,
-                                    end_freq = -1,
-                                    end_amp = -1,
-                                    curve_change_rate = -1,
-                                    cut_off_amp = -1,
-                                    disable_range_limit = false,
-                                    polynomial = -1
-                                }
-                            },
-                            mascon_off = new Yaml_Control_Data_Amplitude
-                            {
-                                //0, 0.0001, target_freq, target_amplitude, cv.wave_stat, 0.06, false
-                                mode = Amplitude_Mode.Linear,
-                                parameter = new Yaml_Control_Data_Amplitude_Single_Parameter
-                                {
-                                    //45, 0.7, 53, 0.84, cv.wave_stat, false
-                                    start_freq = 0,
-                                    start_amp = 0,
-                                    end_freq = -1,
-                                    end_amp = -1,
-                                    curve_change_rate = -1,
-                                    cut_off_amp = -1,
-                                    disable_range_limit = false,
-                                    polynomial = -1
-                                }
+                                disable_range_limit = false,
+                                polynomial = -1
                             }
                         }
                     },
+                    async_data = null
                 },
 
                 new Yaml_Control_Data
                 {
+                    from = 53.5,
+                    pulse_Mode = Pulse_Mode.CHMP_Wide_7,
+                    enable_on_free_run = true,
+                    enable_on_not_free_run = true,
                     when_freerun = new Yaml_Free_Run_Condition
                     {
-                        on = new Yaml_Free_Run_Condition_Single{ skip = false, stuck_at_here = true },
-                        off = new Yaml_Free_Run_Condition_Single{ skip = false, stuck_at_here = true }
+                        on = new Yaml_Free_Run_Condition_Single{ skip = false , stuck_at_here = true },
+                        off = new Yaml_Free_Run_Condition_Single{ skip = false , stuck_at_here = true },
                     },
-                    from = 19,
-                    pulse_Mode = Pulse_Mode.P_21,
-                    async_data= null,
                     amplitude_control = new Yaml_Control_Data_Amplitude_Control
                     {
                         default_data = new Yaml_Control_Data_Amplitude
@@ -1015,65 +1329,31 @@ namespace VVVF_Generator_Porting.Yaml_VVVF_Sound
                             mode = Amplitude_Mode.Linear,
                             parameter = new Yaml_Control_Data_Amplitude_Single_Parameter
                             {
-                                //0, 0, 59, 1, cv.wave_stat, false
-                                start_freq = 0,
-                                start_amp = 0,
-                                end_freq = 59,
-                                end_amp = 1,
+                                start_amp = 0.0222656250000 * 53.5 -0.07467187500,
+                                start_freq = 53.5,
+                                end_amp = 0.0222656250000 * 57 -0.07467187500,
+                                end_freq = 57,
                                 curve_change_rate = -1,
                                 cut_off_amp = -1,
-                                disable_range_limit = false
-                            }
-                        },
-                        free_run_data = new Yaml_Control_Data_Amplitude_Free_Run
-                        {
-                            mascon_on = new Yaml_Control_Data_Amplitude
-                            {
-                                mode = Amplitude_Mode.Linear,
-                                parameter = new Yaml_Control_Data_Amplitude_Single_Parameter
-                                {
-                                    //45, 0.7, 53, 0.84, cv.wave_stat, false
-                                    start_freq = 0,
-                                    start_amp = 0,
-                                    end_freq = -1,
-                                    end_amp = -1,
-                                    curve_change_rate = -1,
-                                    cut_off_amp = -1,
-                                    disable_range_limit = false,
-                                    polynomial = -1
-                                }
-                            },
-                            mascon_off = new Yaml_Control_Data_Amplitude
-                            {
-                                //0, 0.0001, target_freq, target_amplitude, cv.wave_stat, 0.06, false
-                                mode = Amplitude_Mode.Linear,
-                                parameter = new Yaml_Control_Data_Amplitude_Single_Parameter
-                                {
-                                    //45, 0.7, 53, 0.84, cv.wave_stat, false
-                                    start_freq = 0,
-                                    start_amp = 0,
-                                    end_freq = -1,
-                                    end_amp = -1,
-                                    curve_change_rate = -1,
-                                    cut_off_amp = -1,
-                                    disable_range_limit = false,
-                                    polynomial = -1
-                                }
+                                disable_range_limit = false,
+                                polynomial = -1
                             }
                         }
                     },
+                    async_data = null
                 },
 
                 new Yaml_Control_Data
                 {
+                    from = 43.5,
+                    pulse_Mode = Pulse_Mode.CHMP_7,
+                    enable_on_free_run = true,
+                    enable_on_not_free_run = true,
                     when_freerun = new Yaml_Free_Run_Condition
                     {
-                        on = new Yaml_Free_Run_Condition_Single{ skip = false, stuck_at_here = true },
-                        off = new Yaml_Free_Run_Condition_Single{ skip = false, stuck_at_here = true }
+                        on = new Yaml_Free_Run_Condition_Single{ skip = false , stuck_at_here = true },
+                        off = new Yaml_Free_Run_Condition_Single{ skip = false , stuck_at_here = true },
                     },
-                    from = 9,
-                    pulse_Mode = Pulse_Mode.P_33,
-                    async_data= null,
                     amplitude_control = new Yaml_Control_Data_Amplitude_Control
                     {
                         default_data = new Yaml_Control_Data_Amplitude
@@ -1081,65 +1361,31 @@ namespace VVVF_Generator_Porting.Yaml_VVVF_Sound
                             mode = Amplitude_Mode.Linear,
                             parameter = new Yaml_Control_Data_Amplitude_Single_Parameter
                             {
-                                //0, 0, 59, 1, cv.wave_stat, false
-                                start_freq = 0,
-                                start_amp = 0,
-                                end_freq = 59,
-                                end_amp = 1,
+                                start_amp = 0.0193294460641 * 43.5 + 0.10000000000,
+                                start_freq = 43.5,
+                                end_amp = 0.0193294460641 * 53.5 + 0.10000000000,
+                                end_freq = 53.5,
                                 curve_change_rate = -1,
                                 cut_off_amp = -1,
-                                disable_range_limit = false
-                            }
-                        },
-                        free_run_data = new Yaml_Control_Data_Amplitude_Free_Run
-                        {
-                            mascon_on = new Yaml_Control_Data_Amplitude
-                            {
-                                mode = Amplitude_Mode.Linear,
-                                parameter = new Yaml_Control_Data_Amplitude_Single_Parameter
-                                {
-                                    //45, 0.7, 53, 0.84, cv.wave_stat, false
-                                    start_freq = 0,
-                                    start_amp = 0,
-                                    end_freq = -1,
-                                    end_amp = -1,
-                                    curve_change_rate = -1,
-                                    cut_off_amp = -1,
-                                    disable_range_limit = false,
-                                    polynomial = -1
-                                }
-                            },
-                            mascon_off = new Yaml_Control_Data_Amplitude
-                            {
-                                //0, 0.0001, target_freq, target_amplitude, cv.wave_stat, 0.06, false
-                                mode = Amplitude_Mode.Linear,
-                                parameter = new Yaml_Control_Data_Amplitude_Single_Parameter
-                                {
-                                    //45, 0.7, 53, 0.84, cv.wave_stat, false
-                                    start_freq = 0,
-                                    start_amp = 0,
-                                    end_freq = -1,
-                                    end_amp = -1,
-                                    curve_change_rate = -1,
-                                    cut_off_amp = -1,
-                                    disable_range_limit = false,
-                                    polynomial = -1
-                                }
+                                disable_range_limit = false,
+                                polynomial = -1
                             }
                         }
                     },
+                    async_data = null
                 },
 
-                 new Yaml_Control_Data
+                new Yaml_Control_Data
                 {
+                    from = 36.7,
+                    pulse_Mode = Pulse_Mode.CHMP_9,
+                    enable_on_free_run = true,
+                    enable_on_not_free_run = true,
                     when_freerun = new Yaml_Free_Run_Condition
                     {
-                        on = new Yaml_Free_Run_Condition_Single{ skip = false, stuck_at_here = true },
-                        off = new Yaml_Free_Run_Condition_Single{ skip = false, stuck_at_here = true }
+                        on = new Yaml_Free_Run_Condition_Single{ skip = false , stuck_at_here = true },
+                        off = new Yaml_Free_Run_Condition_Single{ skip = false , stuck_at_here = true },
                     },
-                    from = -1,
-                    pulse_Mode = Pulse_Mode.P_57,
-                    async_data= null,
                     amplitude_control = new Yaml_Control_Data_Amplitude_Control
                     {
                         default_data = new Yaml_Control_Data_Amplitude
@@ -1147,53 +1393,172 @@ namespace VVVF_Generator_Porting.Yaml_VVVF_Sound
                             mode = Amplitude_Mode.Linear,
                             parameter = new Yaml_Control_Data_Amplitude_Single_Parameter
                             {
-                                //0, 0.02, 59, 1, original_wave_stat, false
-                                start_freq = 0,
-                                start_amp = 0.02,
-                                end_freq = 59,
-                                end_amp = 1,
+                                start_amp = 0.0193294460641 * 36.7 + 0.10000000000,
+                                start_freq = 36.7,
+                                end_amp = 0.0193294460641 * 43.5 + 0.10000000000,
+                                end_freq = 43.5,
                                 curve_change_rate = -1,
                                 cut_off_amp = -1,
-                                disable_range_limit = false
-                            }
-                        },
-                        free_run_data = new Yaml_Control_Data_Amplitude_Free_Run
-                        {
-                            mascon_on = new Yaml_Control_Data_Amplitude
-                            {
-                                mode = Amplitude_Mode.Linear,
-                                parameter = new Yaml_Control_Data_Amplitude_Single_Parameter
-                                {
-                                    //45, 0.7, 53, 0.84, cv.wave_stat, false
-                                    start_freq = 0,
-                                    start_amp = 0,
-                                    end_freq = -1,
-                                    end_amp = -1,
-                                    curve_change_rate = -1,
-                                    cut_off_amp = -1,
-                                    disable_range_limit = false,
-                                    polynomial = -1
-                                }
-                            },
-                            mascon_off = new Yaml_Control_Data_Amplitude
-                            {
-                                //0, 0.0001, target_freq, target_amplitude, cv.wave_stat, 0.06, false
-                                mode = Amplitude_Mode.Linear,
-                                parameter = new Yaml_Control_Data_Amplitude_Single_Parameter
-                                {
-                                    //45, 0.7, 53, 0.84, cv.wave_stat, false
-                                    start_freq = 0,
-                                    start_amp = 0,
-                                    end_freq = -1,
-                                    end_amp = -1,
-                                    curve_change_rate = -1,
-                                    cut_off_amp = -1,
-                                    disable_range_limit = false,
-                                    polynomial = -1
-                                }
+                                disable_range_limit = false,
+                                polynomial = -1
                             }
                         }
                     },
+                    async_data = null
+                },
+
+                new Yaml_Control_Data
+                {
+                    from = 30,
+                    pulse_Mode = Pulse_Mode.CHMP_11,
+                    enable_on_free_run = true,
+                    enable_on_not_free_run = true,
+                    when_freerun = new Yaml_Free_Run_Condition
+                    {
+                        on = new Yaml_Free_Run_Condition_Single{ skip = false , stuck_at_here = true },
+                        off = new Yaml_Free_Run_Condition_Single{ skip = false , stuck_at_here = true },
+                    },
+                    amplitude_control = new Yaml_Control_Data_Amplitude_Control
+                    {
+                        default_data = new Yaml_Control_Data_Amplitude
+                        {
+                            mode = Amplitude_Mode.Linear,
+                            parameter = new Yaml_Control_Data_Amplitude_Single_Parameter
+                            {
+                                start_amp = 0.0193294460641 * 30 + 0.10000000000,
+                                start_freq = 30,
+                                end_amp = 0.0193294460641 * 36.7 + 0.10000000000,
+                                end_freq = 36.7,
+                                curve_change_rate = -1,
+                                cut_off_amp = -1,
+                                disable_range_limit = false,
+                                polynomial = -1
+                            }
+                        }
+                    },
+                    async_data = null
+                },
+
+                new Yaml_Control_Data
+                {
+                    from = 27,
+                    pulse_Mode = Pulse_Mode.CHMP_13,
+                    enable_on_free_run = true,
+                    enable_on_not_free_run = true,
+                    when_freerun = new Yaml_Free_Run_Condition
+                    {
+                        on = new Yaml_Free_Run_Condition_Single{ skip = false , stuck_at_here = true },
+                        off = new Yaml_Free_Run_Condition_Single{ skip = false , stuck_at_here = true },
+                    },
+                    amplitude_control = new Yaml_Control_Data_Amplitude_Control
+                    {
+                        default_data = new Yaml_Control_Data_Amplitude
+                        {
+                            mode = Amplitude_Mode.Linear,
+                            parameter = new Yaml_Control_Data_Amplitude_Single_Parameter
+                            {
+                                start_amp = 0.0193294460641 * 27 + 0.10000000000,
+                                start_freq = 27,
+                                end_amp = 0.0193294460641 * 30 + 0.10000000000,
+                                end_freq = 30,
+                                curve_change_rate = -1,
+                                cut_off_amp = -1,
+                                disable_range_limit = false,
+                                polynomial = -1
+                            }
+                        }
+                    },
+                    async_data = null
+                },
+
+                new Yaml_Control_Data
+                {
+                    from = 24,
+                    pulse_Mode = Pulse_Mode.CHMP_15,
+                    enable_on_free_run = true,
+                    enable_on_not_free_run = true,
+                    when_freerun = new Yaml_Free_Run_Condition
+                    {
+                        on = new Yaml_Free_Run_Condition_Single{ skip = false , stuck_at_here = true },
+                        off = new Yaml_Free_Run_Condition_Single{ skip = false , stuck_at_here = true },
+                    },
+                    amplitude_control = new Yaml_Control_Data_Amplitude_Control
+                    {
+                        default_data = new Yaml_Control_Data_Amplitude
+                        {
+                            mode = Amplitude_Mode.Linear,
+                            parameter = new Yaml_Control_Data_Amplitude_Single_Parameter
+                            {
+                                start_amp = 0.0193294460641 * 24 + 0.10000000000,
+                                start_freq = 24,
+                                end_amp = 0.0193294460641 * 27 + 0.10000000000,
+                                end_freq = 27,
+                                curve_change_rate = -1,
+                                cut_off_amp = -1,
+                                disable_range_limit = false,
+                                polynomial = -1
+                            }
+                        }
+                    },
+                    async_data = null
+                },
+
+                new Yaml_Control_Data
+                {
+                    from = 0,
+                    pulse_Mode = Pulse_Mode.Async_THI,
+                    enable_on_free_run = true,
+                    enable_on_not_free_run = true,
+                    when_freerun = new Yaml_Free_Run_Condition
+                    {
+                        on = new Yaml_Free_Run_Condition_Single{ skip = false , stuck_at_here = true },
+                        off = new Yaml_Free_Run_Condition_Single{ skip = false , stuck_at_here = true },
+                    },
+                    amplitude_control = new Yaml_Control_Data_Amplitude_Control
+                    {
+                        default_data = new Yaml_Control_Data_Amplitude
+                        {
+                            mode = Amplitude_Mode.Linear,
+                            parameter = new Yaml_Control_Data_Amplitude_Single_Parameter
+                            {
+                                start_amp = 0.0193294460641 * 0 + 0.10000000000,
+                                start_freq = 0,
+                                end_amp = 0.0193294460641 * 24 + 0.10000000000,
+                                end_freq = 24,
+                                curve_change_rate = -1,
+                                cut_off_amp = -1,
+                                disable_range_limit = false,
+                                polynomial = -1
+                            }
+                        }
+                    },
+                    async_data = new Yaml_Async_Parameter
+                    {
+                        dipoar_data = null,
+                        random_range = 0,
+                        carrier_wave_data = new Yaml_Async_Parameter_Carrier_Freq
+                        {
+                            carrier_mode = Yaml_Async_Carrier_Mode.Table,
+                            const_value = -1,
+                            moving_value = null,
+                            vibrato_value = null,
+                            carrier_table_value = new Yaml_Async_Parameter_Carrier_Freq_Table
+                            {
+                                carrier_freq_table = new List<Yaml_Async_Parameter_Carrier_Freq_Table_Single>()
+                                {
+                                    new Yaml_Async_Parameter_Carrier_Freq_Table_Single{ carrier_freq = 400, from = 5.6 },
+                                    new Yaml_Async_Parameter_Carrier_Freq_Table_Single{ carrier_freq = 350, from = 5 },
+                                    new Yaml_Async_Parameter_Carrier_Freq_Table_Single{ carrier_freq = 311, from = 4.3 },
+                                    new Yaml_Async_Parameter_Carrier_Freq_Table_Single{ carrier_freq = 294, from = 3.4 },
+                                    new Yaml_Async_Parameter_Carrier_Freq_Table_Single{ carrier_freq = 262, from = 2.7 },
+                                    new Yaml_Async_Parameter_Carrier_Freq_Table_Single{ carrier_freq = 233, from = 2.0 },
+                                    new Yaml_Async_Parameter_Carrier_Freq_Table_Single{ carrier_freq = 223, from = 1.5 },
+                                    new Yaml_Async_Parameter_Carrier_Freq_Table_Single{ carrier_freq = 196, from = 0.5 },
+                                    new Yaml_Async_Parameter_Carrier_Freq_Table_Single{ carrier_freq = 175, from = 0 },
+                                }
+                            }
+                        }
+                    }
                 }
 
             };

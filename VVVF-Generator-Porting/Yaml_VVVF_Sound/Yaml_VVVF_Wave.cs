@@ -72,7 +72,7 @@ namespace VVVF_Generator_Porting.Yaml_VVVF_Sound
 			// control stat solve
 			//
 			List<Yaml_Control_Data> control_list = new List<Yaml_Control_Data>(cv.brake ? yvs.braking_pattern : yvs.accelerate_pattern);
-			control_list.Sort((a, b) => b.from - a.from);
+			control_list.Sort((a, b) => (int)(b.from - a.from));
 
 			//determine what control data to solve
 			int solve = -1;
@@ -82,6 +82,10 @@ namespace VVVF_Generator_Porting.Yaml_VVVF_Sound
 				Yaml_Free_Run_Condition_Single free_run_data;
 				if (cv.mascon_on) free_run_data = ysd.when_freerun.on;
 				else free_run_data = ysd.when_freerun.off;
+
+				bool enable_on_free_run_condition = ysd.enable_on_free_run && cv.free_run;
+				bool enable_on_not_free_run_condition = ysd.enable_on_not_free_run && !cv.free_run;
+				if (!enable_on_free_run_condition && !enable_on_not_free_run_condition) continue;//alow
 
 				bool condition_1 = ysd.from <= cv.wave_stat;
 				if (condition_1 && !cv.free_run)
@@ -131,7 +135,13 @@ namespace VVVF_Generator_Porting.Yaml_VVVF_Sound
 						original_wave_stat
 					);
 				}
-				else
+				else if (carrier_freq_mode == Yaml_Async_Parameter.Yaml_Async_Parameter_Carrier_Freq.Yaml_Async_Carrier_Mode.Table)
+				{
+					var table_data = carrier_data.carrier_table_value;
+					//TODO implement moving type.
+					
+				}
+				else //Vibrato
 				{
 					var vibrato_data = carrier_data.vibrato_value;
 
@@ -208,6 +218,8 @@ namespace VVVF_Generator_Porting.Yaml_VVVF_Sound
 				if (free_run_amp_param.cut_off_amp > amplitude) amplitude = 0;
 				if (!cv.mascon_on && amplitude == 0) set_Control_Frequency(0);
 			}
+
+			if (cv.wave_stat == 0) amplitude = 0;
 
 			if (yvs.level == 3) return calculate_three_level(pulse_mode, carrier_freq, new Sine_Control_Data(cv.initial_phase, amplitude, minimum_sine_freq), dipolar);
 			else return calculate_two_level(pulse_mode, carrier_freq, new Sine_Control_Data(cv.initial_phase, amplitude, minimum_sine_freq));
