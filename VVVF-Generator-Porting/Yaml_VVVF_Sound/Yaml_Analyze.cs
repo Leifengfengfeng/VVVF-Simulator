@@ -27,7 +27,7 @@ namespace VVVF_Generator_Porting.Yaml_VVVF_Sound
             if (o == null) return "null";
             return o.ToString();
         }
-        public int level { get; set; }
+        public int level { get; set; } = 2;
         public Yaml_Mascon_Data mascon_data { get; set; }
         public Yaml_Min_Sine_Freq min_freq { get; set; }
         public List<Yaml_Control_Data> accelerate_pattern { get; set; }
@@ -91,8 +91,8 @@ namespace VVVF_Generator_Porting.Yaml_VVVF_Sound
 
                 public class Yaml_Mascon_Data_Single
                 {
-                    public int div { get; set; }
-                    public double control_freq_go_to { get; set; }
+                    public int div { get; set; } = 20000;
+                    public double control_freq_go_to { get; set; } = 60;
 
                     public override string ToString()
                     {
@@ -120,9 +120,9 @@ namespace VVVF_Generator_Porting.Yaml_VVVF_Sound
         }
 
         public class Yaml_Control_Data {
-            public double from { get; set; }
-            public bool enable_on_free_run { get; set; }
-            public bool enable_on_not_free_run { get; set; }
+            public double from { get; set; } = -1;
+            public bool enable_on_free_run { get; set; } = true;
+            public bool enable_on_not_free_run { get; set; } = true;
             public Pulse_Mode pulse_Mode { get; set; }
             public Yaml_Free_Run_Condition when_freerun { get; set; }
             public Yaml_Control_Data_Amplitude_Control amplitude_control { get; set; }
@@ -143,11 +143,11 @@ namespace VVVF_Generator_Porting.Yaml_VVVF_Sound
 
             public class Yaml_Moving_Value
             {
-                public Moving_Value_Type type { get; set; }
-                public double start { get; set; }
-                public double start_value { get; set; }
-                public double end { get; set; }
-                public double end_value { get; set; }
+                public Moving_Value_Type type { get; set; } = Moving_Value_Type.Proportional;
+                public double start { get; set; } = -1;
+                public double start_value { get; set; } = -1;
+                public double end { get; set; } = -1;
+                public double end_value { get; set; } = -1;
 
                 public enum Moving_Value_Type
                 {
@@ -180,8 +180,8 @@ namespace VVVF_Generator_Porting.Yaml_VVVF_Sound
                 }
 
                 public class Yaml_Free_Run_Condition_Single {
-                    public bool skip { get; set; }
-                    public bool stuck_at_here { get; set; }
+                    public bool skip { get; set; } = false;
+                    public bool stuck_at_here { get; set; } = false;
                     public override string ToString()
                     {
                         String re = "[ " +
@@ -196,7 +196,7 @@ namespace VVVF_Generator_Porting.Yaml_VVVF_Sound
 
             public class Yaml_Async_Parameter
             {
-                public int random_range { get; set; }
+                public int random_range { get; set; } = 0;
                 public Yaml_Async_Parameter_Carrier_Freq carrier_wave_data { get; set; }
                 public Yaml_Async_Parameter_Dipolar dipoar_data { get; set; }
 
@@ -278,7 +278,7 @@ namespace VVVF_Generator_Porting.Yaml_VVVF_Sound
                         {
                             public double from { get; set; }
                             public double carrier_freq { get; set; }
-                            publicbool free_run_stuck_here { get; set; }
+                            public bool free_run_stuck_here { get; set; }
 
                             public override string ToString()
                             {
@@ -370,14 +370,16 @@ namespace VVVF_Generator_Porting.Yaml_VVVF_Sound
 
                     public class Yaml_Control_Data_Amplitude_Single_Parameter
                     {
-                        public double start_freq { get; set; }
-                        public double start_amp { get; set; }
-                        public double end_freq { get; set; }
-                        public double end_amp { get; set; }
-                        public double curve_change_rate { get; set; }
-                        public double cut_off_amp { get; set; }
-                        public bool disable_range_limit { get; set; }
-                        public int polynomial { get; set; }
+                        public double start_freq { get; set; } = -1;
+                        public double start_amp { get; set; } = -1;
+                        public double end_freq { get; set; } = -1;
+                        public double end_amp { get; set; } = -1;
+                        public double curve_change_rate { get; set; } = 0;
+                        public double cut_off_amp { get; set; } = -1;
+                        public double max_amp { get; set; } = -1;
+                        public bool disable_range_limit { get; set; } = false;
+                        public int polynomial { get; set; } = 0;
+
 
                         public override string ToString()
                         {
@@ -388,6 +390,7 @@ namespace VVVF_Generator_Porting.Yaml_VVVF_Sound
                                  "end_amp : " + String.Format("{0:f3}", end_amp) + " , " +
                                  "curve_change_rate : " + String.Format("{0:f3}", curve_change_rate) + " , " +
                                  "cut_off_amp : " + String.Format("{0:f3}", cut_off_amp) + " , " +
+                                 "max_amp : " + String.Format("{0:f3}", max_amp) + " , " +
                                  "disable_range_limit : " + get_Value(disable_range_limit) + " , " +
                                  "polynomial : " + polynomial.ToString()  + 
 
@@ -472,6 +475,7 @@ namespace VVVF_Generator_Porting.Yaml_VVVF_Sound
                                 end_amp = 1,
                                 curve_change_rate = -1,
                                 cut_off_amp = -1,
+                                max_amp = 1.25,
                                 disable_range_limit = false
                             }
                         },
@@ -501,9 +505,10 @@ namespace VVVF_Generator_Porting.Yaml_VVVF_Sound
                                 start_freq = 70.7,
                                 start_amp = 1.2102388,
                                 end_freq = 79.5,
-                                end_amp = 0.018464 * 68.5 -0.095166,
+                                end_amp = 0.018464 * 79.5 -0.095166,
                                 curve_change_rate = -1,
                                 cut_off_amp = -1,
+                                max_amp = 1.25,
                                 disable_range_limit = false
                             }
                         },
@@ -533,11 +538,45 @@ namespace VVVF_Generator_Porting.Yaml_VVVF_Sound
                                 start_amp = 0,
                                 end_freq = 79.5,
                                 end_amp = 1,
+                                max_amp = 1.25,
                                 curve_change_rate = -1,
                                 cut_off_amp = -1,
                                 disable_range_limit = false
                             }
                         },
+                        free_run_data = new Yaml_Control_Data_Amplitude_Free_Run
+                        {
+                            mascon_on = new Yaml_Control_Data_Amplitude
+                            {
+                                mode = Amplitude_Mode.Linear,
+                            parameter = new Yaml_Control_Data_Amplitude_Single_Parameter
+                            {
+                                start_freq = 0,
+                                start_amp = 0,
+                                end_freq = 79.5,
+                                end_amp = 1,
+                                max_amp = 1.25,
+                                curve_change_rate = -1,
+                                cut_off_amp = -1,
+                                disable_range_limit = false
+                            }
+                            },
+                            mascon_off = new Yaml_Control_Data_Amplitude
+                            {
+                                mode = Amplitude_Mode.Linear,
+                            parameter = new Yaml_Control_Data_Amplitude_Single_Parameter
+                            {
+                                start_freq = 0,
+                                start_amp = 0,
+                                end_freq = 79.5,
+                                end_amp = 1,
+                                max_amp = 1.25,
+                                curve_change_rate = -1,
+                                cut_off_amp = 0.498,
+                                disable_range_limit = false
+                            }
+                            }
+                        }
                     },
                 },
 
@@ -566,6 +605,7 @@ namespace VVVF_Generator_Porting.Yaml_VVVF_Sound
                                 end_freq = 70.7,
                                 end_amp = 0.018464 * 70.7 -0.095166,
                                 curve_change_rate = -1,
+                                max_amp = 1.25,
                                 cut_off_amp = -1,
                                 disable_range_limit = false
                             }
@@ -583,6 +623,7 @@ namespace VVVF_Generator_Porting.Yaml_VVVF_Sound
                                 end_freq = 70.7,
                                 end_amp = 0.018464 * 70.7 -0.095166,
                                 curve_change_rate = -1,
+                                max_amp = 1.25,
                                 cut_off_amp = -1,
                                 disable_range_limit = false
                             }
@@ -597,6 +638,7 @@ namespace VVVF_Generator_Porting.Yaml_VVVF_Sound
                                 start_amp = 06,
                                 end_freq = 70.7,
                                 end_amp = 0.018464 * 70.7 -0.095166,
+                                max_amp = 1.25,
                                 curve_change_rate = -1,
                                 cut_off_amp = 0.498,
                                 disable_range_limit = false
@@ -630,6 +672,7 @@ namespace VVVF_Generator_Porting.Yaml_VVVF_Sound
                                 start_amp = 0.018464 * 56.84 -0.095166,
                                 end_freq = 63.35,
                                 end_amp = 0.018464 * 63.35 -0.095166,
+                                max_amp = 1.25,
                                 curve_change_rate = -1,
                                 cut_off_amp = -1,
                                 disable_range_limit = false
@@ -647,6 +690,7 @@ namespace VVVF_Generator_Porting.Yaml_VVVF_Sound
                                 start_amp = 0,
                                 end_freq = 63.35,
                                 end_amp = 0.018464 * 63.35 -0.095166,
+                                max_amp = 1.25,
                                 curve_change_rate = -1,
                                 cut_off_amp = -1,
                                 disable_range_limit = false
@@ -662,6 +706,7 @@ namespace VVVF_Generator_Porting.Yaml_VVVF_Sound
                                 start_amp = 0,
                                 end_freq = 63.35,
                                 end_amp = 0.018464 * 63.35 -0.095166,
+                                max_amp = 1.25,
                                 curve_change_rate = -1,
                                 cut_off_amp = 0.498,
                                 disable_range_limit = false
@@ -695,6 +740,7 @@ namespace VVVF_Generator_Porting.Yaml_VVVF_Sound
                                 start_amp = 0.014763975813 * 53.5 + 0.10000000000,
                                 end_freq = 56.84,
                                 end_amp = 0.014763975813 * 56.84 + 0.10000000000,
+                                max_amp = 1.25,
                                 curve_change_rate = -1,
                                 cut_off_amp = -1,
                                 disable_range_limit = false
@@ -712,6 +758,7 @@ namespace VVVF_Generator_Porting.Yaml_VVVF_Sound
                                 start_amp = 0,
                                 end_freq = 56.84,
                                 end_amp = 0.014763975813 * 56.84 + 0.10000000000,
+                                max_amp = 1.25,
                                 curve_change_rate = -1,
                                 cut_off_amp = -1,
                                 disable_range_limit = false
@@ -727,6 +774,7 @@ namespace VVVF_Generator_Porting.Yaml_VVVF_Sound
                                 start_amp = 0,
                                 end_freq = 56.84,
                                 end_amp = 0.014763975813 * 56.84 + 0.10000000000,
+                                max_amp = 1.25,
                                 curve_change_rate = -1,
                                 cut_off_amp = 0.498,
                                 disable_range_limit = false
@@ -760,6 +808,7 @@ namespace VVVF_Generator_Porting.Yaml_VVVF_Sound
                                 start_amp = 0.013504901961 * 41 + 0.100000000000,
                                 end_freq = 53.5,
                                 end_amp = 0.013504901961 * 53.5 + 0.100000000000,
+                                max_amp = 1.25,
                                 curve_change_rate = -1,
                                 cut_off_amp = -1,
                                 disable_range_limit = false
@@ -777,6 +826,7 @@ namespace VVVF_Generator_Porting.Yaml_VVVF_Sound
                                 start_amp = 0,
                                 end_freq = 53.5,
                                 end_amp = 0.013504901961 * 53.5 + 0.100000000000,
+                                max_amp = 1.25,
                                 curve_change_rate = -1,
                                 cut_off_amp = -1,
                                 disable_range_limit = false
@@ -791,6 +841,7 @@ namespace VVVF_Generator_Porting.Yaml_VVVF_Sound
                                 start_amp = 0,
                                 end_freq = 53.5,
                                 end_amp = 0.013504901961 * 53.5 + 0.100000000000,
+                                max_amp = 1.25,
                                 curve_change_rate = -1,
                                 cut_off_amp = 0.498,
                                 disable_range_limit = false
@@ -824,6 +875,7 @@ namespace VVVF_Generator_Porting.Yaml_VVVF_Sound
                                 start_amp = 0.013504901961 * 34.5 + 0.100000000000,
                                 end_freq = 41,
                                 end_amp = 0.013504901961 * 41 + 0.100000000000,
+                                max_amp = 1.25,
                                 curve_change_rate = -1,
                                 cut_off_amp = -1,
                                 disable_range_limit = false
@@ -841,6 +893,7 @@ namespace VVVF_Generator_Porting.Yaml_VVVF_Sound
                                 start_amp = 0,
                                 end_freq = 41,
                                 end_amp = 0.013504901961 * 41 + 0.100000000000,
+                                max_amp = 1.25,
                                 curve_change_rate = -1,
                                 cut_off_amp = -1,
                                 disable_range_limit = false
@@ -856,6 +909,7 @@ namespace VVVF_Generator_Porting.Yaml_VVVF_Sound
                                 start_amp = 0,
                                 end_freq = 41,
                                 end_amp = 0.013504901961 * 41 + 0.100000000000,
+                                max_amp = 1.25,
                                 curve_change_rate = -1,
                                 cut_off_amp = 0.498,
                                 disable_range_limit = false
@@ -889,6 +943,7 @@ namespace VVVF_Generator_Porting.Yaml_VVVF_Sound
                                 start_amp = 0.013504901961 * 28.9 + 0.100000000000,
                                 end_freq = 34.5,
                                 end_amp = 0.013504901961 * 34.5 + 0.100000000000,
+                                max_amp = 1.25,
                                 curve_change_rate = -1,
                                 cut_off_amp = -1,
                                 disable_range_limit = false
@@ -906,6 +961,7 @@ namespace VVVF_Generator_Porting.Yaml_VVVF_Sound
                                 start_amp = 0,
                                 end_freq = 34.5,
                                 end_amp = 0.013504901961 * 34.5 + 0.100000000000,
+                                max_amp = 1.25,
                                 curve_change_rate = -1,
                                 cut_off_amp = -1,
                                 disable_range_limit = false
@@ -921,6 +977,7 @@ namespace VVVF_Generator_Porting.Yaml_VVVF_Sound
                                 start_amp = 0,
                                 end_freq = 34.5,
                                 end_amp = 0.013504901961 * 34.5 + 0.100000000000,
+                                max_amp = 1.25,
                                 curve_change_rate = -1,
                                 cut_off_amp = 0.498,
                                 disable_range_limit = false
@@ -953,6 +1010,7 @@ namespace VVVF_Generator_Porting.Yaml_VVVF_Sound
                                 start_amp = 0.013504901961 * 24.9 + 0.100000000000,
                                 end_freq = 28.9,
                                 end_amp = 0.013504901961 * 28.9 + 0.100000000000,
+                                max_amp = 1.25,
                                 curve_change_rate = -1,
                                 cut_off_amp = -1,
                                 disable_range_limit = false
@@ -970,6 +1028,7 @@ namespace VVVF_Generator_Porting.Yaml_VVVF_Sound
                                 start_amp = 0,
                                 end_freq = 28.9,
                                 end_amp = 0.013504901961 * 28.9 + 0.100000000000,
+                                max_amp = 1.25,
                                 curve_change_rate = -1,
                                 cut_off_amp = -1,
                                 disable_range_limit = false
@@ -985,6 +1044,7 @@ namespace VVVF_Generator_Porting.Yaml_VVVF_Sound
                                 start_amp = 0,
                                 end_freq = 28.9,
                                 end_amp = 0.013504901961 * 28.9 + 0.100000000000,
+                                max_amp = 1.25,
                                 curve_change_rate = -1,
                                 cut_off_amp = 0.498,
                                 disable_range_limit = false
@@ -1018,6 +1078,7 @@ namespace VVVF_Generator_Porting.Yaml_VVVF_Sound
                                 start_amp = 0.013504901961 * 22.4 + 0.100000000000,
                                 end_freq = 24.9,
                                 end_amp = 0.013504901961 * 24.9 + 0.100000000000,
+                                max_amp = 1.25,
                                 curve_change_rate = -1,
                                 cut_off_amp = -1,
                                 disable_range_limit = false
@@ -1035,6 +1096,7 @@ namespace VVVF_Generator_Porting.Yaml_VVVF_Sound
                                 start_amp = 0,
                                 end_freq = 24.9,
                                 end_amp = 0.013504901961 * 24.9 + 0.100000000000,
+                                max_amp = 1.25,
                                 curve_change_rate = -1,
                                 cut_off_amp = 0.498,
                                 disable_range_limit = false
@@ -1050,6 +1112,7 @@ namespace VVVF_Generator_Porting.Yaml_VVVF_Sound
                                 start_amp = 0,
                                 end_freq = 24.9,
                                 end_amp = 0.013504901961 * 24.9 + 0.100000000000,
+                                max_amp = 1.25,
                                 curve_change_rate = -1,
                                 cut_off_amp = -1,
                                 disable_range_limit = false
@@ -1093,6 +1156,7 @@ namespace VVVF_Generator_Porting.Yaml_VVVF_Sound
                                 start_amp = 0.013504901961 * 4 + 0.100000000000,
                                 end_freq = 22.4,
                                 end_amp = 0.013504901961 * 22.4 + 0.100000000000,
+                                max_amp = 1.25,
                                 curve_change_rate = -1,
                                 cut_off_amp = -1,
                                 disable_range_limit = false
@@ -1110,6 +1174,7 @@ namespace VVVF_Generator_Porting.Yaml_VVVF_Sound
                                 start_amp = 0,
                                 end_freq = 22.4,
                                 end_amp = 0.013504901961 * 22.4 + 0.100000000000,
+                                max_amp = 1.25,
                                 curve_change_rate = -1,
                                 cut_off_amp = -1,
                                 disable_range_limit = false
@@ -1125,6 +1190,7 @@ namespace VVVF_Generator_Porting.Yaml_VVVF_Sound
                                 start_amp = 0,
                                 end_freq = 22.4,
                                 end_amp = 0.013504901961 * 22.4 + 0.100000000000,
+                                max_amp = 1.25,
                                 curve_change_rate = -1,
                                 cut_off_amp = 0.498,
                                 disable_range_limit = false
@@ -1170,6 +1236,7 @@ namespace VVVF_Generator_Porting.Yaml_VVVF_Sound
                                 end_freq = 20,
                                 end_amp = 0,
                                 curve_change_rate = -1,
+                                max_amp = 1.25,
                                 cut_off_amp = -1,
                                 disable_range_limit = false
                             }
@@ -1204,6 +1271,7 @@ namespace VVVF_Generator_Porting.Yaml_VVVF_Sound
                                 start_freq = 0,
                                 end_amp = 1,
                                 end_freq = 10,
+                                max_amp = 1.25,
                                 curve_change_rate = -1,
                                 cut_off_amp = -1,
                                 disable_range_limit = false,
@@ -1237,6 +1305,7 @@ namespace VVVF_Generator_Porting.Yaml_VVVF_Sound
                                 start_freq = 59,
                                 end_amp = 0.0222656250000 * 80 -0.07467187500,
                                 end_freq = 80,
+                                max_amp = 1.25,
                                 curve_change_rate = -1,
                                 cut_off_amp = -1,
                                 disable_range_limit = false,
@@ -1269,10 +1338,46 @@ namespace VVVF_Generator_Porting.Yaml_VVVF_Sound
                                 start_freq = 0,
                                 end_amp = 1,
                                 end_freq = 80,
+                                max_amp = 1.25,
                                 curve_change_rate = -1,
                                 cut_off_amp = -1,
                                 disable_range_limit = false,
                                 polynomial = -1
+                            }
+                        },
+                        free_run_data = new Yaml_Control_Data_Amplitude_Free_Run
+                        {
+                            mascon_on = new Yaml_Control_Data_Amplitude
+                            {
+                                mode = Amplitude_Mode.Linear,
+                            parameter = new Yaml_Control_Data_Amplitude_Single_Parameter
+                            {
+                                start_amp = 0,
+                                start_freq = 0,
+                                end_amp = 1,
+                                end_freq = 80,
+                                max_amp = 1.25,
+                                curve_change_rate = -1,
+                                cut_off_amp = -1,
+                                disable_range_limit = false,
+                                polynomial = -1
+                            }
+                            },
+                            mascon_off =new Yaml_Control_Data_Amplitude
+                            {
+                                mode = Amplitude_Mode.Linear,
+                            parameter = new Yaml_Control_Data_Amplitude_Single_Parameter
+                            {
+                                start_amp = 0,
+                                start_freq = 0,
+                                end_amp = 1,
+                                end_freq = 80,
+                                max_amp = 1.25,
+                                curve_change_rate = -1,
+                                cut_off_amp = 0.498,
+                                disable_range_limit = false,
+                                polynomial = -1
+                            }
                             }
                         }
                     },
@@ -1301,10 +1406,46 @@ namespace VVVF_Generator_Porting.Yaml_VVVF_Sound
                                 start_freq = 57,
                                 end_amp = 0.0222656250000 * 59 -0.07467187500,
                                 end_freq = 59,
+                                max_amp = 1.25,
                                 curve_change_rate = -1,
                                 cut_off_amp = -1,
                                 disable_range_limit = false,
                                 polynomial = -1
+                            }
+                        },
+                        free_run_data = new Yaml_Control_Data_Amplitude_Free_Run
+                        {
+                            mascon_on = new Yaml_Control_Data_Amplitude
+                            {
+                                mode = Amplitude_Mode.Linear,
+                            parameter = new Yaml_Control_Data_Amplitude_Single_Parameter
+                            {
+                                start_amp = 0,
+                                start_freq = 0,
+                                end_amp = 0.0222656250000 * 59 -0.07467187500,
+                                end_freq = 59,
+                                max_amp = 1.25,
+                                curve_change_rate = -1,
+                                cut_off_amp = -1,
+                                disable_range_limit = false,
+                                polynomial = -1
+                            }
+                            },
+                            mascon_off = new Yaml_Control_Data_Amplitude
+                            {
+                                mode = Amplitude_Mode.Linear,
+                            parameter = new Yaml_Control_Data_Amplitude_Single_Parameter
+                            {
+                                start_amp = 0,
+                                start_freq = 0,
+                                end_amp = 0.0222656250000 * 59 -0.07467187500,
+                                end_freq = 59,
+                                max_amp = 1.25,
+                                curve_change_rate = -1,
+                                cut_off_amp = 0.498,
+                                disable_range_limit = false,
+                                polynomial = -1
+                            }
                             }
                         }
                     },
@@ -1333,10 +1474,46 @@ namespace VVVF_Generator_Porting.Yaml_VVVF_Sound
                                 start_freq = 53.5,
                                 end_amp = 0.0222656250000 * 57 -0.07467187500,
                                 end_freq = 57,
+                                max_amp = 1.25,
                                 curve_change_rate = -1,
                                 cut_off_amp = -1,
                                 disable_range_limit = false,
                                 polynomial = -1
+                            }
+                        },
+                        free_run_data = new Yaml_Control_Data_Amplitude_Free_Run
+                        {
+                            mascon_on = new Yaml_Control_Data_Amplitude
+                            {
+                                mode = Amplitude_Mode.Linear,
+                            parameter = new Yaml_Control_Data_Amplitude_Single_Parameter
+                            {
+                                start_amp = 0,
+                                start_freq = 0,
+                                end_amp = 0.0222656250000 * 57 -0.07467187500,
+                                end_freq = 57,
+                                max_amp = 1.25,
+                                curve_change_rate = -1,
+                                cut_off_amp = -1,
+                                disable_range_limit = false,
+                                polynomial = -1
+                            }
+                            },
+                            mascon_off = new Yaml_Control_Data_Amplitude
+                            {
+                                mode = Amplitude_Mode.Linear,
+                            parameter = new Yaml_Control_Data_Amplitude_Single_Parameter
+                            {
+                                start_amp = 0,
+                                start_freq = 0,
+                                end_amp = 0.0222656250000 * 57 -0.07467187500,
+                                end_freq = 57,
+                                max_amp = 1.25,
+                                curve_change_rate = -1,
+                                cut_off_amp = 0.498,
+                                disable_range_limit = false,
+                                polynomial = -1
+                            }
                             }
                         }
                     },
@@ -1365,10 +1542,43 @@ namespace VVVF_Generator_Porting.Yaml_VVVF_Sound
                                 start_freq = 43.5,
                                 end_amp = 0.0193294460641 * 53.5 + 0.10000000000,
                                 end_freq = 53.5,
+                                max_amp = 1.25,
                                 curve_change_rate = -1,
                                 cut_off_amp = -1,
                                 disable_range_limit = false,
                                 polynomial = -1
+                            }
+                        },
+                        free_run_data = new Yaml_Control_Data_Amplitude_Free_Run{
+                            mascon_on = new Yaml_Control_Data_Amplitude{
+                                mode = Amplitude_Mode.Linear,
+                            parameter = new Yaml_Control_Data_Amplitude_Single_Parameter
+                            {
+                                start_amp = 0,
+                                start_freq = 0,
+                                end_amp = 0.0193294460641 * 53.5 + 0.10000000000,
+                                end_freq = 53.5,
+                                max_amp = 1.25,
+                                curve_change_rate = -1,
+                                cut_off_amp = -1,
+                                disable_range_limit = false,
+                                polynomial = -1
+                            }
+                            },
+                            mascon_off = new Yaml_Control_Data_Amplitude{
+                            mode = Amplitude_Mode.Linear,
+                            parameter = new Yaml_Control_Data_Amplitude_Single_Parameter
+                            {
+                                start_amp = 0,
+                                start_freq = 0,
+                                end_amp = 0.0193294460641 * 53.5 + 0.10000000000,
+                                end_freq = 53.5,
+                                max_amp = 1.25,
+                                curve_change_rate = -1,
+                                cut_off_amp = 0.498,
+                                disable_range_limit = false,
+                                polynomial = -1
+                            }
                             }
                         }
                     },
@@ -1397,10 +1607,44 @@ namespace VVVF_Generator_Porting.Yaml_VVVF_Sound
                                 start_freq = 36.7,
                                 end_amp = 0.0193294460641 * 43.5 + 0.10000000000,
                                 end_freq = 43.5,
+                                max_amp = 1.25,
                                 curve_change_rate = -1,
                                 cut_off_amp = -1,
                                 disable_range_limit = false,
                                 polynomial = -1
+                            }
+                        },
+                        free_run_data = new Yaml_Control_Data_Amplitude_Free_Run{
+                            mascon_on = new Yaml_Control_Data_Amplitude{
+                                mode = Amplitude_Mode.Linear,
+                            parameter = new Yaml_Control_Data_Amplitude_Single_Parameter
+                            {
+                                start_amp = 0,
+                                start_freq = 0,
+                                end_amp = 0.0193294460641 * 43.5 + 0.10000000000,
+                                end_freq = 43.5,
+                                max_amp = 1.25,
+                                curve_change_rate = -1,
+                                cut_off_amp = -1,
+                                disable_range_limit = false,
+                                polynomial = -1
+                            }
+                            },
+                            mascon_off = new Yaml_Control_Data_Amplitude
+                            {
+                                mode = Amplitude_Mode.Linear,
+                            parameter = new Yaml_Control_Data_Amplitude_Single_Parameter
+                            {
+                                start_amp = 0,
+                                start_freq = 0,
+                                end_amp = 0.0193294460641 * 43.5 + 0.10000000000,
+                                end_freq = 43.5,
+                                max_amp = 1.25,
+                                curve_change_rate = -1,
+                                cut_off_amp = 0.498,
+                                disable_range_limit = false,
+                                polynomial = -1
+                            }
                             }
                         }
                     },
@@ -1429,10 +1673,46 @@ namespace VVVF_Generator_Porting.Yaml_VVVF_Sound
                                 start_freq = 30,
                                 end_amp = 0.0193294460641 * 36.7 + 0.10000000000,
                                 end_freq = 36.7,
+                                max_amp = 1.25,
                                 curve_change_rate = -1,
                                 cut_off_amp = -1,
                                 disable_range_limit = false,
                                 polynomial = -1
+                            }
+                        },
+                        free_run_data = new Yaml_Control_Data_Amplitude_Free_Run
+                        {
+                            mascon_on = new Yaml_Control_Data_Amplitude
+                            {
+                                mode = Amplitude_Mode.Linear,
+                            parameter = new Yaml_Control_Data_Amplitude_Single_Parameter
+                            {
+                                start_amp = 0,
+                                start_freq = 0,
+                                end_amp = 0.0193294460641 * 36.7 + 0.10000000000,
+                                end_freq = 36.7,
+                                max_amp = 1.25,
+                                curve_change_rate = -1,
+                                cut_off_amp = -1,
+                                disable_range_limit = false,
+                                polynomial = -1
+                            }
+                            },
+                            mascon_off = new Yaml_Control_Data_Amplitude
+                            {
+                                mode = Amplitude_Mode.Linear,
+                            parameter = new Yaml_Control_Data_Amplitude_Single_Parameter
+                            {
+                                start_amp = 0,
+                                start_freq = 0,
+                                end_amp = 0.0193294460641 * 36.7 + 0.10000000000,
+                                end_freq = 36.7,
+                                max_amp = 1.25,
+                                curve_change_rate = -1,
+                                cut_off_amp = 0.498,
+                                disable_range_limit = false,
+                                polynomial = -1
+                            }
                             }
                         }
                     },
@@ -1461,10 +1741,46 @@ namespace VVVF_Generator_Porting.Yaml_VVVF_Sound
                                 start_freq = 27,
                                 end_amp = 0.0193294460641 * 30 + 0.10000000000,
                                 end_freq = 30,
+                                max_amp = 1.25,
                                 curve_change_rate = -1,
                                 cut_off_amp = -1,
                                 disable_range_limit = false,
                                 polynomial = -1
+                            }
+                        },
+                        free_run_data = new Yaml_Control_Data_Amplitude_Free_Run
+                        {
+                            mascon_on = new Yaml_Control_Data_Amplitude
+                            {
+                                mode = Amplitude_Mode.Linear,
+                            parameter = new Yaml_Control_Data_Amplitude_Single_Parameter
+                            {
+                                start_amp = 0,
+                                start_freq = 0,
+                                end_amp = 0.0193294460641 * 30 + 0.10000000000,
+                                end_freq = 30,
+                                max_amp = 1.25,
+                                curve_change_rate = -1,
+                                cut_off_amp = -1,
+                                disable_range_limit = false,
+                                polynomial = -1
+                            }
+                            },
+                            mascon_off = new Yaml_Control_Data_Amplitude
+                            {
+                                mode = Amplitude_Mode.Linear,
+                            parameter = new Yaml_Control_Data_Amplitude_Single_Parameter
+                            {
+                                start_amp = 0,
+                                start_freq = 0,
+                                end_amp = 0.0193294460641 * 30 + 0.10000000000,
+                                end_freq = 30,
+                                max_amp = 1.25,
+                                curve_change_rate = -1,
+                                cut_off_amp = 0.498,
+                                disable_range_limit = false,
+                                polynomial = -1
+                            }
                             }
                         }
                     },
@@ -1493,10 +1809,46 @@ namespace VVVF_Generator_Porting.Yaml_VVVF_Sound
                                 start_freq = 24,
                                 end_amp = 0.0193294460641 * 27 + 0.10000000000,
                                 end_freq = 27,
+                                max_amp = 1.25,
                                 curve_change_rate = -1,
                                 cut_off_amp = -1,
                                 disable_range_limit = false,
                                 polynomial = -1
+                            }
+                        },
+                        free_run_data = new Yaml_Control_Data_Amplitude_Free_Run
+                        {
+                            mascon_on = new Yaml_Control_Data_Amplitude
+                            {
+                                mode = Amplitude_Mode.Linear,
+                            parameter = new Yaml_Control_Data_Amplitude_Single_Parameter
+                            {
+                                start_amp = 0,
+                                start_freq = 0,
+                                end_amp = 0.0193294460641 * 27 + 0.10000000000,
+                                end_freq = 27,
+                                max_amp = 1.25,
+                                curve_change_rate = -1,
+                                cut_off_amp = -1,
+                                disable_range_limit = false,
+                                polynomial = -1
+                            }
+                            },
+                            mascon_off = new Yaml_Control_Data_Amplitude
+                            {
+                                mode = Amplitude_Mode.Linear,
+                            parameter = new Yaml_Control_Data_Amplitude_Single_Parameter
+                            {
+                                start_amp = 0,
+                                start_freq = 0,
+                                end_amp = 0.0193294460641 * 27 + 0.10000000000,
+                                end_freq = 27,
+                                max_amp = 1.25,
+                                curve_change_rate = -1,
+                                cut_off_amp = 0.498,
+                                disable_range_limit = false,
+                                polynomial = -1
+                            }
                             }
                         }
                     },
@@ -1525,10 +1877,46 @@ namespace VVVF_Generator_Porting.Yaml_VVVF_Sound
                                 start_freq = 0,
                                 end_amp = 0.0193294460641 * 24 + 0.10000000000,
                                 end_freq = 24,
+                                max_amp = 1.25,
                                 curve_change_rate = -1,
                                 cut_off_amp = -1,
                                 disable_range_limit = false,
                                 polynomial = -1
+                            }
+                        },
+                        free_run_data = new Yaml_Control_Data_Amplitude_Free_Run
+                        {
+                            mascon_on = new Yaml_Control_Data_Amplitude
+                            {
+                                mode = Amplitude_Mode.Linear,
+                            parameter = new Yaml_Control_Data_Amplitude_Single_Parameter
+                            {
+                                start_amp = 0.0193294460641 * 0 + 0.10000000000,
+                                start_freq = 0,
+                                end_amp = 0.0193294460641 * 24 + 0.10000000000,
+                                end_freq = 24,
+                                max_amp = 1.25,
+                                curve_change_rate = -1,
+                                cut_off_amp = -1,
+                                disable_range_limit = false,
+                                polynomial = -1
+                            }
+                            },
+                            mascon_off = new Yaml_Control_Data_Amplitude
+                            {
+                                mode = Amplitude_Mode.Linear,
+                            parameter = new Yaml_Control_Data_Amplitude_Single_Parameter
+                            {
+                                start_amp = 0.0193294460641 * 0 + 0.10000000000,
+                                start_freq = 0,
+                                end_amp = 0.0193294460641 * 24 + 0.10000000000,
+                                end_freq = 24,
+                                max_amp = 1.25,
+                                curve_change_rate = -1,
+                                cut_off_amp = 0.498,
+                                disable_range_limit = false,
+                                polynomial = -1
+                            }
                             }
                         }
                     },
@@ -1546,15 +1934,15 @@ namespace VVVF_Generator_Porting.Yaml_VVVF_Sound
                             {
                                 carrier_freq_table = new List<Yaml_Async_Parameter_Carrier_Freq_Table_Single>()
                                 {
-                                    new Yaml_Async_Parameter_Carrier_Freq_Table_Single{ carrier_freq = 400, from = 5.6 },
-                                    new Yaml_Async_Parameter_Carrier_Freq_Table_Single{ carrier_freq = 350, from = 5 },
-                                    new Yaml_Async_Parameter_Carrier_Freq_Table_Single{ carrier_freq = 311, from = 4.3 },
-                                    new Yaml_Async_Parameter_Carrier_Freq_Table_Single{ carrier_freq = 294, from = 3.4 },
-                                    new Yaml_Async_Parameter_Carrier_Freq_Table_Single{ carrier_freq = 262, from = 2.7 },
-                                    new Yaml_Async_Parameter_Carrier_Freq_Table_Single{ carrier_freq = 233, from = 2.0 },
-                                    new Yaml_Async_Parameter_Carrier_Freq_Table_Single{ carrier_freq = 223, from = 1.5 },
-                                    new Yaml_Async_Parameter_Carrier_Freq_Table_Single{ carrier_freq = 196, from = 0.5 },
-                                    new Yaml_Async_Parameter_Carrier_Freq_Table_Single{ carrier_freq = 175, from = 0 },
+                                    new Yaml_Async_Parameter_Carrier_Freq_Table_Single{ carrier_freq = 400, from = 5.6, free_run_stuck_here = false },
+                                    new Yaml_Async_Parameter_Carrier_Freq_Table_Single{ carrier_freq = 350, from = 5, free_run_stuck_here = false },
+                                    new Yaml_Async_Parameter_Carrier_Freq_Table_Single{ carrier_freq = 311, from = 4.3 , free_run_stuck_here = false},
+                                    new Yaml_Async_Parameter_Carrier_Freq_Table_Single{ carrier_freq = 294, from = 3.4 , free_run_stuck_here = false},
+                                    new Yaml_Async_Parameter_Carrier_Freq_Table_Single{ carrier_freq = 262, from = 2.7 , free_run_stuck_here = false},
+                                    new Yaml_Async_Parameter_Carrier_Freq_Table_Single{ carrier_freq = 233, from = 2.0 , free_run_stuck_here = false},
+                                    new Yaml_Async_Parameter_Carrier_Freq_Table_Single{ carrier_freq = 223, from = 1.5 , free_run_stuck_here = false},
+                                    new Yaml_Async_Parameter_Carrier_Freq_Table_Single{ carrier_freq = 196, from = 0.5 , free_run_stuck_here = false},
+                                    new Yaml_Async_Parameter_Carrier_Freq_Table_Single{ carrier_freq = 175, from = -1, free_run_stuck_here = false },
                                 }
                             }
                         }
@@ -1570,8 +1958,6 @@ namespace VVVF_Generator_Porting.Yaml_VVVF_Sound
             serializer.Serialize(writer, obj);
 
             writer.Close();
-
-            yaml_generate_sound(System.IO.Path.GetDirectoryName(path),path);
         }
 
         public static void yaml_generate_sound(String output_path,String path)

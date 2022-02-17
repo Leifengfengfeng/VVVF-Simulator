@@ -9,6 +9,7 @@ using static VVVF_Generator_Porting.Yaml_VVVF_Sound.Yaml_Sound_Data.Yaml_Control
 using static VVVF_Generator_Porting.Yaml_VVVF_Sound.Yaml_Sound_Data.Yaml_Control_Data.Yaml_Free_Run_Condition;
 using static VVVF_Generator_Porting.Yaml_VVVF_Sound.Yaml_Sound_Data.Yaml_Mascon_Data;
 using static VVVF_Generator_Porting.Yaml_VVVF_Sound.Yaml_Sound_Data.Yaml_Control_Data.Yaml_Control_Data_Amplitude_Control;
+using static VVVF_Generator_Porting.Yaml_VVVF_Sound.Yaml_Sound_Data.Yaml_Control_Data.Yaml_Async_Parameter.Yaml_Async_Parameter_Carrier_Freq.Yaml_Async_Parameter_Carrier_Freq_Table;
 
 namespace VVVF_Generator_Porting.Yaml_VVVF_Sound
 {
@@ -30,6 +31,7 @@ namespace VVVF_Generator_Porting.Yaml_VVVF_Sound
 				default_amplitude_parameter = new Exponential_Amplitude_Argument(amp_param.end_freq, amp_param.end_amp, x, amp_param.disable_range_limit);
 			double amp = get_Amplitude(amp_data.mode, default_amplitude_parameter);
 			if (amp_param.cut_off_amp > amp) amp = 0;
+			if (amp_param.max_amp != -1 && amp_param.max_amp < amp) amp = amp_param.max_amp;
 			return amp;
 		}
 		public static Wave_Values calculate_yaml_go(Control_Values cv, Yaml_Sound_Data yvs)
@@ -120,7 +122,7 @@ namespace VVVF_Generator_Porting.Yaml_VVVF_Sound
 
 				var carrier_data = async_data.carrier_wave_data;
 				var carrier_freq_mode = carrier_data.carrier_mode;
-				double carrier_freq_val = 0;
+				double carrier_freq_val = 100;
 				if (carrier_freq_mode == Yaml_Async_Parameter.Yaml_Async_Parameter_Carrier_Freq.Yaml_Async_Carrier_Mode.Const)
 					carrier_freq_val = carrier_data.const_value;
 				else if (carrier_freq_mode == Yaml_Async_Parameter.Yaml_Async_Parameter_Carrier_Freq.Yaml_Async_Carrier_Mode.Moving)
@@ -138,7 +140,22 @@ namespace VVVF_Generator_Porting.Yaml_VVVF_Sound
 				else if (carrier_freq_mode == Yaml_Async_Parameter.Yaml_Async_Parameter_Carrier_Freq.Yaml_Async_Carrier_Mode.Table)
 				{
 					var table_data = carrier_data.carrier_table_value;
-					//TODO implement moving type.
+
+					//Solve from high.
+					List<Yaml_Async_Parameter_Carrier_Freq_Table_Single> async_carrier_freq_table = new(table_data.carrier_freq_table);
+					async_carrier_freq_table.Sort((a, b) => Math.Sign(b.from - a.from));
+	
+					for(int i = 0; i < async_carrier_freq_table.Count; i++)
+                    {
+						var carrier = async_carrier_freq_table[i];
+						bool condition_1 = carrier.free_run_stuck_here && (get_Sine_Freq() < carrier.from) && cv.free_run;
+						bool condition_2 = cv.wave_stat > carrier.from;
+						if (!condition_1 && !condition_2) continue;
+
+						carrier_freq_val = carrier.carrier_freq;
+						break;
+
+					}
 					
 				}
 				else //Vibrato
@@ -216,6 +233,7 @@ namespace VVVF_Generator_Porting.Yaml_VVVF_Sound
 				amplitude = get_Amplitude(free_run_amp_data.mode, free_run_amplitude_parameter);
 
 				if (free_run_amp_param.cut_off_amp > amplitude) amplitude = 0;
+				if (free_run_amp_param.max_amp != -1 && amplitude > free_run_amp_param.max_amp) amplitude = free_run_amp_param.max_amp;
 				if (!cv.mascon_on && amplitude == 0) set_Control_Frequency(0);
 			}
 
