@@ -5,6 +5,7 @@ using static VVVF_Generator_Porting.vvvf_sound_definition;
 using static VVVF_Generator_Porting.vvvf_wave_control;
 using static VVVF_Generator_Porting.Generation.Generate_Common;
 using static VVVF_Generator_Porting.my_math;
+using static VVVF_Generator_Porting.Generation.Generate_Sound.Harmonic_Data;
 
 namespace VVVF_Generator_Porting.Generation
 {
@@ -94,6 +95,22 @@ namespace VVVF_Generator_Porting.Generation
             writer.Close();
         }
 
+        public class Harmonic_Data { 
+            public double harmonic { get; set; }
+            public Harmonic_Data_Amplitude amplitude { get; set; }
+            public double disappear { get; set; }
+
+            public class Harmonic_Data_Amplitude {
+                public double start;
+                public double start_val;
+                public double end;
+                public double end_val;
+                public double min_val;
+                public double max_val;
+            }
+
+        }
+
         public static void generate_env_sound(String output_path, VVVF_Sound_Names sound_name)
         {
             reset_control_variables();
@@ -132,6 +149,7 @@ namespace VVVF_Generator_Porting.Generation
                 add_Saw_Time(1.00 / div_freq);
 
                 int sound_byte_int = 0x80;
+                int total_sound_count = 0;
                 Control_Values cv_U = new Control_Values
                 {
                     brake = is_Braking(),
@@ -153,19 +171,33 @@ namespace VVVF_Generator_Porting.Generation
                 Wave_Values wv_V = get_Calculated_Value(sound_name, cv_V);
 
                 double pwm_value = wv_U.pwm_value - wv_V.pwm_value;
-                if (pwm_value == 2) sound_byte_int += 0x40;
-                else if (pwm_value == 1) sound_byte_int += 0x20;
-                else if (pwm_value == -1) sound_byte_int -= 0x20;
-                else if (pwm_value == -2) sound_byte_int -= 0x40;
-         
+                byte pwm_byte = 0x80;
+                if (pwm_value == 2) pwm_byte += 0x40;
+                else if (pwm_value == 1) pwm_byte += 0x20;
+                else if (pwm_value == -1) pwm_byte -= 0x20;
+                else if (pwm_value == -2) pwm_byte -= 0x40;
 
-                double[] harmonics = new double[] { 1, 3, 7, 9, 20, 50 ,14.9};
+
+                Harmonic_Data[] harmonics = new Harmonic_Data[] {
+                    new Harmonic_Data{harmonic = 1, amplitude = new Harmonic_Data_Amplitude{start=0,start_val=0x30,end=60,end_val=0x30,min_val=0,max_val=0x30},disappear = 880},
+                    new Harmonic_Data{harmonic = 6, amplitude = new Harmonic_Data_Amplitude{start=0,start_val=0x10,end=60,end_val=0x10,min_val=0,max_val=0x30},disappear = 880},
+                    new Harmonic_Data{harmonic = 18.34, amplitude = new Harmonic_Data_Amplitude{start=0,start_val=0x60,end=60,end_val=0x00,min_val=0,max_val=0x30},disappear = 880},
+                    new Harmonic_Data{harmonic = 23.1,amplitude = new Harmonic_Data_Amplitude{start=0,start_val=0x60,end=60,end_val=0x00,min_val=0,max_val=0x30},disappear = 880},
+                    new Harmonic_Data{harmonic = 70,amplitude = new Harmonic_Data_Amplitude{start=0,start_val=0x60,end=15,end_val=0x00,min_val=0,max_val=0x30},disappear = 880}
+                };
                 for(int harmonic = 0; harmonic < harmonics.Length; harmonic++)
                 {
-                    double sine_val = sin(get_Sine_Time() * get_Sine_Angle_Freq() * harmonics[harmonic]);
-                    sine_val *= 0x10;
+                    Harmonic_Data harmonic_data = harmonics[harmonic];
+                    if (harmonic_data.harmonic * get_Sine_Freq() > harmonic_data.disappear) continue;
+                    double sine_val = sin(get_Sine_Time() * get_Sine_Angle_Freq() * harmonic_data.harmonic);
+
+                    double amplitude = harmonic_data.amplitude.start_val + (harmonic_data.amplitude.end_val - harmonic_data.amplitude.start_val) / (harmonic_data.amplitude.end - harmonic_data.amplitude.start) * (get_Sine_Freq() - harmonic_data.amplitude.start);
+                    if (amplitude > harmonic_data.amplitude.max_val) amplitude = harmonic_data.amplitude.max_val;
+                    if (amplitude < harmonic_data.amplitude.min_val) amplitude = harmonic_data.amplitude.min_val;
+                    sine_val *= amplitude;
                     sine_val += 0x80;
                     sound_byte_int += (byte)Math.Round(sine_val);
+                    total_sound_count++;
                 }
 
                 double[] saw_harmonics = new double[] { 3 };
@@ -175,10 +207,10 @@ namespace VVVF_Generator_Porting.Generation
                     saw_val *= 0x20;
                     saw_val += 0x80;
                     sound_byte_int += (byte)Math.Round(saw_val);
+                    total_sound_count++;
                 }
-
-                int total_sound_count = harmonics.Length + saw_harmonics.Length;
                 byte sound_byte = (byte)(sound_byte_int / total_sound_count);
+                sound_byte = (byte)((pwm_byte / 4 + sound_byte) / 2);
 
                 writer.Write(sound_byte);
                 sound_block_count++;
