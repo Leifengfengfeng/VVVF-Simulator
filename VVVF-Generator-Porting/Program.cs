@@ -56,7 +56,6 @@ namespace VVVF_Generator_Porting
 
                 "-YAML RELATE",
                 "Generate from Yaml File",
-                "Yaml File Test",
 
                 "-OTHERS",
                 "Realtime VVVF Sound generation",
