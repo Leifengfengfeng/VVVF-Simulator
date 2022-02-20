@@ -2605,17 +2605,11 @@ namespace VVVF_Generator_Porting
 			Pulse_Mode pulse_mode;
 			Carrier_Freq carrier_freq = new Carrier_Freq(700, 0);
 
-			if (60 <= cv.wave_stat)
+			if (5 <= cv.wave_stat)
 			{
-				pulse_mode = Pulse_Mode.P_1;
+				pulse_mode = Pulse_Mode.SHEP_7;
 			}
-			else if (5 <= cv.wave_stat)
-            {
-				double katamuki = ((int)Pulse_Mode.P_61 - (int)Pulse_Mode.P_1) / 55.0;
-				double loc = - katamuki * (cv.wave_stat - 5) + (int)Pulse_Mode.P_61;
-				pulse_mode = (Pulse_Mode)((int)loc);
-            }
-				
+
 			else
 			{
 				carrier_freq = new Carrier_Freq(700, 0);
