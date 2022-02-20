@@ -434,14 +434,15 @@ namespace VVVF_Generator_Porting
 		public static double get_Vibrato_Freq(double lowest, double highest, double interval_count)
 		{
 			double random_freq = 0;
-			if (get_Random_Freq_Move_Count() < interval_count / 2.0)
-				random_freq = lowest + (highest - lowest) / (interval_count / 2.0) * get_Random_Freq_Move_Count();
+			int vib_coun = get_Vibrato_Freq_Move_Count();
+			if (vib_coun < interval_count / 2.0)
+				random_freq = lowest + (highest - lowest) / (interval_count / 2.0) * vib_coun;
 			else
-				random_freq = highest + (lowest - highest) / (interval_count / 2.0) * (get_Random_Freq_Move_Count() - interval_count / 2.0);
+				random_freq = highest + (lowest - highest) / (interval_count / 2.0) * (vib_coun - interval_count / 2.0);
 
-			add_Random_Freq_Move_Count(1);
-			if (get_Random_Freq_Move_Count() > interval_count)
-				set_Random_Freq_Move_Count(0);
+			add_Vibrato_Freq_Move_Count(1);
+			if (get_Vibrato_Freq_Move_Count() > interval_count)
+				set_Vibrato_Freq_Move_Count(0);
 			return random_freq;
         }
 

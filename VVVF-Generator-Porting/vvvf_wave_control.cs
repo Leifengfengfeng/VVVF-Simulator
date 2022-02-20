@@ -70,7 +70,8 @@ namespace VVVF_Generator_Porting
         private static double saw_time = 0;
         private static double pre_saw_random_freq = 0;
         private static int random_freq_move_count = 0;
-        
+        private static int vibrato_freq_move_count = 0;
+
         public static void set_Sine_Angle_Freq(double b) { sin_angle_freq = b; }
         public static double get_Sine_Angle_Freq() { return sin_angle_freq; }
         public static void add_Sine_Angle_Freq(double b) { sin_angle_freq += b; }
@@ -99,6 +100,10 @@ namespace VVVF_Generator_Porting
         public static void set_Random_Freq_Move_Count(int i) { random_freq_move_count = i; }
         public static int get_Random_Freq_Move_Count() { return random_freq_move_count; }
         public static void add_Random_Freq_Move_Count(int x) { random_freq_move_count += x; }
+
+        public static void set_Vibrato_Freq_Move_Count(int i) { vibrato_freq_move_count = i; }
+        public static int get_Vibrato_Freq_Move_Count() { return vibrato_freq_move_count; }
+        public static void add_Vibrato_Freq_Move_Count(int x) { vibrato_freq_move_count += x; }
 
         public static void reset_all_variables()
         {
