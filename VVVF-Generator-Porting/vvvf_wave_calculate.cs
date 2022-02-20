@@ -54,7 +54,7 @@ namespace VVVF_Generator_Porting
 			CHMP_9, CHMP_Wide_9, CHMP_11, CHMP_13, CHMP_15,
 
 			// Selective harmonic elimination Pulse width modulation
-			SHEP_3, SHEP_5, SHEP_7, SHEP_11
+			SHEP_3, SHEP_5, SHEP_7, SHEP_9, SHEP_11, SHEP_13, SHEP_15
 		};
 
 		//function calculation
