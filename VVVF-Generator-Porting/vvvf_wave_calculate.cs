@@ -48,9 +48,13 @@ namespace VVVF_Generator_Porting
 			SP_21, SP_23, SP_25, SP_27, SP_29, SP_31, SP_33, SP_35, SP_37, SP_39, SP_41
 			, SP_43, SP_45, SP_47, SP_49, SP_51, SP_53, SP_55, SP_57, SP_59, SP_61
 
-			, Async_THI, CHMP_3, CHMP_Wide_3, CHMP_5, CHMP_Wide_5, CHMP_7, CHMP_Wide_7, CHMP_9, CHMP_Wide_9, CHMP_11, CHMP_13, CHMP_15
+			, Async_THI
+			,// Current harmonic minimum Pulse width modulation
+			CHMP_3, CHMP_Wide_3, CHMP_5, CHMP_Wide_5, CHMP_7, CHMP_Wide_7,
+			CHMP_9, CHMP_Wide_9, CHMP_11, CHMP_13, CHMP_15,
 
-			, SHEP_3, SHEP_5, SHEP_7, SHEP_9, SHEP_11, SHEP_13, SHEP_15
+			// Selective harmonic elimination Pulse width modulation
+			SHEP_3, SHEP_5, SHEP_7, SHEP_9, SHEP_11, SHEP_13, SHEP_15
 		};
 
 		//function calculation
@@ -271,19 +275,7 @@ namespace VVVF_Generator_Porting
 				val = (0.2 * ((arg.current - arg.min_freq) * ((arg.max_amp - arg.min_amp) / (arg.max_freq - arg.min_freq)) + arg.min_amp)) + 0.8;
 			}
 				
-			/*
-			else if(mode == Amplitude_Mode.Level_3_1P_1)
-            {
-				General_Amplitude_Argument arg = (General_Amplitude_Argument)arg_o;
 
-				if (!arg.disable_range_limit)
-				{
-					if (arg.current < arg.min_freq) arg.current = arg.min_freq;
-					if (arg.current > arg.max_freq) arg.current = arg.max_freq;
-				}
-				val = 1 / get_Amplitude(Amplitude_Mode.Linear, new General_Amplitude_Argument(arg.min_freq, 1 / arg.min_amp, arg.max_freq, 1 / arg.max_amp, arg.current, arg.disable_range_limit));
-			}
-			*/
 			else if(mode == Amplitude_Mode.Inv_Proportional)
             {
 				Inv_Proportional_Amplitude_Argument arg = (Inv_Proportional_Amplitude_Argument)arg_o;
@@ -483,8 +475,6 @@ namespace VVVF_Generator_Porting
 
         public static Wave_Values calculate_three_level(Pulse_Mode pulse_mode, Carrier_Freq data, Sine_Control_Data sine_control, double dipolar)
 		{
-			//variable change for video
-			//no need in RPI zero vvvf
 			Video_Generate_Values.pulse_mode = pulse_mode;
 			Video_Generate_Values.sine_amplitude = sine_control.amplitude;
 			Video_Generate_Values.carrier_freq_data = data;
@@ -692,6 +682,46 @@ namespace VVVF_Generator_Porting
 				   M_PI_2,
 				   M_PI_2,
 				   'B', sin_time, sin_angle_freq, initial_phase);
+			if (pulse_mode == Pulse_Mode.SHEP_3)
+				return get_P_with_switchingangle(
+				   my_switchingangles._1Alpha_SHE[(int)(1000 * amplitude) + 1] * M_PI_180,
+				   M_PI_2,
+				   M_PI_2,
+				   M_PI_2,
+				   M_PI_2,
+				   M_PI_2,
+				   M_PI_2,
+				   'B', sin_time, sin_angle_freq, initial_phase);
+			if (pulse_mode == Pulse_Mode.SHEP_5)
+				return get_P_with_switchingangle(
+				   my_switchingangles._2Alpha_SHE[(int)(1000 * amplitude) + 1, 0] * M_PI_180,
+				   my_switchingangles._2Alpha_SHE[(int)(1000 * amplitude) + 1, 1] * M_PI_180,
+				   M_PI_2,
+				   M_PI_2,
+				   M_PI_2,
+				   M_PI_2,
+				   M_PI_2,
+				   'A', sin_time, sin_angle_freq, initial_phase);
+			if (pulse_mode == Pulse_Mode.SHEP_7)
+				return get_P_with_switchingangle(
+				   my_switchingangles._3Alpha_SHE[(int)(1000 * amplitude) + 1, 0] * M_PI_180,
+				   my_switchingangles._3Alpha_SHE[(int)(1000 * amplitude) + 1, 1] * M_PI_180,
+				   my_switchingangles._3Alpha_SHE[(int)(1000 * amplitude) + 1, 2] * M_PI_180,
+				   M_PI_2,
+				   M_PI_2,
+				   M_PI_2,
+				   M_PI_2,
+				   'B', sin_time, sin_angle_freq, initial_phase);
+			if (pulse_mode == Pulse_Mode.SHEP_11)
+				return get_P_with_switchingangle(
+				   my_switchingangles._5Alpha_SHE[(int)(1000 * amplitude) + 1, 0] * M_PI_180,
+				   my_switchingangles._5Alpha_SHE[(int)(1000 * amplitude) + 1, 1] * M_PI_180,
+				   my_switchingangles._5Alpha_SHE[(int)(1000 * amplitude) + 1, 2] * M_PI_180,
+				   my_switchingangles._5Alpha_SHE[(int)(1000 * amplitude) + 1, 3] * M_PI_180,
+				   my_switchingangles._5Alpha_SHE[(int)(1000 * amplitude) + 1, 4] * M_PI_180,
+				   M_PI_2,
+				   M_PI_2,
+				   'A', sin_time, sin_angle_freq, initial_phase);
 
 
 			String[] pulse_name_split = pulse_mode.ToString().Split('_');
