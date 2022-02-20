@@ -25,8 +25,8 @@ namespace VVVF_Generator_Porting.Yaml_VVVF_Sound
 				default_amplitude_parameter = new General_Amplitude_Argument(amp_param.start_freq, amp_param.start_amp, amp_param.end_freq, amp_param.end_amp, x, amp_param.disable_range_limit);
 			else if (amp_data.mode == Amplitude_Mode.Inv_Proportional)
 				default_amplitude_parameter = new Inv_Proportional_Amplitude_Argument(amp_param.start_freq, amp_param.start_amp, amp_param.end_freq, amp_param.end_amp, x, amp_param.curve_change_rate, amp_param.disable_range_limit);
-			else if (amp_data.mode == Amplitude_Mode.Exponential)
-				default_amplitude_parameter = new Exponential_Amplitude_Argument(amp_param.end_freq, amp_param.end_amp, x, amp_param.disable_range_limit);
+			else if (amp_data.mode == Amplitude_Mode.Linear_Polynomial)
+				default_amplitude_parameter = new Linear_Polynomial_Amplitude_Argument(amp_param.end_freq, amp_param.end_amp, amp_param.polynomial, x, amp_param.disable_range_limit);
 			else
 				default_amplitude_parameter = new Exponential_Amplitude_Argument(amp_param.end_freq, amp_param.end_amp, x, amp_param.disable_range_limit);
 			double amp = get_Amplitude(amp_data.mode, default_amplitude_parameter);
@@ -122,6 +122,7 @@ namespace VVVF_Generator_Porting.Yaml_VVVF_Sound
 
 				var carrier_data = async_data.carrier_wave_data;
 				var carrier_freq_mode = carrier_data.carrier_mode;
+
 				double carrier_freq_val = 100;
 				if (carrier_freq_mode == Yaml_Async_Parameter.Yaml_Async_Parameter_Carrier_Freq.Yaml_Async_Carrier_Mode.Const)
 					carrier_freq_val = carrier_data.const_value;
