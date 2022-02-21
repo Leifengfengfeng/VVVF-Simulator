@@ -117,6 +117,7 @@ namespace VVVF_Generator_Porting
                     String load_path = get_Path("Enter the yaml file path");
                     sound_data = Yaml_Analyze.get_Deserialized(load_path);
                     if (sound_data == null) continue;
+                    break;
                 }
 
                 String output_path = get_Path("Enter the export path");
