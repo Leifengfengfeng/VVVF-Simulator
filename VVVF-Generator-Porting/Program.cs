@@ -1,5 +1,4 @@
 ﻿using System;
-using static VVVF_Generator_Porting.vvvf_sound_definition;
 
 using static VVVF_Generator_Porting.Generation.Generate_Control_Info;
 using static VVVF_Generator_Porting.Generation.Generate_Hexagon;
@@ -7,9 +6,7 @@ using static VVVF_Generator_Porting.Generation.Generate_RealTime;
 using static VVVF_Generator_Porting.Generation.Generate_Sound;
 using static VVVF_Generator_Porting.Generation.Generate_Wave_Form;
 
-using static VVVF_Generator_Porting.Yaml_VVVF_Sound.Yaml_Analyze;
-using System.Drawing.Text;
-using System.Drawing;
+using VVVF_Generator_Porting.Yaml_VVVF_Sound;
 
 namespace VVVF_Generator_Porting
 {
@@ -54,9 +51,6 @@ namespace VVVF_Generator_Porting
                 "Generate Mascon Video",
                 "Generate Taroimo like Mascon Video",
 
-                "-YAML RELATE",
-                "Generate from Yaml File",
-
                 "-OTHERS",
                 "Realtime VVVF Sound generation",
             };
@@ -89,7 +83,6 @@ namespace VVVF_Generator_Porting
             bool gen_hexagon = false , gen_hexagon_taroimo = false, gen_hexagon_explain = false, gen_hexagon_image = false;
             bool gen_mascon_video = false , gen_mascon_taroimo_video = false;
             bool realtime = false;
-            bool yaml_load = false;
 
             int c = 1;
             for(int i = 0; i < split.Length; i++)
@@ -109,42 +102,48 @@ namespace VVVF_Generator_Porting
                 if (split[i] == c++.ToString()) gen_mascon_video = true;
                 if (split[i] == c++.ToString()) gen_mascon_taroimo_video = true;
 
-                if (split[i] == c++.ToString()) yaml_load = true;
-
                 if (split[i] == c++.ToString()) realtime = true;
                 
             }
 
             
-            if(gen_audio || gen_U_V || gen_mascon_video || gen_UVW || gen_hexagon || gen_hexagon_explain || gen_hexagon_taroimo || gen_mascon_taroimo_video
+
+            if (gen_audio || gen_U_V || gen_mascon_video || gen_UVW || gen_hexagon || gen_hexagon_explain || gen_hexagon_taroimo || gen_mascon_taroimo_video
                 || gen_U_V_taroimo || gen_hexagon_image || gen_env_audio)
             {
-                VVVF_Sound_Names sound_name = get_Choosed_Sound();
+                Yaml_Sound_Data sound_data;
+                while (true)
+                {
+                    try
+                    {
+                        String load_path = get_Path("Enter the yaml file path");
+                        sound_data = Yaml_Analyze.get_Deserialized(load_path);
+                        break;
+                    }
+                    catch
+                    {
+                        Console.WriteLine("Reenter the path.");
+                    }
+                }
+
                 String output_path = get_Path("Enter the export path");
 
-                if (gen_audio) generate_sound(output_path, sound_name);
-                if (gen_env_audio) generate_env_sound(output_path, sound_name);
+                if (gen_audio) generate_sound(output_path, sound_data);
+                if (gen_env_audio) generate_env_sound(output_path, sound_data);
 
-                if (gen_U_V) generate_wave_U_V(output_path, sound_name);
-                if (gen_UVW) generate_wave_UVW(output_path, sound_name);
-                if (gen_U_V_taroimo) generate_taroimo_like_wave_U_V(output_path, sound_name);
-
-
-                if (gen_hexagon) generate_wave_hexagon_taroimo_like(output_path, sound_name);
-                if (gen_hexagon_taroimo) generate_wave_hexagon_taroimo_like(output_path, sound_name);
-                if (gen_hexagon_explain) generate_wave_hexagon_explain(output_path, sound_name);
-                if (gen_hexagon_image) generate_wave_hexagon_picture(output_path, sound_name);
+                if (gen_U_V) generate_wave_U_V(output_path, sound_data);
+                if (gen_UVW) generate_wave_UVW(output_path, sound_data);
+                if (gen_U_V_taroimo) generate_taroimo_like_wave_U_V(output_path, sound_data);
 
 
-                if (gen_mascon_video) generate_status_video(output_path, sound_name);
-                if (gen_mascon_taroimo_video) generate_status_taroimo_like_video(output_path, sound_name);
-            }
+                if (gen_hexagon) generate_wave_hexagon_taroimo_like(output_path, sound_data);
+                if (gen_hexagon_taroimo) generate_wave_hexagon_taroimo_like(output_path, sound_data);
+                if (gen_hexagon_explain) generate_wave_hexagon_explain(output_path, sound_data);
+                if (gen_hexagon_image) generate_wave_hexagon_picture(output_path, sound_data);
 
-            if (yaml_load)
-            {
-                String load_path = get_Path("Enter the yaml file path");
-                String output_path = get_Path("Enter the output path");
-                yaml_generate_sound(output_path, load_path);
+
+                if (gen_mascon_video) generate_status_video(output_path, sound_data);
+                if (gen_mascon_taroimo_video) generate_status_taroimo_like_video(output_path, sound_data);
             }
 
             if (realtime) realtime_sound();
