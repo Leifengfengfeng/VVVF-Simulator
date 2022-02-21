@@ -186,7 +186,7 @@ namespace VVVF_Generator_Porting.Yaml_VVVF_Sound
 
             public class Yaml_Async_Parameter
             {
-                public int random_range { get; set; } = 0;
+                public Yaml_Async_Parameter_Random_Range random_range { get; set; }
                 public Yaml_Async_Parameter_Carrier_Freq carrier_wave_data { get; set; }
                 public Yaml_Async_Parameter_Dipolar dipoar_data { get; set; }
 
@@ -200,6 +200,26 @@ namespace VVVF_Generator_Porting.Yaml_VVVF_Sound
                     return re;
                 }
 
+                public class Yaml_Async_Parameter_Random_Range
+                {
+                    public Yaml_Async_Parameter_Random_Range_Mode value_mode { get; set; }
+                    public double const_value { get; set; }
+                    public Yaml_Moving_Value moving_value { get; set; }
+                    public override string ToString()
+                    {
+                        String final = "[\r\n";
+                        final += "value_mode : " + value_mode.ToString() + "\r\n";
+                        final += "const_value : " + String.Format("{0:f3}", const_value) + "\r\n";
+                        final += "moving_value : " + get_Value(moving_value) + "\r\n";
+                        final += "]";
+                        return final;
+                    }
+
+                    public enum Yaml_Async_Parameter_Random_Range_Mode
+                    {
+                        Const, Moving
+                    }
+                }
                 public class Yaml_Async_Parameter_Carrier_Freq
                 {
                     public Yaml_Async_Carrier_Mode carrier_mode { get; set; }
