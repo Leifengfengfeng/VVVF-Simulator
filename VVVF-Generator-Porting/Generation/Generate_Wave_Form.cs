@@ -4,22 +4,22 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using static VVVF_Generator_Porting.vvvf_wave_calculate;
-using static VVVF_Generator_Porting.vvvf_sound_definition;
 using static VVVF_Generator_Porting.vvvf_wave_control;
 using static VVVF_Generator_Porting.Generation.Generate_Common;
+using VVVF_Generator_Porting.Yaml_VVVF_Sound;
 
 namespace VVVF_Generator_Porting.Generation
 {
     public class Generate_Wave_Form
     {
-        public static void generate_wave_U_V(String output_path, VVVF_Sound_Names sound_name)
+        public static void generate_wave_U_V(String output_path, Yaml_Sound_Data sound_data)
         {
             reset_control_variables();
             reset_all_variables();
 
             DateTime dt = DateTime.Now;
             String gen_time = dt.ToString("yyyy-MM-dd_HH-mm-ss");
-            String appear_sound_name = get_Sound_Name(sound_name);
+            String appear_sound_name = "";
             String fileName = output_path + "\\" + appear_sound_name + "-" + gen_time + ".avi";
 
             bool temp = true;
@@ -93,7 +93,7 @@ namespace VVVF_Generator_Porting.Generation
                                 initial_phase = Math.PI * 2.0 / 3.0 * 0,
                                 wave_stat = get_Control_Frequency()
                             };
-                            Wave_Values wv_U = get_Calculated_Value(sound_name, cv_U);
+                            Wave_Values wv_U = Yaml_VVVF_Wave.calculate_Yaml(cv_U, sound_data);
                             Control_Values cv_V = new Control_Values
                             {
                                 brake = is_Braking(),
@@ -102,7 +102,7 @@ namespace VVVF_Generator_Porting.Generation
                                 initial_phase = Math.PI * 2.0 / 3.0 * 1,
                                 wave_stat = get_Control_Frequency()
                             };
-                            Wave_Values wv_V = get_Calculated_Value(sound_name, cv_V);
+                            Wave_Values wv_V = Yaml_VVVF_Wave.calculate_Yaml(cv_V, sound_data);
 
                             if (j == 0)
                             {
@@ -174,14 +174,14 @@ namespace VVVF_Generator_Porting.Generation
             vr.Dispose();
         }
 
-        public static void generate_wave_UVW(String output_path, VVVF_Sound_Names sound_name)
+        public static void generate_wave_UVW(String output_path, Yaml_Sound_Data sound_data)
         {
             reset_control_variables();
             reset_all_variables();
 
             DateTime dt = DateTime.Now;
             String gen_time = dt.ToString("yyyy-MM-dd_HH-mm-ss");
-            String appear_sound_name = get_Sound_Name(sound_name);
+            String appear_sound_name = "";
             String fileName = output_path + "\\" + appear_sound_name + "-" + gen_time + ".avi";
 
             bool temp = true;
@@ -257,7 +257,7 @@ namespace VVVF_Generator_Porting.Generation
                                 initial_phase = Math.PI * 2.0 / 3.0 * 0,
                                 wave_stat = get_Control_Frequency()
                             };
-                            Wave_Values wv_U = get_Calculated_Value(sound_name, cv_U);
+                            Wave_Values wv_U = Yaml_VVVF_Wave.calculate_Yaml(cv_U, sound_data);
                             points_U[j] = wv_U.pwm_value;
 
                             Control_Values cv_V = new Control_Values
@@ -268,7 +268,7 @@ namespace VVVF_Generator_Porting.Generation
                                 initial_phase = Math.PI * 2.0 / 3.0 * 1,
                                 wave_stat = get_Control_Frequency()
                             };
-                            Wave_Values wv_V = get_Calculated_Value(sound_name, cv_V);
+                            Wave_Values wv_V = Yaml_VVVF_Wave.calculate_Yaml(cv_V, sound_data);
                             points_V[j] = wv_V.pwm_value;
 
                             Control_Values cv_W = new Control_Values
@@ -279,7 +279,7 @@ namespace VVVF_Generator_Porting.Generation
                                 initial_phase = Math.PI * 2.0 / 3.0 * 2,
                                 wave_stat = get_Control_Frequency()
                             };
-                            Wave_Values wv_W = get_Calculated_Value(sound_name, cv_W);
+                            Wave_Values wv_W = Yaml_VVVF_Wave.calculate_Yaml(cv_W, sound_data);
                             points_W[j] = wv_W.pwm_value;
 
                             if (j == 0)
@@ -369,7 +369,7 @@ namespace VVVF_Generator_Porting.Generation
             vr.Dispose();
         }
 
-        public static void generate_taroimo_like_wave_U_V(String output_path, VVVF_Sound_Names sound_name)
+        public static void generate_taroimo_like_wave_U_V(String output_path, Yaml_Sound_Data sound_data)
         {
             reset_control_variables();
             reset_all_variables();
@@ -378,7 +378,7 @@ namespace VVVF_Generator_Porting.Generation
 
             DateTime dt = DateTime.Now;
             String gen_time = dt.ToString("yyyy-MM-dd_HH-mm-ss");
-            String appear_sound_name = get_Sound_Name(sound_name);
+            String appear_sound_name = "";
             String fileName = output_path + "\\" + appear_sound_name + "-" + gen_time + ".avi";
 
             bool temp = true;
@@ -446,7 +446,7 @@ namespace VVVF_Generator_Porting.Generation
                                 initial_phase = Math.PI / 6.0,
                                 wave_stat = get_Control_Frequency()
                             };
-                            Wave_Values wv_U = get_Calculated_Value(sound_name, cv_U);
+                            Wave_Values wv_U = Yaml_VVVF_Wave.calculate_Yaml(cv_U, sound_data);
                             Control_Values cv_V = new Control_Values
                             {
                                 brake = is_Braking(),
@@ -455,7 +455,7 @@ namespace VVVF_Generator_Porting.Generation
                                 initial_phase = Math.PI / 6.0 + Math.PI * 2.0 / 3.0 * 1,
                                 wave_stat = get_Control_Frequency()
                             };
-                            Wave_Values wv_V = get_Calculated_Value(sound_name, cv_V);
+                            Wave_Values wv_V = Yaml_VVVF_Wave.calculate_Yaml(cv_V, sound_data);
 
                             if (j == 0)
                             {

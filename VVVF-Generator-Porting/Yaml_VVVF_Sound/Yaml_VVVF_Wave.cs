@@ -34,7 +34,7 @@ namespace VVVF_Generator_Porting.Yaml_VVVF_Sound
 			if (amp_param.max_amp != -1 && amp_param.max_amp < amp) amp = amp_param.max_amp;
 			return amp;
 		}
-		public static Wave_Values calculate_yaml_go(Control_Values cv, Yaml_Sound_Data yvs)
+		public static Wave_Values calculate_Yaml(Control_Values cv, Yaml_Sound_Data yvs)
 		{
 			Pulse_Mode pulse_mode;
 			Carrier_Freq carrier_freq = new Carrier_Freq(0, 0);

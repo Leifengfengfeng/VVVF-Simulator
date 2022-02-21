@@ -4,24 +4,24 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using static VVVF_Generator_Porting.vvvf_wave_calculate;
-using static VVVF_Generator_Porting.vvvf_sound_definition;
 using static VVVF_Generator_Porting.vvvf_wave_control;
 using static VVVF_Generator_Porting.Generation.Generate_Common;
 using static VVVF_Generator_Porting.my_math;
+using VVVF_Generator_Porting.Yaml_VVVF_Sound;
 
 namespace VVVF_Generator_Porting.Generation
 {
     public class Generate_Hexagon
     {
 
-        public static void generate_wave_hexagon_explain(String output_path, VVVF_Sound_Names sound_name)
+        public static void generate_wave_hexagon_explain(String output_path, Yaml_Sound_Data sound_data)
         {
             reset_control_variables();
             reset_all_variables();
 
             DateTime dt = DateTime.Now;
             String gen_time = dt.ToString("yyyy-MM-dd_HH-mm-ss");
-            String appear_sound_name = get_Sound_Name(sound_name);
+            String appear_sound_name = "";
             String fileName = output_path + "\\" + appear_sound_name + "-" + gen_time + ".avi";
 
             int movie_div = 3000;
@@ -134,7 +134,7 @@ namespace VVVF_Generator_Porting.Generation
                     initial_phase = Math.PI * 2.0 / 3.0 * 0,
                     wave_stat = get_Control_Frequency()
                 };
-                Wave_Values wv_U = get_Calculated_Value(sound_name, cv_U);
+                Wave_Values wv_U = Yaml_VVVF_Wave.calculate_Yaml(cv_U, sound_data);
                 points_U[i] = wv_U.pwm_value;
 
                 Control_Values cv_V = new Control_Values
@@ -145,7 +145,7 @@ namespace VVVF_Generator_Porting.Generation
                     initial_phase = Math.PI * 2.0 / 3.0 * 1,
                     wave_stat = get_Control_Frequency()
                 };
-                Wave_Values wv_V = get_Calculated_Value(sound_name, cv_V);
+                Wave_Values wv_V = Yaml_VVVF_Wave.calculate_Yaml(cv_V, sound_data);
                 points_V[i] = wv_V.pwm_value;
 
                 Control_Values cv_W = new Control_Values
@@ -156,7 +156,7 @@ namespace VVVF_Generator_Porting.Generation
                     initial_phase = Math.PI * 2.0 / 3.0 * 2,
                     wave_stat = get_Control_Frequency()
                 };
-                Wave_Values wv_W = get_Calculated_Value(sound_name, cv_W);
+                Wave_Values wv_W = Yaml_VVVF_Wave.calculate_Yaml(cv_W, sound_data);
                 points_W[i] = wv_W.pwm_value;
 
                 double move_x = 0;
@@ -368,14 +368,14 @@ namespace VVVF_Generator_Porting.Generation
             vr.Release();
             vr.Dispose();
         }
-        public static void generate_wave_hexagon(String output_path, VVVF_Sound_Names sound_name)
+        public static void generate_wave_hexagon(String output_path, Yaml_Sound_Data sound_data)
         {
             reset_control_variables();
             reset_all_variables();
 
             DateTime dt = DateTime.Now;
             String gen_time = dt.ToString("yyyy-MM-dd_HH-mm-ss");
-            String appear_sound_name = get_Sound_Name(sound_name);
+            String appear_sound_name = "";
             String fileName = output_path + "\\" + appear_sound_name + "-" + gen_time + ".avi";
 
             Boolean draw_zero_vector_circle = true;
@@ -469,7 +469,7 @@ namespace VVVF_Generator_Porting.Generation
                             initial_phase = Math.PI * 2.0 / 3.0 * 0,
                             wave_stat = get_Control_Frequency()
                         };
-                        Wave_Values wv_U = get_Calculated_Value(sound_name, cv_U);
+                        Wave_Values wv_U = Yaml_VVVF_Wave.calculate_Yaml(cv_U, sound_data);
 
                         Control_Values cv_V = new Control_Values
                         {
@@ -479,7 +479,7 @@ namespace VVVF_Generator_Porting.Generation
                             initial_phase = Math.PI * 2.0 / 3.0 * 1,
                             wave_stat = get_Control_Frequency()
                         };
-                        Wave_Values wv_V = get_Calculated_Value(sound_name, cv_V);
+                        Wave_Values wv_V = Yaml_VVVF_Wave.calculate_Yaml(cv_V, sound_data);
 
                         Control_Values cv_W = new Control_Values
                         {
@@ -489,7 +489,7 @@ namespace VVVF_Generator_Porting.Generation
                             initial_phase = Math.PI * 2.0 / 3.0 * 2,
                             wave_stat = get_Control_Frequency()
                         };
-                        Wave_Values wv_W = get_Calculated_Value(sound_name, cv_W);
+                        Wave_Values wv_W = Yaml_VVVF_Wave.calculate_Yaml(cv_W, sound_data);
 
                         double move_x = -0.5 * wv_W.pwm_value - 0.5 * wv_V.pwm_value + wv_U.pwm_value;
                         double move_y = -0.866025403784438646763 * wv_W.pwm_value + 0.866025403784438646763 * wv_V.pwm_value;
@@ -600,7 +600,7 @@ namespace VVVF_Generator_Porting.Generation
             vr.Dispose();
         }
 
-        public static void generate_wave_hexagon_taroimo_like(String output_path, VVVF_Sound_Names sound_name)
+        public static void generate_wave_hexagon_taroimo_like(String output_path, Yaml_Sound_Data sound_data)
         {
             reset_control_variables();
             reset_all_variables();
@@ -609,7 +609,7 @@ namespace VVVF_Generator_Porting.Generation
 
             DateTime dt = DateTime.Now;
             String gen_time = dt.ToString("yyyy-MM-dd_HH-mm-ss");
-            String appear_sound_name = get_Sound_Name(sound_name);
+            String appear_sound_name = "";
             String fileName = output_path + "\\" + appear_sound_name + "-" + gen_time + ".avi";
 
             Boolean draw_zero_vector_circle = true;
@@ -728,7 +728,7 @@ namespace VVVF_Generator_Porting.Generation
                             initial_phase = Math.PI * 2.0 / 3.0 * 0,
                             wave_stat = get_Control_Frequency()
                         };
-                        Wave_Values wv_U = get_Calculated_Value(sound_name, cv_U);
+                        Wave_Values wv_U = Yaml_VVVF_Wave.calculate_Yaml(cv_U, sound_data);
 
                         Control_Values cv_V = new Control_Values
                         {
@@ -738,7 +738,7 @@ namespace VVVF_Generator_Porting.Generation
                             initial_phase = Math.PI * 2.0 / 3.0 * 1,
                             wave_stat = get_Control_Frequency()
                         };
-                        Wave_Values wv_V = get_Calculated_Value(sound_name, cv_V);
+                        Wave_Values wv_V = Yaml_VVVF_Wave.calculate_Yaml(cv_V, sound_data);
 
                         Control_Values cv_W = new Control_Values
                         {
@@ -748,7 +748,7 @@ namespace VVVF_Generator_Porting.Generation
                             initial_phase = Math.PI * 2.0 / 3.0 * 2,
                             wave_stat = get_Control_Frequency()
                         };
-                        Wave_Values wv_W = get_Calculated_Value(sound_name, cv_W);
+                        Wave_Values wv_W = Yaml_VVVF_Wave.calculate_Yaml(cv_W, sound_data);
 
                         double move_x = -0.5 * wv_W.pwm_value - 0.5 * wv_V.pwm_value + wv_U.pwm_value;
                         double move_y = -0.866025403784438646763 * wv_W.pwm_value + 0.866025403784438646763 * wv_V.pwm_value;
@@ -862,14 +862,14 @@ namespace VVVF_Generator_Porting.Generation
             vr.Dispose();
         }
     
-        public static void generate_wave_hexagon_picture(String output_path, VVVF_Sound_Names sound_name)
+        public static void generate_wave_hexagon_picture(String output_path, Yaml_Sound_Data sound_data)
         {
             reset_control_variables();
             reset_all_variables();
 
             DateTime dt = DateTime.Now;
             String gen_time = dt.ToString("yyyy-MM-dd_HH-mm-ss");
-            String appear_sound_name = get_Sound_Name(sound_name);
+            String appear_sound_name = "";
             String fileName = output_path + "\\" + appear_sound_name + "-" + gen_time + ".png";
 
             Boolean draw_zero_vector_circle = true;
@@ -935,7 +935,7 @@ namespace VVVF_Generator_Porting.Generation
                     initial_phase = Math.PI * 2.0 / 3.0 * 0,
                     wave_stat = get_Control_Frequency()
                 };
-                Wave_Values wv_U = get_Calculated_Value(sound_name, cv_U);
+                Wave_Values wv_U = Yaml_VVVF_Wave.calculate_Yaml(cv_U, sound_data);
 
                 Control_Values cv_V = new Control_Values
                 {
@@ -945,7 +945,7 @@ namespace VVVF_Generator_Porting.Generation
                     initial_phase = Math.PI * 2.0 / 3.0 * 1,
                     wave_stat = get_Control_Frequency()
                 };
-                Wave_Values wv_V = get_Calculated_Value(sound_name, cv_V);
+                Wave_Values wv_V = Yaml_VVVF_Wave.calculate_Yaml(cv_V, sound_data);
 
                 Control_Values cv_W = new Control_Values
                 {
@@ -955,7 +955,7 @@ namespace VVVF_Generator_Porting.Generation
                     initial_phase = Math.PI * 2.0 / 3.0 * 2,
                     wave_stat = get_Control_Frequency()
                 };
-                Wave_Values wv_W = get_Calculated_Value(sound_name, cv_W);
+                Wave_Values wv_W = Yaml_VVVF_Wave.calculate_Yaml(cv_W, sound_data);
 
                 double move_x = -0.5 * wv_W.pwm_value - 0.5 * wv_V.pwm_value + wv_U.pwm_value;
                 double move_y = -0.866025403784438646763 * wv_W.pwm_value + 0.866025403784438646763 * wv_V.pwm_value;

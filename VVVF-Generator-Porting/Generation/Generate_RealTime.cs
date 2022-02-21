@@ -2,16 +2,16 @@
 using NAudio.Wave;
 using System;
 using static VVVF_Generator_Porting.vvvf_wave_calculate;
-using static VVVF_Generator_Porting.vvvf_sound_definition;
 using static VVVF_Generator_Porting.vvvf_wave_control;
 using static VVVF_Generator_Porting.my_math;
+using VVVF_Generator_Porting.Yaml_VVVF_Sound;
 
 namespace VVVF_Generator_Porting.Generation
 {
     public class Generate_RealTime
     {
 
-        private static int realtime_sound_calculate(BufferedWaveProvider provider, VVVF_Sound_Names sound_name)
+        private static int realtime_sound_calculate(BufferedWaveProvider provider, Yaml_Sound_Data sound_data)
         {
             while (true)
             {
@@ -103,7 +103,7 @@ namespace VVVF_Generator_Porting.Generation
                         initial_phase = Math.PI * 2.0 / 3.0 * 0,
                         wave_stat = get_Control_Frequency()
                     };
-                    Wave_Values wv_U = get_Calculated_Value(sound_name, cv_U);
+                    Wave_Values wv_U = Yaml_VVVF_Wave.calculate_Yaml(cv_U, sound_data);
                     Control_Values cv_V = new Control_Values
                     {
                         brake = is_Braking(),
@@ -112,7 +112,7 @@ namespace VVVF_Generator_Porting.Generation
                         initial_phase = Math.PI * 2.0 / 3.0 * 1,
                         wave_stat = get_Control_Frequency()
                     };
-                    Wave_Values wv_V = get_Calculated_Value(sound_name, cv_V);
+                    Wave_Values wv_V = Yaml_VVVF_Wave.calculate_Yaml(cv_V, sound_data);
 
                     double pwm_value = wv_U.pwm_value - wv_V.pwm_value;
                     byte sound_byte = 0x80;
@@ -141,7 +141,10 @@ namespace VVVF_Generator_Porting.Generation
         {
             while (true)
             {
-                VVVF_Sound_Names sound_name = get_Choosed_Sound();
+                String load_path = Program.get_Path("\r\nEnter the yaml file path");
+                Yaml_Sound_Data sound_data = Yaml_Analyze.get_Deserialized(load_path);
+
+
                 reset_control_variables();
                 reset_all_variables();
 
@@ -160,7 +163,7 @@ namespace VVVF_Generator_Porting.Generation
                 Console.WriteLine("Press R to Select New Sound...");
                 Console.WriteLine("Press ENTER to exit...");
 
-                int stat = realtime_sound_calculate(bufferedWaveProvider, sound_name);
+                int stat = realtime_sound_calculate(bufferedWaveProvider, sound_data);
 
                 wavPlayer.Stop();
 
