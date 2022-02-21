@@ -109,7 +109,6 @@ namespace VVVF_Generator_Porting.Yaml_VVVF_Sound
 			}
 			if (solve == -1)
 			{
-				Console.WriteLine("Error value on analyzing Yaml_Sound_Data");
 				return get_Wave_Values_None();
 			}
 
