@@ -10,6 +10,7 @@ using static VVVF_Generator_Porting.Yaml_VVVF_Sound.Yaml_Sound_Data.Yaml_Control
 using static VVVF_Generator_Porting.Yaml_VVVF_Sound.Yaml_Sound_Data.Yaml_Mascon_Data;
 using static VVVF_Generator_Porting.Yaml_VVVF_Sound.Yaml_Sound_Data.Yaml_Control_Data.Yaml_Control_Data_Amplitude_Control;
 using static VVVF_Generator_Porting.Yaml_VVVF_Sound.Yaml_Sound_Data.Yaml_Control_Data.Yaml_Async_Parameter.Yaml_Async_Parameter_Carrier_Freq.Yaml_Async_Parameter_Carrier_Freq_Table;
+using static VVVF_Generator_Porting.Yaml_VVVF_Sound.Yaml_Sound_Data.Yaml_Control_Data.Yaml_Async_Parameter.Yaml_Async_Parameter_Random_Range;
 
 namespace VVVF_Generator_Porting.Yaml_VVVF_Sound
 {
@@ -118,7 +119,6 @@ namespace VVVF_Generator_Porting.Yaml_VVVF_Sound
 			if (pulse_mode == Pulse_Mode.Async || pulse_mode == Pulse_Mode.Async_THI)
 			{
 				var async_data = solve_data.async_data;
-				int random_range = async_data.random_range;
 
 				var carrier_data = async_data.carrier_wave_data;
 				var carrier_freq_mode = carrier_data.carrier_mode;
@@ -182,7 +182,15 @@ namespace VVVF_Generator_Porting.Yaml_VVVF_Sound
 					carrier_freq_val = get_Vibrato_Freq(lowest, highest, vibrato_data.interval);
 				}
 
-				carrier_freq = new Carrier_Freq(carrier_freq_val, async_data.random_range);
+				double random_range = 0;
+				if (async_data.random_range.value_mode == Yaml_Async_Parameter_Random_Range_Mode.Const)
+					random_range = async_data.random_range.const_value;
+                else
+                {
+					var moving_val = async_data.random_range.moving_value;
+					random_range = get_Changing_Value(moving_val.start, moving_val.start_value, moving_val.end, moving_val.end_value, cv.wave_stat);
+				}
+				carrier_freq = new Carrier_Freq(carrier_freq_val, random_range);
 
 				if (async_data.dipoar_data != null)
 				{
