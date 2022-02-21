@@ -114,16 +114,9 @@ namespace VVVF_Generator_Porting
                 Yaml_Sound_Data sound_data;
                 while (true)
                 {
-                    try
-                    {
-                        String load_path = get_Path("Enter the yaml file path");
-                        sound_data = Yaml_Analyze.get_Deserialized(load_path);
-                        break;
-                    }
-                    catch
-                    {
-                        Console.WriteLine("Reenter the path.");
-                    }
+                    String load_path = get_Path("Enter the yaml file path");
+                    sound_data = Yaml_Analyze.get_Deserialized(load_path);
+                    if (sound_data == null) continue;
                 }
 
                 String output_path = get_Path("Enter the export path");
