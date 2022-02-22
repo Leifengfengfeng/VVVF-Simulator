@@ -21,8 +21,7 @@ namespace VVVF_Generator_Porting.Generation
 
             DateTime dt = DateTime.Now;
             String gen_time = dt.ToString("yyyy-MM-dd_HH-mm-ss");
-            String appear_sound_name = "";
-            String fileName = output_path + "\\" + appear_sound_name + "-" + gen_time + ".avi";
+            String fileName = output_path + "\\" + gen_time + ".avi";
 
             int movie_div = 3000;
 
@@ -609,8 +608,7 @@ namespace VVVF_Generator_Porting.Generation
 
             DateTime dt = DateTime.Now;
             String gen_time = dt.ToString("yyyy-MM-dd_HH-mm-ss");
-            String appear_sound_name = "";
-            String fileName = output_path + "\\" + appear_sound_name + "-" + gen_time + ".avi";
+            String fileName = output_path + "\\" + gen_time + ".avi";
 
             Boolean draw_zero_vector_circle = true;
             while (true)
@@ -869,8 +867,7 @@ namespace VVVF_Generator_Porting.Generation
 
             DateTime dt = DateTime.Now;
             String gen_time = dt.ToString("yyyy-MM-dd_HH-mm-ss");
-            String appear_sound_name = "";
-            String fileName = output_path + "\\" + appear_sound_name + "-" + gen_time + ".png";
+            String fileName = output_path + "\\" + gen_time + ".png";
 
             Boolean draw_zero_vector_circle = true;
             while (true)

@@ -19,10 +19,8 @@ namespace VVVF_Generator_Porting.Generation
             Int32 sound_block_count = 0;
             DateTime dt = DateTime.Now;
             String gen_time = dt.ToString("yyyy-MM-dd_HH-mm-ss");
-            String appear_sound_name = "";
 
-
-            String fileName = output_path + "\\" + appear_sound_name + "-" + gen_time + ".wav";
+            String fileName = output_path + "\\" + gen_time + ".wav";
 
             BinaryWriter writer = new BinaryWriter(new FileStream(fileName, FileMode.Create));
 
@@ -119,10 +117,8 @@ namespace VVVF_Generator_Porting.Generation
             Int32 sound_block_count = 0;
             DateTime dt = DateTime.Now;
             String gen_time = dt.ToString("yyyy-MM-dd_HH-mm-ss");
-            String appear_sound_name = "";
 
-
-            String fileName = output_path + "\\" + appear_sound_name + "-" + gen_time + ".wav";
+            String fileName = output_path + "\\" + gen_time + ".wav";
 
             BinaryWriter writer = new BinaryWriter(new FileStream(fileName, FileMode.Create));
 
