@@ -1015,7 +1015,7 @@ namespace VVVF_Generator_Porting.Generation
             final_image.Save(fileName,ImageFormat.Png);
 
 
-            Cv2.ImShow(appear_sound_name, mat);
+            Cv2.ImShow("Hexagon", mat);
             Cv2.WaitKey();
 
             hexagon_g.Dispose();
