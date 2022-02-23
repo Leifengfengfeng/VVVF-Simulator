@@ -224,8 +224,18 @@ namespace VVVF_Generator_Porting.Yaml_VVVF_Sound
 				var free_run_amp_param = free_run_amp_data.parameter;
 
 				double max_control_freq = cv.mascon_on ? mascon_on_off_check_data.on.control_freq_go_to : mascon_on_off_check_data.off.control_freq_go_to;
-				double target_freq = (get_Sine_Freq() > max_control_freq) ? max_control_freq : get_Sine_Freq();
-				double target_amp = yaml_amplitude_calculate(solve_data.amplitude_control.default_data, get_Sine_Freq());
+				double target_freq , target_amp;
+
+				if (free_run_amp_param.end_freq == -1)
+					target_freq = (get_Sine_Freq() > max_control_freq) ? max_control_freq : get_Sine_Freq();
+				else
+					target_freq = free_run_amp_param.end_freq;
+
+				if (free_run_amp_param.end_amp == -1)
+					target_amp = yaml_amplitude_calculate(solve_data.amplitude_control.default_data, get_Sine_Freq());
+				else
+					target_amp = free_run_amp_param.end_amp;
+
 
 				object free_run_amplitude_parameter;
 				if (free_run_amp_data.mode == Amplitude_Mode.Linear)
@@ -237,7 +247,7 @@ namespace VVVF_Generator_Porting.Yaml_VVVF_Sound
 				else if (free_run_amp_data.mode == Amplitude_Mode.Exponential)
 					free_run_amplitude_parameter = new Exponential_Amplitude_Argument(target_freq, target_amp, cv.wave_stat, free_run_amp_param.disable_range_limit);
 				else
-					free_run_amplitude_parameter = new Exponential_Amplitude_Argument(target_freq, target_amp, cv.wave_stat, free_run_amp_param.disable_range_limit);
+					free_run_amplitude_parameter = new Linear_Polynomial_Amplitude_Argument(target_freq, target_amp, free_run_amp_param.polynomial, cv.wave_stat, free_run_amp_param.disable_range_limit);
 				amplitude = get_Amplitude(free_run_amp_data.mode, free_run_amplitude_parameter);
 
 				if (free_run_amp_param.cut_off_amp > amplitude) amplitude = 0;
