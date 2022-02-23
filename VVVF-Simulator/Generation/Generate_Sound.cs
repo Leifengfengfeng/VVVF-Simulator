@@ -109,7 +109,7 @@ namespace VVVF_Generator_Porting.Generation
 
         }
 
-        public static void generate_env_sound(String output_path, Yaml_Sound_Data sound_data)
+        public static void generate_env_sound(String output_path)
         {
             reset_control_variables();
             reset_all_variables();
@@ -144,42 +144,20 @@ namespace VVVF_Generator_Porting.Generation
                 add_Sine_Time(1.00 / div_freq);
                 add_Saw_Time(1.00 / div_freq);
 
-                int sound_byte_int = 0x80;
+                double sound_byte_int = 0;
                 int total_sound_count = 0;
-                Control_Values cv_U = new Control_Values
-                {
-                    brake = is_Braking(),
-                    mascon_on = !is_Mascon_Off(),
-                    free_run = is_Free_Running(),
-                    initial_phase = Math.PI * 2.0 / 3.0 * 0,
-                    wave_stat = get_Control_Frequency()
-                };
-                Wave_Values wv_U = Yaml_VVVF_Wave.calculate_Yaml(cv_U,sound_data);
-
-                Control_Values cv_V = new Control_Values
-                {
-                    brake = is_Braking(),
-                    mascon_on = !is_Mascon_Off(),
-                    free_run = is_Free_Running(),
-                    initial_phase = Math.PI * 2.0 / 3.0 * 1,
-                    wave_stat = get_Control_Frequency()
-                };
-                Wave_Values wv_V = Yaml_VVVF_Wave.calculate_Yaml(cv_V,sound_data);
-
-                double pwm_value = wv_U.pwm_value - wv_V.pwm_value;
-                byte pwm_byte = 0x80;
-                if (pwm_value == 2) pwm_byte += 0x40;
-                else if (pwm_value == 1) pwm_byte += 0x20;
-                else if (pwm_value == -1) pwm_byte -= 0x20;
-                else if (pwm_value == -2) pwm_byte -= 0x40;
-
 
                 Harmonic_Data[] harmonics = new Harmonic_Data[] {
+                    new Harmonic_Data{harmonic = 0.8, amplitude = new Harmonic_Data_Amplitude{start=0,start_val=0x30,end=60,end_val=0x30,min_val=0,max_val=0x30},disappear = 880},
+                    new Harmonic_Data{harmonic = 0.333, amplitude = new Harmonic_Data_Amplitude{start=0,start_val=0x30,end=60,end_val=0x30,min_val=0,max_val=0x30},disappear = 880},
                     new Harmonic_Data{harmonic = 1, amplitude = new Harmonic_Data_Amplitude{start=0,start_val=0x30,end=60,end_val=0x30,min_val=0,max_val=0x30},disappear = 880},
-                    new Harmonic_Data{harmonic = 6, amplitude = new Harmonic_Data_Amplitude{start=0,start_val=0x10,end=60,end_val=0x10,min_val=0,max_val=0x30},disappear = 880},
-                    new Harmonic_Data{harmonic = 18.34, amplitude = new Harmonic_Data_Amplitude{start=0,start_val=0x60,end=60,end_val=0x00,min_val=0,max_val=0x30},disappear = 880},
-                    new Harmonic_Data{harmonic = 23.1,amplitude = new Harmonic_Data_Amplitude{start=0,start_val=0x60,end=60,end_val=0x00,min_val=0,max_val=0x30},disappear = 880},
-                    new Harmonic_Data{harmonic = 70,amplitude = new Harmonic_Data_Amplitude{start=0,start_val=0x60,end=15,end_val=0x00,min_val=0,max_val=0x30},disappear = 880}
+                    new Harmonic_Data{harmonic = 10, amplitude = new Harmonic_Data_Amplitude{start=0,start_val=0x30,end=60,end_val=0x30,min_val=0,max_val=0x30},disappear = 880},
+                    new Harmonic_Data{harmonic = 6, amplitude = new Harmonic_Data_Amplitude{start=0,start_val=0x10,end=60,end_val=0x40,min_val=0,max_val=0x30},disappear = 880},
+                    new Harmonic_Data{harmonic = 50, amplitude = new Harmonic_Data_Amplitude{start=0,start_val=0x30,end=60,end_val=0x30,min_val=0,max_val=0x30},disappear = 880},
+
+                    new Harmonic_Data{harmonic = 18.34, amplitude = new Harmonic_Data_Amplitude{start=0,start_val=0x20,end=60,end_val=0x40,min_val=0,max_val=0x30},disappear = 880},
+                    new Harmonic_Data{harmonic = 23.1,amplitude = new Harmonic_Data_Amplitude{start=0,start_val=0x20,end=60,end_val=0x40,min_val=0,max_val=0x30},disappear = 880},
+                    new Harmonic_Data{harmonic = 70,amplitude = new Harmonic_Data_Amplitude{start=0,start_val=0x20,end=15,end_val=0x40,min_val=0,max_val=0x30},disappear = 880}
                 };
                 for(int harmonic = 0; harmonic < harmonics.Length; harmonic++)
                 {
@@ -190,9 +168,12 @@ namespace VVVF_Generator_Porting.Generation
                     double amplitude = harmonic_data.amplitude.start_val + (harmonic_data.amplitude.end_val - harmonic_data.amplitude.start_val) / (harmonic_data.amplitude.end - harmonic_data.amplitude.start) * (get_Sine_Freq() - harmonic_data.amplitude.start);
                     if (amplitude > harmonic_data.amplitude.max_val) amplitude = harmonic_data.amplitude.max_val;
                     if (amplitude < harmonic_data.amplitude.min_val) amplitude = harmonic_data.amplitude.min_val;
-                    sine_val *= amplitude;
-                    sine_val += 0x80;
-                    sound_byte_int += (byte)Math.Round(sine_val);
+
+                    double amplitude_disappear = (harmonic_data.harmonic * get_Sine_Freq() + 10 > harmonic_data.disappear) ?
+                        ((harmonic_data.disappear - (harmonic_data.harmonic * get_Sine_Freq())) / 10.0) : 1;
+
+                    sine_val *= amplitude * amplitude_disappear;
+                    sound_byte_int += Math.Round(sine_val);
                     total_sound_count++;
                 }
 
@@ -201,12 +182,11 @@ namespace VVVF_Generator_Porting.Generation
                 {
                     double saw_val = sin(get_Saw_Time() * get_Saw_Angle_Freq() * harmonic);
                     saw_val *= 0x20;
-                    saw_val += 0x80;
-                    sound_byte_int += (byte)Math.Round(saw_val);
+                    sound_byte_int += Math.Round(saw_val);
                     total_sound_count++;
                 }
-                byte sound_byte = (byte)(sound_byte_int / total_sound_count);
-                sound_byte = (byte)((pwm_byte / 4 + sound_byte) / 2);
+                byte sound_byte = (byte)(sound_byte_int / total_sound_count + 0xFF/2);
+                //sound_byte = (byte)((pwm_byte / 4 + sound_byte) / 2);
 
                 writer.Write(sound_byte);
                 sound_block_count++;
