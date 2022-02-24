@@ -26,7 +26,7 @@ namespace VVVF_Generator_Porting
             }
             return output_path;
         }
-        static void Main(string[] args)
+        static void Main_X(string[] args)
         {
             Console.WriteLine("Select the function to do. (Use \",\" to use multiple function)");
 

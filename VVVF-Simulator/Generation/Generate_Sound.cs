@@ -162,15 +162,18 @@ namespace VVVF_Generator_Porting.Generation
                 for(int harmonic = 0; harmonic < harmonics.Length; harmonic++)
                 {
                     Harmonic_Data harmonic_data = harmonics[harmonic];
-                    if (harmonic_data.harmonic * get_Sine_Freq() > harmonic_data.disappear) continue;
+
+                    double harmonic_freq = harmonic_data.harmonic * get_Sine_Freq();
+
+                    if (harmonic_freq > harmonic_data.disappear) continue;
                     double sine_val = sin(get_Sine_Time() * get_Sine_Angle_Freq() * harmonic_data.harmonic);
 
                     double amplitude = harmonic_data.amplitude.start_val + (harmonic_data.amplitude.end_val - harmonic_data.amplitude.start_val) / (harmonic_data.amplitude.end - harmonic_data.amplitude.start) * (get_Sine_Freq() - harmonic_data.amplitude.start);
                     if (amplitude > harmonic_data.amplitude.max_val) amplitude = harmonic_data.amplitude.max_val;
                     if (amplitude < harmonic_data.amplitude.min_val) amplitude = harmonic_data.amplitude.min_val;
 
-                    double amplitude_disappear = (harmonic_data.harmonic * get_Sine_Freq() + 10 > harmonic_data.disappear) ?
-                        ((harmonic_data.disappear - (harmonic_data.harmonic * get_Sine_Freq())) / 10.0) : 1;
+                    double amplitude_disappear = (harmonic_freq + 100.0 > harmonic_data.disappear) ?
+                        ((harmonic_data.disappear - harmonic_freq) / 100.0) : 1;
 
                     sine_val *= amplitude * amplitude_disappear;
                     sound_byte_int += Math.Round(sine_val);

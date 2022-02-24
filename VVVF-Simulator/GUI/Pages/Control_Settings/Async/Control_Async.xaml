@@ -1,0 +1,85 @@
+﻿<UserControl x:Class="VVVF_Yaml_Generator.Pages.Control_Settings.Control_Async"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:VVVF_Yaml_Generator.Pages.Control_Settings"
+             mc:Ignorable="d" 
+             d:DesignHeight="700" d:DesignWidth="661">
+    <Grid>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="50"/>
+                <RowDefinition Height="50"/>
+                <RowDefinition Height="200"/>
+                <RowDefinition Height="50"/>
+                <RowDefinition Height="350"/>
+            </Grid.RowDefinitions>
+            <Grid Background="#FF86AEFF">
+                <Label x:Name="carrier_title" Content="Carrier Frequency Setting" FontSize="16" FontFamily="M PLUS 2" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White"/>
+            </Grid>
+            <Grid Grid.Row="1">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="103*"/>
+                        <ColumnDefinition Width="573*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid Background="#FFA5A5A5">
+                        <Label Content="Random" HorizontalAlignment="Center" Margin="0,0,0,0" VerticalAlignment="Center" FontFamily="M PLUS 2 Medium" FontWeight="Bold" Foreground="White" FontSize="14"/>
+                    </Grid>
+                    <Grid Grid.Column="1" Background="White" HorizontalAlignment="Stretch">
+                        <ComboBox x:Name="random_type_selector" FontSize="16" FontFamily="M PLUS 2" FontWeight="Bold"  Margin="10,10,10,10" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" SelectionChanged="ComboBox_Changed" Tag="Random" />
+                    </Grid>
+                </Grid>
+
+            </Grid>
+            <Grid Grid.Row="2">
+                <Grid VerticalAlignment="Stretch">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="103*"/>
+                        <ColumnDefinition Width="573*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid Background="#FFA5A5A5" VerticalAlignment="Stretch">
+                        <Label Content="Param" HorizontalAlignment="Center" Margin="0,0,0,0" VerticalAlignment="Center" FontFamily="M PLUS 2 Medium" FontWeight="Bold" Foreground="White" FontSize="14"/>
+                    </Grid>
+                    <Grid Grid.Column="1" Background="White" HorizontalAlignment="Stretch">
+                        <Frame x:Name="random_setting" />
+                    </Grid>
+                </Grid>
+
+            </Grid>
+            <Grid Grid.Row="3">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="103*"/>
+                        <ColumnDefinition Width="573*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid Background="#FFA5A5A5">
+                        <Label Content="Carrier" HorizontalAlignment="Center" Margin="0,0,0,0" VerticalAlignment="Center" FontFamily="M PLUS 2 Medium" FontWeight="Bold" Foreground="White" FontSize="14"/>
+                    </Grid>
+                    <Grid Grid.Column="1" Background="White" HorizontalAlignment="Stretch">
+                        <ComboBox x:Name="carrier_freq_mode" FontSize="16" FontFamily="M PLUS 2" FontWeight="Bold"  Margin="10,10,10,10" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" SelectionChanged="ComboBox_Changed" Tag="Param" />
+
+                    </Grid>
+                </Grid>
+
+            </Grid>
+            <Grid Grid.Row="4">
+                <Grid VerticalAlignment="Stretch">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="103*"/>
+                        <ColumnDefinition Width="573*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid Background="#FFA5A5A5" VerticalAlignment="Stretch">
+                        <Label Content="Param" HorizontalAlignment="Center" Margin="0,0,0,0" VerticalAlignment="Center" FontFamily="M PLUS 2 Medium" FontWeight="Bold" Foreground="White" FontSize="14"/>
+                    </Grid>
+                    <Grid Grid.Column="1" Background="White" HorizontalAlignment="Stretch">
+                        <Frame x:Name="carrier_setting" />
+                    </Grid>
+                </Grid>
+
+            </Grid>
+
+        </Grid>
+    </Grid>
+</UserControl>

@@ -1,0 +1,198 @@
+﻿<Page x:Class="VVVF_Data_Generator.Pages.Settings.mascon_off_setting"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:VVVF_Data_Generator.Pages.Settings"
+      mc:Ignorable="d" 
+      d:DesignHeight="434" d:DesignWidth="661"
+      Title="mascon_off_setting">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="24*"/>
+            <RowDefinition Height="167*"/>
+            <RowDefinition Height="24*"/>
+        </Grid.RowDefinitions>
+        <Grid Grid.Row="1">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="16*"/>
+                    <RowDefinition Height="41*"/>
+                    <RowDefinition Height="246*"/>
+                    <RowDefinition Height="34*"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="40*"/>
+                    <ColumnDefinition Width="295*"/>
+                    <ColumnDefinition Width="295*"/>
+                    <ColumnDefinition Width="40*"/>
+                </Grid.ColumnDefinitions>
+                <Grid Grid.Column="1" Grid.Row="1" Background="#FF86AEFF">
+                    <Border BorderBrush="#FF969696" BorderThickness="1">
+                        <Label Content="Accelerate" FontSize="20" FontFamily="M PLUS 2" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                    </Border>
+                </Grid>
+                <Grid Grid.Column="2" Grid.Row="1" Background="#FF86AEFF">
+                    <Border BorderBrush="#FF969696" BorderThickness="1">
+                        <Label Content="Brake" FontSize="20" FontFamily="M PLUS 2" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Border>
+                </Grid>
+                <Grid Grid.Column="1" Grid.Row="2" Background="White">
+                    <Border BorderBrush="#FF969696" BorderThickness="1">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="1*"/>
+                                <ColumnDefinition Width="1*"/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="35*"/>
+                                <RowDefinition Height="35*"/>
+                                <RowDefinition Height="85*"/>
+                                <RowDefinition Height="35*"/>
+                                <RowDefinition Height="85*"/>
+                            </Grid.RowDefinitions>
+                            <Border BorderBrush="#FF969696" BorderThickness="1" Background="#FFCDDEFF">
+                                <Grid>
+                                    <Label Content="Mascon ON" HorizontalAlignment="Center" VerticalAlignment="Center"  FontSize="16" FontFamily="M PLUS 2" FontWeight="Bold"/>
+                                </Grid>
+                            </Border>
+                            <Border BorderBrush="#FF969696" BorderThickness="1" Grid.Column="1" Background="#FFCDDEFF">
+                                <Grid>
+                                    <Label Content="Mascon OFF" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="16" FontFamily="M PLUS 2" FontWeight="Bold"/>
+                                </Grid>
+                            </Border>
+                            <Border BorderBrush="#FF969696" BorderThickness="1" Grid.Row="1" Background="#FFE6E8EC">
+                                <Grid>
+                                    <Label Content="Freq Goto" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0,0,0" FontSize="12" FontFamily="M PLUS 2" FontWeight="Bold"/>
+                                </Grid>
+                            </Border>
+                            <Border BorderBrush="#FF969696" BorderThickness="1" Grid.Column="1" Grid.Row="1" Background="#FFE6E8EC">
+                                <Grid>
+                                    <Label Content="Freq Goto" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0,0,0" FontSize="12" FontFamily="M PLUS 2" FontWeight="Bold"/>
+                                </Grid>
+                            </Border>
+                            <Border BorderBrush="#FF969696" BorderThickness="1" Grid.Row="2">
+                                <Grid>
+                                    <TextBox x:Name="Accel_Mascon_On_Freq_Goto" TextWrapping="Wrap" Text="60.0" Margin="9,0,33,0" FontSize="16" FontFamily="M PLUS 2 Medium" MaxLines="10" HorizontalContentAlignment="Center" TextChanged="TextBox_TextChanged" Tag="Accel-On-Freq" VerticalAlignment="Center" Height="22"/>
+                                    <Label Content="Hz" HorizontalAlignment="Right" Margin="0,0,10,0" VerticalAlignment="Center"/>
+                                </Grid>
+                            </Border>
+                            <Border BorderBrush="#FF969696" BorderThickness="1" Grid.Column="1" Grid.Row="2">
+                                <Grid>
+                                    <TextBox x:Name="Accel_Mascon_Off_Freq_Goto" TextWrapping="Wrap" Text="60.0" Margin="9,0,33,0" FontSize="16" FontFamily="M PLUS 2 Medium" MaxLines="10" HorizontalContentAlignment="Center" TextChanged="TextBox_TextChanged" Tag="Accel-Off-Freq" Height="22" HorizontalAlignment="Stretch" VerticalAlignment="Center"/>
+                                    <Label Content="Hz" HorizontalAlignment="Right" Margin="0,0,10,0" VerticalAlignment="Center"/>
+                                </Grid>
+                            </Border>
+                            <Border BorderBrush="#FF969696" BorderThickness="1" Grid.Row="3" Background="#FFE6E8EC">
+                                <Grid>
+                                    <Label Content="Mascon Off Div" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0,0,0" FontSize="12" FontFamily="M PLUS 2" FontWeight="Bold"/>
+                                </Grid>
+                            </Border>
+                            <Border BorderBrush="#FF969696" BorderThickness="1" Grid.Column="1" Grid.Row="3" Background="#FFE6E8EC">
+                                <Grid>
+                                    <Label Content="Mascon Off Div" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0,0,0" FontSize="12" FontFamily="M PLUS 2" FontWeight="Bold"/>
+                                </Grid>
+                            </Border>
+                            <Border BorderBrush="#FF969696" BorderThickness="1" Grid.Row="4">
+                                <Grid>
+                                    <TextBox x:Name="Accel_Mascon_On_Off_Div" TextWrapping="Wrap" Text="20000" Margin="9,0,9,0" FontSize="16" FontFamily="M PLUS 2 Medium" MaxLines="10" HorizontalContentAlignment="Center" TextChanged="TextBox_TextChanged" Tag="Accel-On-Div" Height="22" VerticalAlignment="Center"/>
+                                </Grid>
+                            </Border>
+                            <Border BorderBrush="#FF969696" BorderThickness="1" Grid.Column="1" Grid.Row="4">
+                                <Grid>
+                                    <TextBox x:Name="Accel_Mascon_Off_Off_Div" TextWrapping="Wrap" Text="20000" Margin="9,0,9,0" FontSize="16" FontFamily="M PLUS 2 Medium" MaxLines="10" HorizontalContentAlignment="Center" TextChanged="TextBox_TextChanged" Tag="Accel-Off-Div" Height="22" VerticalAlignment="Center"/>
+                                </Grid>
+                            </Border>
+
+                        </Grid>
+                    </Border>
+                </Grid>
+                <Grid Grid.Column="2" Grid.Row="2" Background="White">
+                    <Border BorderBrush="#FF969696" BorderThickness="1">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="1*"/>
+                                <ColumnDefinition Width="1*"/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="35*"/>
+                                <RowDefinition Height="35*"/>
+                                <RowDefinition Height="85*"/>
+                                <RowDefinition Height="35*"/>
+                                <RowDefinition Height="85*"/>
+                            </Grid.RowDefinitions>
+                            <Border BorderBrush="#FF969696" BorderThickness="1" Background="#FFCDDEFF">
+                                <Grid>
+                                    <Label Content="Mascon ON" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="16" FontFamily="M PLUS 2" FontWeight="Bold"/>
+                                </Grid>
+                            </Border>
+                            <Border BorderBrush="#FF969696" BorderThickness="1" Grid.Column="1" Background="#FFCDDEFF">
+                                <Grid>
+                                    <Label Content="Mascon OFF" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="16" FontFamily="M PLUS 2" FontWeight="Bold"/>
+                                </Grid>
+                            </Border>
+                            <Border BorderBrush="#FF969696" BorderThickness="1" Grid.Row="1" Background="#FFE6E8EC">
+                                <Grid>
+                                    <Label Content="Freq Goto" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0,0,0" FontSize="12" FontFamily="M PLUS 2" FontWeight="Bold"/>
+                                </Grid>
+                            </Border>
+                            <Border BorderBrush="#FF969696" BorderThickness="1" Grid.Column="1" Grid.Row="1" Background="#FFE6E8EC">
+                                <Grid>
+                                    <Label Content="Freq Goto" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0,0,0" FontSize="12" FontFamily="M PLUS 2" FontWeight="Bold"/>
+                                </Grid>
+                            </Border>
+                            <Border BorderBrush="#FF969696" BorderThickness="1" Grid.Row="2">
+                                <Grid>
+                                    <TextBox x:Name="Brake_Mascon_On_Freq_Goto" TextWrapping="Wrap" Text="60.0" Margin="9,0,33,0" FontSize="16" FontFamily="M PLUS 2 Medium" MaxLines="10" HorizontalContentAlignment="Center" TextChanged="TextBox_TextChanged" Tag="Brake-On-Freq" Height="20" VerticalAlignment="Center" VerticalContentAlignment="Center"/>
+                                    <Label Content="Hz" HorizontalAlignment="Right" Margin="0,0,10,0" VerticalAlignment="Center"/>
+                                </Grid>
+                            </Border>
+                            <Border BorderBrush="#FF969696" BorderThickness="1" Grid.Column="1" Grid.Row="2">
+                                <Grid>
+                                    <TextBox x:Name="Brake_Mascon_Off_Freq_Goto" TextWrapping="Wrap" Text="60.0" Margin="9,0,33,0" FontSize="16" FontFamily="M PLUS 2 Medium" MaxLines="10" HorizontalContentAlignment="Center" TextChanged="TextBox_TextChanged" Tag="Brake-Off-Freq" Height="22" VerticalAlignment="Center"/>
+                                    <Label Content="Hz" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                                </Grid>
+                            </Border>
+                            <Border BorderBrush="#FF969696" BorderThickness="1" Grid.Row="3" Background="#FFE6E8EC">
+                                <Grid>
+                                    <Label Content="Mascon Off Div" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0,0,0" FontSize="12" FontFamily="M PLUS 2" FontWeight="Bold"/>
+                                </Grid>
+                            </Border>
+                            <Border BorderBrush="#FF969696" BorderThickness="1" Grid.Column="1" Grid.Row="3" Background="#FFE6E8EC">
+                                <Grid>
+                                    <Label Content="Mascon Off Div" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0,0,0" FontSize="12" FontFamily="M PLUS 2" FontWeight="Bold"/>
+                                </Grid>
+                            </Border>
+                            <Border BorderBrush="#FF969696" BorderThickness="1" Grid.Row="4">
+                                <Grid>
+                                    <TextBox x:Name="Brake_Mascon_On_Off_Div" TextWrapping="Wrap" Text="20000" Margin="9,0,9,0" FontSize="16" FontFamily="M PLUS 2 Medium" MaxLines="10" HorizontalContentAlignment="Center" TextChanged="TextBox_TextChanged" Tag="Brake-On-Div" Height="22" VerticalAlignment="Center"/>
+                                </Grid>
+                            </Border>
+                            <Border BorderBrush="#FF969696" BorderThickness="1" Grid.Column="1" Grid.Row="4">
+                                <Grid>
+                                    <TextBox x:Name="Brake_Mascon_Off_Off_Div" TextWrapping="Wrap" Text="20000" Margin="9,0,9,0" FontSize="16" FontFamily="M PLUS 2 Medium" MaxLines="10" HorizontalContentAlignment="Center" TextChanged="TextBox_TextChanged" Tag="Brake-Off-Div" Height="22" VerticalAlignment="Center"/>
+                                </Grid>
+                            </Border>
+
+                        </Grid>
+                    </Border>
+                </Grid>
+            </Grid>
+        </Grid>
+        <Grid Background="#FF86AEFF">
+            <Label Content="MASCON OFF SETTING" HorizontalAlignment="Center" Margin="0,0,0,0" VerticalAlignment="Center" FontFamily="M PLUS 2" FontSize="24" RenderTransformOrigin="0.5,0.5" FontWeight="Bold">
+                <Label.RenderTransform>
+                    <TransformGroup>
+                        <ScaleTransform/>
+                        <SkewTransform/>
+                        <RotateTransform Angle="0.15"/>
+                        <TranslateTransform/>
+                    </TransformGroup>
+                </Label.RenderTransform>
+            </Label>
+        </Grid>
+        <Grid Grid.Row="2" Background="#FF86AEFF"/>
+
+    </Grid>
+</Page>

@@ -1,0 +1,54 @@
+﻿<UserControl x:Class="VVVF_Yaml_Generator.Pages.Control_Settings.Dipolar.Control_Dipolar"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:VVVF_Yaml_Generator.Pages.Control_Settings.Dipolar"
+             mc:Ignorable="d" 
+             d:DesignHeight="500" d:DesignWidth="661">
+    <Grid>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="50"/>
+                <RowDefinition Height="50"/>
+                <RowDefinition Height="400"/>
+            </Grid.RowDefinitions>
+            <Grid Background="#FF86AEFF">
+                <Label x:Name="carrier_title" Content="Dipolar Setting" FontSize="16" FontFamily="M PLUS 2" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White"/>
+            </Grid>
+            <Grid Grid.Row="1">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="103*"/>
+                        <ColumnDefinition Width="573*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid Background="#FFA5A5A5">
+                        <Label Content="Param Type" HorizontalAlignment="Center" Margin="0,0,0,0" VerticalAlignment="Center" FontFamily="M PLUS 2 Medium" FontWeight="Bold" Foreground="White" FontSize="14"/>
+                    </Grid>
+                    <Grid Grid.Column="1" Background="White" HorizontalAlignment="Stretch">
+                        <ComboBox x:Name="dipolar_mode" FontSize="16" FontFamily="M PLUS 2" FontWeight="Bold"  Margin="10,10,10,10" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" SelectionChanged="dipolar_mode_SelectionChanged" />
+
+                    </Grid>
+                </Grid>
+
+            </Grid>
+            <Grid Grid.Row="2">
+                <Grid VerticalAlignment="Stretch">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="103*"/>
+                        <ColumnDefinition Width="573*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid Background="#FFA5A5A5" VerticalAlignment="Stretch">
+                        <Label Content="Param" HorizontalAlignment="Center" Margin="0,0,0,0" VerticalAlignment="Center" FontFamily="M PLUS 2 Medium" FontWeight="Bold" Foreground="White" FontSize="14"/>
+                    </Grid>
+                    <Grid Grid.Column="1" Background="White" HorizontalAlignment="Stretch">
+                        <Frame x:Name="dipolar_param" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" />
+                    </Grid>
+                </Grid>
+
+            </Grid>
+
+        </Grid>
+
+    </Grid>
+</UserControl>
