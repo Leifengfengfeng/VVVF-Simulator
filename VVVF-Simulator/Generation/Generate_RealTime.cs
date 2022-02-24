@@ -131,7 +131,7 @@ namespace VVVF_Simulator.Generation
                 wavPlayer.Init(bufferedWaveProvider);
                 wavPlayer.Play();
 
-                VVVF_Control_Values control = new VVVF_Control_Values();
+                VVVF_Control_Values control = new();
                 control.reset_all_variables();
                 control.reset_control_variables();
 
