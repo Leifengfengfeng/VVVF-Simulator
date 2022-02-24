@@ -1,18 +1,18 @@
-﻿using static VVVF_Generator_Porting.vvvf_wave_calculate;
-using static VVVF_Generator_Porting.vvvf_wave_control;
-using static VVVF_Generator_Porting.my_math;
-using static VVVF_Generator_Porting.vvvf_wave_calculate.Amplitude_Argument;
-using static VVVF_Generator_Porting.Yaml_VVVF_Sound.Yaml_Sound_Data;
+﻿using static VVVF_Simulator.vvvf_wave_calculate;
+using static VVVF_Simulator.vvvf_wave_control;
+using static VVVF_Simulator.my_math;
+using static VVVF_Simulator.vvvf_wave_calculate.Amplitude_Argument;
+using static VVVF_Simulator.Yaml_VVVF_Sound.Yaml_Sound_Data;
 using System;
 using System.Collections.Generic;
-using static VVVF_Generator_Porting.Yaml_VVVF_Sound.Yaml_Sound_Data.Yaml_Control_Data;
-using static VVVF_Generator_Porting.Yaml_VVVF_Sound.Yaml_Sound_Data.Yaml_Control_Data.Yaml_Free_Run_Condition;
-using static VVVF_Generator_Porting.Yaml_VVVF_Sound.Yaml_Sound_Data.Yaml_Mascon_Data;
-using static VVVF_Generator_Porting.Yaml_VVVF_Sound.Yaml_Sound_Data.Yaml_Control_Data.Yaml_Control_Data_Amplitude_Control;
-using static VVVF_Generator_Porting.Yaml_VVVF_Sound.Yaml_Sound_Data.Yaml_Control_Data.Yaml_Async_Parameter.Yaml_Async_Parameter_Carrier_Freq.Yaml_Async_Parameter_Carrier_Freq_Table;
-using static VVVF_Generator_Porting.Yaml_VVVF_Sound.Yaml_Sound_Data.Yaml_Control_Data.Yaml_Async_Parameter.Yaml_Async_Parameter_Random_Range;
+using static VVVF_Simulator.Yaml_VVVF_Sound.Yaml_Sound_Data.Yaml_Control_Data;
+using static VVVF_Simulator.Yaml_VVVF_Sound.Yaml_Sound_Data.Yaml_Control_Data.Yaml_Free_Run_Condition;
+using static VVVF_Simulator.Yaml_VVVF_Sound.Yaml_Sound_Data.Yaml_Mascon_Data;
+using static VVVF_Simulator.Yaml_VVVF_Sound.Yaml_Sound_Data.Yaml_Control_Data.Yaml_Control_Data_Amplitude_Control;
+using static VVVF_Simulator.Yaml_VVVF_Sound.Yaml_Sound_Data.Yaml_Control_Data.Yaml_Async_Parameter.Yaml_Async_Parameter_Carrier_Freq.Yaml_Async_Parameter_Carrier_Freq_Table;
+using static VVVF_Simulator.Yaml_VVVF_Sound.Yaml_Sound_Data.Yaml_Control_Data.Yaml_Async_Parameter.Yaml_Async_Parameter_Random_Range;
 
-namespace VVVF_Generator_Porting.Yaml_VVVF_Sound
+namespace VVVF_Simulator.Yaml_VVVF_Sound
 {
     public class Yaml_VVVF_Wave
     {
@@ -38,7 +38,7 @@ namespace VVVF_Generator_Porting.Yaml_VVVF_Sound
 		public static Wave_Values calculate_Yaml(Control_Values cv, Yaml_Sound_Data yvs)
 		{
 			Pulse_Mode pulse_mode;
-			Carrier_Freq carrier_freq = new Carrier_Freq(0, 0);
+			Carrier_Freq carrier_freq = new(0, 0);
 			double amplitude = 0;
 			double dipolar = -1;
 
@@ -74,7 +74,7 @@ namespace VVVF_Generator_Porting.Yaml_VVVF_Sound
 			//
 			// control stat solve
 			//
-			List<Yaml_Control_Data> control_list = new List<Yaml_Control_Data>(cv.brake ? yvs.braking_pattern : yvs.accelerate_pattern);
+			List<Yaml_Control_Data> control_list = new(cv.brake ? yvs.braking_pattern : yvs.accelerate_pattern);
 			control_list.Sort((a, b) => (int)(b.from - a.from));
 
 			//determine what control data to solve

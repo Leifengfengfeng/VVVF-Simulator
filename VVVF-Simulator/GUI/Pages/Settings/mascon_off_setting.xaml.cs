@@ -13,11 +13,12 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using static VVVF_Data_Generator.Yaml_Sound_Data;
-using static VVVF_Data_Generator.Yaml_Sound_Data.Yaml_Mascon_Data;
-using static VVVF_Data_Generator.Yaml_Sound_Data.Yaml_Mascon_Data.Yaml_Mascon_Data_On_Off;
+using VVVF_Simulator.Yaml_VVVF_Sound;
+using static VVVF_Simulator.Yaml_VVVF_Sound.Yaml_Sound_Data;
+using static VVVF_Simulator.Yaml_VVVF_Sound.Yaml_Sound_Data.Yaml_Mascon_Data;
+using static VVVF_Simulator.Yaml_VVVF_Sound.Yaml_Sound_Data.Yaml_Mascon_Data.Yaml_Mascon_Data_On_Off;
 
-namespace VVVF_Data_Generator.Pages.Settings
+namespace VVVF_Simulator.Pages.Settings
 {
     /// <summary>
     /// mascon_off_setting.xaml の相互作用ロジック

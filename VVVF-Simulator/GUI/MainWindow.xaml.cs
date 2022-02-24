@@ -7,12 +7,14 @@ using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Navigation;
-using VVVF_Yaml_Generator.Pages.Control_Settings;
-using VVVF_Yaml_Generator.Pages.Control_Settings.Level_3;
+using VVVF_Simulator.Yaml_VVVF_Sound;
+using VVVF_Simulator.Pages.Control_Settings;
+using VVVF_Simulator.Pages.Control_Settings.Level_3;
 using YamlDotNet.Serialization;
-using static VVVF_Data_Generator.Yaml_Sound_Data;
+using static VVVF_Simulator.vvvf_wave_calculate;
+using static VVVF_Simulator.Yaml_VVVF_Sound.Yaml_Sound_Data;
 
-namespace VVVF_Data_Generator
+namespace VVVF_Simulator
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
@@ -112,14 +114,14 @@ namespace VVVF_Data_Generator
             
             if(ysd.level == 2)
             {
-                if (selected_data.pulse_Mode == Yaml_Control_Data.Pulse_Mode.Async || selected_data.pulse_Mode == Yaml_Control_Data.Pulse_Mode.Async_THI)
+                if (selected_data.pulse_Mode == Pulse_Mode.Async || selected_data.pulse_Mode == Pulse_Mode.Async_THI)
                     setting_window.Navigate(new Level_2_Page_Control_Common_Async(selected_data, this));
                 else
                     setting_window.Navigate(new Level_2_Page_Control_Common_Sync(selected_data, this));
             }
             else
             {
-                if (selected_data.pulse_Mode == Yaml_Control_Data.Pulse_Mode.Async || selected_data.pulse_Mode == Yaml_Control_Data.Pulse_Mode.Async_THI)
+                if (selected_data.pulse_Mode == Pulse_Mode.Async || selected_data.pulse_Mode == Pulse_Mode.Async_THI)
                     setting_window.Navigate(new Level_3_Page_Control_Common_Async(selected_data, this));
                 else
                     setting_window.Navigate(new Level_3_Page_Control_Common_Sync(selected_data, this));
@@ -166,14 +168,14 @@ namespace VVVF_Data_Generator
            
             if(ysd.level == 2)
             {
-                if (selected_data.pulse_Mode == Yaml_Control_Data.Pulse_Mode.Async || selected_data.pulse_Mode == Yaml_Control_Data.Pulse_Mode.Async_THI)
+                if (selected_data.pulse_Mode == Pulse_Mode.Async || selected_data.pulse_Mode == Pulse_Mode.Async_THI)
                     setting_window.Navigate(new Level_2_Page_Control_Common_Async(selected_data, this));
                 else
                     setting_window.Navigate(new Level_2_Page_Control_Common_Sync(selected_data, this));
             }
             else
             {
-                if (selected_data.pulse_Mode == Yaml_Control_Data.Pulse_Mode.Async || selected_data.pulse_Mode == Yaml_Control_Data.Pulse_Mode.Async_THI)
+                if (selected_data.pulse_Mode == Pulse_Mode.Async || selected_data.pulse_Mode == Pulse_Mode.Async_THI)
                     setting_window.Navigate(new Level_3_Page_Control_Common_Async(selected_data, this));
                 else
                     setting_window.Navigate(new Level_3_Page_Control_Common_Sync(selected_data, this));

@@ -1,9 +1,9 @@
-﻿<UserControl x:Class="VVVF_Yaml_Generator.Pages.Control_Settings.Async.Random_Range.Control_Async_Random_Const"
+﻿<UserControl x:Class="VVVF_Simulator.Pages.Control_Settings.Async.Random_Range.Control_Async_Random_Const"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:VVVF_Yaml_Generator.Pages.Control_Settings.Async.Random_Range"
+             xmlns:local="clr-namespace:VVVF_Simulator.Pages.Control_Settings.Async.Random_Range"
              mc:Ignorable="d" 
              d:DesignHeight="200" d:DesignWidth="560">
     <Grid>

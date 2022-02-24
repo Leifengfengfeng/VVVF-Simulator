@@ -13,11 +13,11 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using VVVF_Data_Generator;
-using static VVVF_Data_Generator.Yaml_Sound_Data;
-using static VVVF_Data_Generator.Yaml_Sound_Data.Yaml_Control_Data.Yaml_Free_Run_Condition;
+using VVVF_Simulator;
+using static VVVF_Simulator.Yaml_VVVF_Sound.Yaml_Sound_Data;
+using static VVVF_Simulator.Yaml_VVVF_Sound.Yaml_Sound_Data.Yaml_Control_Data.Yaml_Free_Run_Condition;
 
-namespace VVVF_Yaml_Generator.Pages.Control_Settings
+namespace VVVF_Simulator.Pages.Control_Settings
 {
     /// <summary>
     /// Control_When_FreeRun.xaml の相互作用ロジック
@@ -65,7 +65,7 @@ namespace VVVF_Yaml_Generator.Pages.Control_Settings
             if (mode[0].Equals("ON")) condition = target.when_freerun.on;
             else condition = target.when_freerun.off;
 
-            bool is_cheked = (cb.IsChecked == false) ? false : true;
+            bool is_cheked = cb.IsChecked != false;
 
             if (mode[1].Equals("Stuck"))
             {

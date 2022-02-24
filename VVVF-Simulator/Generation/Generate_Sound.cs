@@ -1,13 +1,13 @@
 ﻿using System;
 using System.IO;
-using static VVVF_Generator_Porting.vvvf_wave_calculate;
-using static VVVF_Generator_Porting.vvvf_wave_control;
-using static VVVF_Generator_Porting.Generation.Generate_Common;
-using static VVVF_Generator_Porting.my_math;
-using static VVVF_Generator_Porting.Generation.Generate_Sound.Harmonic_Data;
-using VVVF_Generator_Porting.Yaml_VVVF_Sound;
+using static VVVF_Simulator.vvvf_wave_calculate;
+using static VVVF_Simulator.vvvf_wave_control;
+using static VVVF_Simulator.Generation.Generate_Common;
+using static VVVF_Simulator.my_math;
+using static VVVF_Simulator.Generation.Generate_Sound.Harmonic_Data;
+using VVVF_Simulator.Yaml_VVVF_Sound;
 
-namespace VVVF_Generator_Porting.Generation
+namespace VVVF_Simulator.Generation
 {
     public class Generate_Sound
     {
@@ -78,7 +78,7 @@ namespace VVVF_Generator_Porting.Generation
                 }
                 sound_block_count++;
 
-                loop = check_for_freq_change();
+                loop = Check_For_Freq_Change();
 
             }
 
@@ -93,18 +93,18 @@ namespace VVVF_Generator_Porting.Generation
             writer.Close();
         }
 
-        public class Harmonic_Data { 
-            public double harmonic { get; set; }
-            public Harmonic_Data_Amplitude amplitude { get; set; }
-            public double disappear { get; set; }
+        public class Harmonic_Data {
+            public double harmonic { get; set; } = 0;
+            public Harmonic_Data_Amplitude amplitude { get; set; } = new Harmonic_Data_Amplitude();
+            public double disappear { get; set; } = 0;
 
             public class Harmonic_Data_Amplitude {
-                public double start;
-                public double start_val;
-                public double end;
-                public double end_val;
-                public double min_val;
-                public double max_val;
+                public double start { get; set; } = 0;
+                public double start_val { get; set; } = 0;
+                public double end { get; set; } = 0;
+                public double end_val { get; set; } = 0;
+                public double min_val { get; set; } = 0;
+                public double max_val { get; set; } = 0;
             }
 
         }
@@ -193,7 +193,7 @@ namespace VVVF_Generator_Porting.Generation
 
                 writer.Write(sound_byte);
                 sound_block_count++;
-                loop = check_for_freq_change();
+                loop = Check_For_Freq_Change();
 
             }
 

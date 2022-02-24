@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace VVVF_Generator_Porting
+namespace VVVF_Simulator
 {
     public class my_math
     {

@@ -3,17 +3,17 @@ using System;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
-using static VVVF_Generator_Porting.vvvf_wave_calculate;
-using static VVVF_Generator_Porting.vvvf_wave_control;
-using static VVVF_Generator_Porting.Generation.Generate_Common;
+using static VVVF_Simulator.vvvf_wave_calculate;
+using static VVVF_Simulator.vvvf_wave_control;
+using static VVVF_Simulator.Generation.Generate_Common;
 using System.Drawing.Drawing2D;
 using Point = System.Drawing.Point;
 using System.Windows.Forms;
 using Size = System.Drawing.Size;
 using System.Collections.Generic;
-using VVVF_Generator_Porting.Yaml_VVVF_Sound;
+using VVVF_Simulator.Yaml_VVVF_Sound;
 
-namespace VVVF_Generator_Porting.Generation
+namespace VVVF_Simulator.Generation
 {
     public class Generate_Control_Info
     {
@@ -93,23 +93,23 @@ namespace VVVF_Generator_Porting.Generation
                 Bitmap image = new(image_width, image_height);
                 Graphics g = Graphics.FromImage(image);
 
-                LinearGradientBrush gb = new LinearGradientBrush(new System.Drawing.Point(0, 0), new System.Drawing.Point(image_width, image_height), Color.FromArgb(0xFF, 0xFF, 0xFF), Color.FromArgb(0xFD, 0xE0, 0xE0));
+                LinearGradientBrush gb = new(new System.Drawing.Point(0, 0), new System.Drawing.Point(image_width, image_height), Color.FromArgb(0xFF, 0xFF, 0xFF), Color.FromArgb(0xFD, 0xE0, 0xE0));
                 g.FillRectangle(gb, 0, 0, image_width, image_height);
 
-                FontFamily simulator_title = new FontFamily("Fugaz One");
-                Font simulator_title_fnt = new Font(
+                FontFamily simulator_title = new("Fugaz One");
+                Font simulator_title_fnt = new (
                     simulator_title,
                     40,
                     FontStyle.Bold,
                     GraphicsUnit.Pixel);
-                Font simulator_title_fnt_sub = new Font(
+                Font simulator_title_fnt_sub = new(
                     simulator_title,
                     20,
                     FontStyle.Bold,
                     GraphicsUnit.Pixel);
 
-                FontFamily title_fontFamily = new FontFamily("Fugaz One");
-                Font title_fnt = new Font(
+                FontFamily title_fontFamily = new("Fugaz One");
+                Font title_fnt = new (
                     title_fontFamily,
                     40,
                     FontStyle.Regular,
@@ -143,7 +143,7 @@ namespace VVVF_Generator_Porting.Generation
                 g.DrawLine(new Pen(new SolidBrush(Color.FromArgb(transparency, 0xA0, 0xA0, 0xFF))), 0, 464, (int)((i > 20) ? image_width : image_width * i / 20.0), 464);
                 g.DrawString("presented by JOTAN", simulator_title_fnt_sub, new SolidBrush(Color.FromArgb(transparency, 0xE0, 0xE0, 0xFF)), 135, 460);
 
-                MemoryStream ms = new MemoryStream();
+                MemoryStream ms = new();
                 image.Save(ms, ImageFormat.Png);
                 byte[] img = ms.GetBuffer();
                 Mat mat = OpenCvSharp.Mat.FromImageData(img);
@@ -170,7 +170,7 @@ namespace VVVF_Generator_Porting.Generation
             int image_width = 500;
             int image_height = 1080;
             int movie_div = 3000;
-            VideoWriter vr = new VideoWriter(fileName, OpenCvSharp.FourCC.H264, div_freq / movie_div, new OpenCvSharp.Size(image_width, image_height));
+            VideoWriter vr = new (fileName, OpenCvSharp.FourCC.H264, div_freq / movie_div, new OpenCvSharp.Size(image_width, image_height));
 
             if (!vr.IsOpened())
             {
@@ -188,7 +188,7 @@ namespace VVVF_Generator_Porting.Generation
 
             while (loop)
             {
-                Control_Values cv_U = new Control_Values
+                Control_Values cv_U = new()
                 {
                     brake = is_Braking(),
                     mascon_on = !is_Mascon_Off(),
@@ -218,7 +218,7 @@ namespace VVVF_Generator_Porting.Generation
                     }
 
 
-                    LinearGradientBrush gb = new LinearGradientBrush(
+                    LinearGradientBrush gb = new (
                         new System.Drawing.Point(0, 0),
                         new System.Drawing.Point(image_width, image_height),
                         Color.FromArgb(0xFF, 0xFF, 0xFF),
@@ -227,22 +227,22 @@ namespace VVVF_Generator_Porting.Generation
 
                     g.FillRectangle(gb, 0, 0, image_width, image_height);
 
-                    FontFamily title_fontFamily = new FontFamily("Fugaz One");
-                    Font title_fnt = new Font(
+                    FontFamily title_fontFamily = new ("Fugaz One");
+                    Font title_fnt = new (
                        title_fontFamily,
                        40,
                        FontStyle.Regular,
                        GraphicsUnit.Pixel);
 
-                    FontFamily val_fontFamily = new FontFamily("Arial Rounded MT Bold");
-                    Font val_fnt = new Font(
+                    FontFamily val_fontFamily = new ("Arial Rounded MT Bold");
+                    Font val_fnt = new (
                        val_fontFamily,
                        50,
                        FontStyle.Regular,
                        GraphicsUnit.Pixel);
 
-                    FontFamily val_mini_fontFamily = new FontFamily("Arial Rounded MT Bold");
-                    Font val_mini_fnt = new Font(
+                    FontFamily val_mini_fontFamily = new ("Arial Rounded MT Bold");
+                    Font val_mini_fnt = new (
                        val_mini_fontFamily,
                        25,
                        FontStyle.Regular,
@@ -304,7 +304,7 @@ namespace VVVF_Generator_Porting.Generation
 
 
 
-                    MemoryStream ms = new MemoryStream();
+                    MemoryStream ms = new();
                     image.Save(ms, ImageFormat.Png);
                     byte[] img = ms.GetBuffer();
                     Mat mat = OpenCvSharp.Mat.FromImageData(img);
@@ -333,7 +333,7 @@ namespace VVVF_Generator_Porting.Generation
                 }
                 sound_block_count++;
 
-                video_finished = !check_for_freq_change();
+                video_finished = !Check_For_Freq_Change();
                 if (video_finished)
                 {
                     final_show = true;
@@ -375,7 +375,7 @@ namespace VVVF_Generator_Porting.Generation
 
             filled_corner_curved_rectangle(g, br, start, end, round_radius);
 
-            Point str_pos = new Point((int)Math.Round(start.X + width / 2 - strSize.Width / 2 + str_compen.X), (int)Math.Round(start.Y + height / 2 - strSize.Height / 2 + str_compen.Y));
+            Point str_pos = new((int)Math.Round(start.X + width / 2 - strSize.Width / 2 + str_compen.X), (int)Math.Round(start.Y + height / 2 - strSize.Height / 2 + str_compen.Y));
 
             g.DrawString(str, fnt, str_br, str_pos);
 
@@ -439,7 +439,7 @@ namespace VVVF_Generator_Porting.Generation
             int height = end.Y - start.Y;
             line_corner_curved_rectangle(g, pen, start, end, round_radius);
 
-            Point string_pos = new Point((int)Math.Round(start.X + width / 2 - strSize.Width / 2 + str_compen.X), (int)Math.Round(start.Y + height / 2 - strSize.Height / 2 + str_compen.Y));
+            Point string_pos = new((int)Math.Round(start.X + width / 2 - strSize.Width / 2 + str_compen.X), (int)Math.Round(start.Y + height / 2 - strSize.Height / 2 + str_compen.Y));
             g.DrawString(str, fnt, str_br, string_pos);
 
             return string_pos;
@@ -458,7 +458,7 @@ namespace VVVF_Generator_Porting.Generation
         /// <param name="size"></param>
         public static void draw_key(Graphics g,Point start, Color c, Color hole_c, Boolean locked, double size)
         {
-            Pen default_pen = new Pen(c, (int)Math.Round(20 * size));
+            Pen default_pen = new (c, (int)Math.Round(20 * size));
             g.DrawArc(default_pen, (int)Math.Round(start.X + 42 * size), (int)Math.Round(start.Y + 20 * size) , (int)Math.Round(74 * size) , (int)Math.Round(74 * size), -180, 180);
             g.DrawLine(default_pen, (int)Math.Round(start.X + 42 * size), (int)Math.Round(start.Y + 56 * size), (int)Math.Round(start.X + 42 * size), (int)Math.Round(start.Y + 103 * size));
 
@@ -470,7 +470,7 @@ namespace VVVF_Generator_Porting.Generation
             filled_corner_curved_rectangle(g, new SolidBrush(c), new Point((int)Math.Round(start.X + 8 * size), (int)Math.Round(start.Y + 90 * size)), new Point((int)Math.Round(start.X + 151 * size), (int)Math.Round(start.Y + 193 * size)), (int)Math.Round((10) * size));
 
             g.FillEllipse(new SolidBrush(hole_c), (int)Math.Round(start.X + 64 * size), (int)Math.Round(start.Y + 124 * size), (int)Math.Round((28) * size), (int)Math.Round((28) * size));
-            g.DrawLine(new Pen(hole_c, (int)Math.Round((15)* size)), (int)Math.Round(start.X + 78.5 * size), (int)Math.Round(start.Y + 138 * size), (int)Math.Round(start.X + 78.5 * size), (int)Math.Round(start.Y + 173 * size));
+            g.DrawLine(new (hole_c, (int)Math.Round((15)* size)), (int)Math.Round(start.X + 78.5 * size), (int)Math.Round(start.Y + 138 * size), (int)Math.Round(start.X + 78.5 * size), (int)Math.Round(start.Y + 173 * size));
         }
 
         public static double get_wave_form_voltage_rate_with_surface(Yaml_Sound_Data sound_data)
@@ -479,7 +479,7 @@ namespace VVVF_Generator_Porting.Generation
             int hex_div = 6 * hex_div_seed;
             double[] hexagon_coordinate = new double[] { 100, 500 };
 
-            List<List< Int32 >> y_coordinate = new List<List<Int32>>();
+            List<List< Int32 >> y_coordinate = new();
 
             for(int i = 0; i < 1000; i++)
             {
@@ -491,7 +491,7 @@ namespace VVVF_Generator_Porting.Generation
                 add_Sine_Time(1.0 / (hex_div) * ((get_Sine_Freq() == 0) ? 0 : 1 / get_Sine_Freq()));
                 add_Saw_Time(1.0 / (hex_div) * ((get_Sine_Freq() == 0) ? 0 : 1 / get_Sine_Freq()));
 
-                Control_Values cv_U = new Control_Values
+                Control_Values cv_U = new()
                 {
                     brake = is_Braking(),
                     mascon_on = !is_Mascon_Off(),
@@ -501,7 +501,7 @@ namespace VVVF_Generator_Porting.Generation
                 };
                 Wave_Values wv_U = Yaml_VVVF_Wave.calculate_Yaml(cv_U, sound_data);
 
-                Control_Values cv_V = new Control_Values
+                Control_Values cv_V = new()
                 {
                     brake = is_Braking(),
                     mascon_on = !is_Mascon_Off(),
@@ -511,7 +511,7 @@ namespace VVVF_Generator_Porting.Generation
                 };
                 Wave_Values wv_V = Yaml_VVVF_Wave.calculate_Yaml(cv_V, sound_data);
 
-                Control_Values cv_W = new Control_Values
+                Control_Values cv_W = new()
                 {
                     brake = is_Braking(),
                     mascon_on = !is_Mascon_Off(),
@@ -568,7 +568,7 @@ namespace VVVF_Generator_Porting.Generation
                 add_Sine_Time(1.0 / (hex_div) * ((get_Sine_Freq() == 0) ? 0 : 1 / get_Sine_Freq()));
                 add_Saw_Time(1.0 / (hex_div) * ((get_Sine_Freq() == 0) ? 0 : 1 / get_Sine_Freq()));
 
-                Control_Values cv_U = new Control_Values
+                Control_Values cv_U = new()
                 {
                     brake = is_Braking(),
                     mascon_on = !is_Mascon_Off(),
@@ -578,7 +578,7 @@ namespace VVVF_Generator_Porting.Generation
                 };
                 Wave_Values wv_U = Yaml_VVVF_Wave.calculate_Yaml(cv_U, sound_data);
 
-                Control_Values cv_V = new Control_Values
+                Control_Values cv_V = new()
                 {
                     brake = is_Braking(),
                     mascon_on = !is_Mascon_Off(),
@@ -588,7 +588,7 @@ namespace VVVF_Generator_Porting.Generation
                 };
                 Wave_Values wv_V = Yaml_VVVF_Wave.calculate_Yaml(cv_V, sound_data);
 
-                Control_Values cv_W = new Control_Values
+                Control_Values cv_W = new()
                 {
                     brake = is_Braking(),
                     mascon_on = !is_Mascon_Off(),
@@ -670,7 +670,7 @@ namespace VVVF_Generator_Porting.Generation
             int image_width = 960;
             int image_height = 1620;
             int movie_div = 3000;
-            VideoWriter vr = new VideoWriter(fileName, OpenCvSharp.FourCC.H264, div_freq / movie_div, new OpenCvSharp.Size(image_width, image_height));
+            VideoWriter vr = new (fileName, OpenCvSharp.FourCC.H264, div_freq / movie_div, new OpenCvSharp.Size(image_width, image_height));
 
             if (!vr.IsOpened())
             {
@@ -817,7 +817,7 @@ namespace VVVF_Generator_Porting.Generation
 
             while (loop)
             {
-                Control_Values cv_U = new Control_Values
+                Control_Values cv_U = new()
                 {
                     brake = is_Braking(),
                     mascon_on = !is_Mascon_Off(),
@@ -1091,14 +1091,16 @@ namespace VVVF_Generator_Porting.Generation
 
                     if (first_show || final_show)
                     {
-                        ColorMatrix cm = new ColorMatrix();
-                        cm.Matrix00 = 1;
-                        cm.Matrix11 = 1;
-                        cm.Matrix22 = 1;
-                        cm.Matrix33 = 0.5F;
-                        cm.Matrix44 = 1;
+                        ColorMatrix cm = new()
+                        {
+                            Matrix00 = 1,
+                            Matrix11 = 1,
+                            Matrix22 = 1,
+                            Matrix33 = 0.5F,
+                            Matrix44 = 1
+                        };
 
-                        ImageAttributes ia = new ImageAttributes();
+                        ImageAttributes ia = new();
                         ia.SetColorMatrix(cm);
 
                         final_g.DrawImage(control_stat_image, new Rectangle(0, 0, image_width, image_height),
@@ -1114,14 +1116,17 @@ namespace VVVF_Generator_Porting.Generation
 
                     if (final_show || first_show || is_Free_Running())
                     {
-                        ColorMatrix cm = new ColorMatrix();
-                        cm.Matrix00 = 1;
-                        cm.Matrix11 = 1;
-                        cm.Matrix22 = 1;
-                        cm.Matrix33 = 0.5F;
-                        cm.Matrix44 = 1;
+                        ColorMatrix cm = new()
+                        {
+                            Matrix00 = 1,
+                            Matrix11 = 1,
+                            Matrix22 = 1,
+                            Matrix33 = 0.5F,
+                            Matrix44 = 1
+                        };
+                        
 
-                        ImageAttributes ia = new ImageAttributes();
+                        ImageAttributes ia = new();
                         ia.SetColorMatrix(cm);
 
                         final_g.DrawImage(info_image, new Rectangle(0, 0, image_width, image_height),
@@ -1133,7 +1138,7 @@ namespace VVVF_Generator_Porting.Generation
                         final_g.DrawImage(info_image, 0, 0);
                     }
 
-                    MemoryStream ms = new MemoryStream();
+                    MemoryStream ms = new();
                     final_image.Save(ms, ImageFormat.Png);
                     byte[] img = ms.GetBuffer();
                     Mat mat = OpenCvSharp.Mat.FromImageData(img);
@@ -1141,8 +1146,8 @@ namespace VVVF_Generator_Porting.Generation
                     ms.Dispose();
                     mat.Dispose();
 
-                    MemoryStream resized_ms = new MemoryStream();
-                    Bitmap resized = new Bitmap(final_image, image_width / 2, image_height / 2);
+                    MemoryStream resized_ms = new();
+                    Bitmap resized = new (final_image, image_width / 2, image_height / 2);
                     resized.Save(resized_ms, ImageFormat.Png);
                     byte[] resized_img = resized_ms.GetBuffer();
                     Mat resized_mat = OpenCvSharp.Mat.FromImageData(resized_img);
@@ -1173,7 +1178,7 @@ namespace VVVF_Generator_Porting.Generation
                 }
                 sound_block_count++;
 
-                video_finished = !check_for_freq_change();
+                video_finished = !Check_For_Freq_Change();
                 if (video_finished)
                 {
                     final_show = true;

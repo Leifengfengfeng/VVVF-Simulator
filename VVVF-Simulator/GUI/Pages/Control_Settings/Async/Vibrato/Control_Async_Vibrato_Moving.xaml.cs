@@ -12,10 +12,10 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using VVVF_Data_Generator;
-using static VVVF_Data_Generator.Yaml_Sound_Data.Yaml_Control_Data.Yaml_Async_Parameter.Yaml_Async_Parameter_Carrier_Freq.Yaml_Async_Parameter_Carrier_Freq_Vibrato;
+using VVVF_Simulator;
+using static VVVF_Simulator.Yaml_VVVF_Sound.Yaml_Sound_Data.Yaml_Control_Data.Yaml_Async_Parameter.Yaml_Async_Parameter_Carrier_Freq.Yaml_Async_Parameter_Carrier_Freq_Vibrato;
 
-namespace VVVF_Yaml_Generator.Pages.Control_Settings.Async.Vibrato
+namespace VVVF_Simulator.Pages.Control_Settings.Async.Vibrato
 {
     /// <summary>
     /// Control_Async_Vibrato_Moving.xaml の相互作用ロジック
@@ -59,6 +59,8 @@ namespace VVVF_Yaml_Generator.Pages.Control_Settings.Async.Vibrato
         }
         private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
+            if (no_update) return;
+
             TextBox tb = (TextBox)sender;
             Object? tag = tb.Tag;
             if (tag == null) return;

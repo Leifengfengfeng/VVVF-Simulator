@@ -1,10 +1,10 @@
-﻿using static VVVF_Generator_Porting.Generation.Generate_Common;
-using static VVVF_Generator_Porting.vvvf_wave_control;
-using static VVVF_Generator_Porting.my_math;
+﻿using static VVVF_Simulator.Generation.Generate_Common;
+using static VVVF_Simulator.vvvf_wave_control;
+using static VVVF_Simulator.my_math;
 using System;
-using static VVVF_Generator_Porting.vvvf_wave_calculate.Amplitude_Argument;
+using static VVVF_Simulator.vvvf_wave_calculate.Amplitude_Argument;
 
-namespace VVVF_Generator_Porting
+namespace VVVF_Simulator
 {
 	public class vvvf_wave_calculate
 	{
@@ -743,7 +743,7 @@ namespace VVVF_Generator_Porting
 				saw_go
 			)
 			{
-				bool is_shift = (pulse_mode.ToString().StartsWith("SP") ? true : false);
+				bool is_shift = pulse_mode.ToString().StartsWith("SP");
 				int pulse_num = get_Pulse_Num(pulse_mode);
 				double pulse_initial_phase = get_Pulse_Initial(pulse_mode);
 				return get_P_with_saw(sin_time, sin_angle_freq, initial_phase, pulse_initial_phase, amplitude, pulse_num, is_shift);

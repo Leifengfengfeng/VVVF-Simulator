@@ -6,7 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 
-namespace VVVF_Simulator_GUI
+namespace VVVF_Simulator
 {
     /// <summary>
     /// Interaction logic for App.xaml

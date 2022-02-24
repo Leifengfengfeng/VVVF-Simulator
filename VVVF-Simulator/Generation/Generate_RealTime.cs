@@ -1,12 +1,12 @@
 ﻿using NAudio.CoreAudioApi;
 using NAudio.Wave;
 using System;
-using static VVVF_Generator_Porting.vvvf_wave_calculate;
-using static VVVF_Generator_Porting.vvvf_wave_control;
-using static VVVF_Generator_Porting.my_math;
-using VVVF_Generator_Porting.Yaml_VVVF_Sound;
+using static VVVF_Simulator.vvvf_wave_calculate;
+using static VVVF_Simulator.vvvf_wave_control;
+using static VVVF_Simulator.my_math;
+using VVVF_Simulator.Yaml_VVVF_Sound;
 
-namespace VVVF_Generator_Porting.Generation
+namespace VVVF_Simulator.Generation
 {
     public class Generate_RealTime
     {
@@ -141,10 +141,6 @@ namespace VVVF_Generator_Porting.Generation
         {
             while (true)
             {
-                String load_path = Program.get_Path("\r\nEnter the yaml file path");
-                Yaml_Sound_Data sound_data = Yaml_Analyze.get_Deserialized(load_path);
-
-
                 reset_control_variables();
                 reset_all_variables();
 
@@ -163,7 +159,7 @@ namespace VVVF_Generator_Porting.Generation
                 Console.WriteLine("Press R to Select New Sound...");
                 Console.WriteLine("Press ENTER to exit...");
 
-                int stat = realtime_sound_calculate(bufferedWaveProvider, sound_data);
+                int stat = realtime_sound_calculate(bufferedWaveProvider, Yaml_Generation.current_data);
 
                 wavPlayer.Stop();
 

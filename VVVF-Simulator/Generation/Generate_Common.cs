@@ -1,8 +1,8 @@
 ﻿using System;
-using static VVVF_Generator_Porting.vvvf_wave_calculate;
-using static VVVF_Generator_Porting.vvvf_wave_control;
+using static VVVF_Simulator.vvvf_wave_calculate;
+using static VVVF_Simulator.vvvf_wave_control;
 
-namespace VVVF_Generator_Porting.Generation
+namespace VVVF_Simulator.Generation
 {
     public class Generate_Common
     {
@@ -15,7 +15,7 @@ namespace VVVF_Generator_Porting.Generation
         {
             public static Pulse_Mode pulse_mode = Pulse_Mode.P_1;
             public static double sine_amplitude = 0.0;
-            public static Carrier_Freq carrier_freq_data;
+            public static Carrier_Freq carrier_freq_data = new(20,0);
             public static double dipolar = -1;
             public static double sine_angle_freq = 0.0;
         }
@@ -29,7 +29,7 @@ namespace VVVF_Generator_Porting.Generation
         /// It will be updated everytime this function colled.
         /// </summary>
         /// <returns></returns>
-        public static Boolean check_for_freq_change()
+        public static bool Check_For_Freq_Change()
         {
             count++;
 

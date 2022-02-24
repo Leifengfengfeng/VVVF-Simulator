@@ -12,15 +12,15 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using VVVF_Data_Generator;
-using VVVF_Yaml_Generator.Pages.Control_Settings.Async;
-using VVVF_Yaml_Generator.Pages.Control_Settings.Async.Random_Range;
-using VVVF_Yaml_Generator.Pages.Control_Settings.Async.Vibrato;
-using static VVVF_Data_Generator.Yaml_Sound_Data;
-using static VVVF_Data_Generator.Yaml_Sound_Data.Yaml_Control_Data.Yaml_Async_Parameter.Yaml_Async_Parameter_Carrier_Freq;
-using static VVVF_Data_Generator.Yaml_Sound_Data.Yaml_Control_Data.Yaml_Async_Parameter.Yaml_Async_Parameter_Random_Range;
+using VVVF_Simulator;
+using VVVF_Simulator.Pages.Control_Settings.Async;
+using VVVF_Simulator.Pages.Control_Settings.Async.Random_Range;
+using VVVF_Simulator.Pages.Control_Settings.Async.Vibrato;
+using static VVVF_Simulator.Yaml_VVVF_Sound.Yaml_Sound_Data;
+using static VVVF_Simulator.Yaml_VVVF_Sound.Yaml_Sound_Data.Yaml_Control_Data.Yaml_Async_Parameter.Yaml_Async_Parameter_Carrier_Freq;
+using static VVVF_Simulator.Yaml_VVVF_Sound.Yaml_Sound_Data.Yaml_Control_Data.Yaml_Async_Parameter.Yaml_Async_Parameter_Random_Range;
 
-namespace VVVF_Yaml_Generator.Pages.Control_Settings
+namespace VVVF_Simulator.Pages.Control_Settings
 {
     /// <summary>
     /// Control_Async.xaml の相互作用ロジック

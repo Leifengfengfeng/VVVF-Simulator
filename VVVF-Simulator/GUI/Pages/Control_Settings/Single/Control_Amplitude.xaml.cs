@@ -1,24 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using VVVF_Data_Generator;
-using static VVVF_Data_Generator.Yaml_Sound_Data;
-using static VVVF_Data_Generator.Yaml_Sound_Data.Yaml_Control_Data.Yaml_Control_Data_Amplitude_Control;
-using static VVVF_Data_Generator.Yaml_Sound_Data.Yaml_Control_Data.Yaml_Control_Data_Amplitude_Control.Yaml_Control_Data_Amplitude;
+using VVVF_Simulator;
+using static VVVF_Simulator.vvvf_wave_calculate;
+using static VVVF_Simulator.Yaml_VVVF_Sound.Yaml_Sound_Data.Yaml_Control_Data.Yaml_Control_Data_Amplitude_Control;
 
-namespace VVVF_Yaml_Generator.Pages.Control_Settings
+namespace VVVF_Simulator.Pages.Control_Settings
 {
     /// <summary>
     /// Control_Amplitude.xaml の相互作用ロジック
@@ -174,7 +163,7 @@ namespace VVVF_Yaml_Generator.Pages.Control_Settings
             if (no_update) return;
 
             CheckBox cb = (CheckBox)sender;
-            target.parameter.disable_range_limit = (cb.IsChecked == false) ? false : true;
+            target.parameter.disable_range_limit = cb.IsChecked != false;
             mainWindow.update_Control_List_View();
         }
 
@@ -193,18 +182,18 @@ namespace VVVF_Yaml_Generator.Pages.Control_Settings
 
         private Grid get_Grid(int i)
         {
-            switch (i) {
-                case 0: return start_freq_grid;
-                case 1: return start_amp_grid;
-                case 2: return end_freq_grid;
-                case 3: return end_amp_grid;
-                case 4: return cut_off_amp_grid;
-                case 5: return max_amp_grid;
-                case 6: return polynomial_grid;
-                case 7: return curve_change_grid;
-                default: return disable_range_grid;
-            
-            }
+            return i switch
+            {
+                0 => start_freq_grid,
+                1 => start_amp_grid,
+                2 => end_freq_grid,
+                3 => end_amp_grid,
+                4 => cut_off_amp_grid,
+                5 => max_amp_grid,
+                6 => polynomial_grid,
+                7 => curve_change_grid,
+                _ => disable_range_grid,
+            };
         }
 
         private void set_Visible_Bool(int i, bool b)

@@ -3,13 +3,13 @@ using System;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
-using static VVVF_Generator_Porting.vvvf_wave_calculate;
-using static VVVF_Generator_Porting.vvvf_wave_control;
-using static VVVF_Generator_Porting.Generation.Generate_Common;
-using static VVVF_Generator_Porting.my_math;
-using VVVF_Generator_Porting.Yaml_VVVF_Sound;
+using static VVVF_Simulator.vvvf_wave_calculate;
+using static VVVF_Simulator.vvvf_wave_control;
+using static VVVF_Simulator.Generation.Generate_Common;
+using static VVVF_Simulator.my_math;
+using VVVF_Simulator.Yaml_VVVF_Sound;
 
-namespace VVVF_Generator_Porting.Generation
+namespace VVVF_Simulator.Generation
 {
     public class Generate_Hexagon
     {
@@ -51,7 +51,7 @@ namespace VVVF_Generator_Porting.Generation
                 }
             }
 
-            VideoWriter vr = new VideoWriter(fileName, OpenCvSharp.FourCC.H264, div_freq / movie_div, new OpenCvSharp.Size(image_width, image_height));
+            VideoWriter vr = new(fileName, OpenCvSharp.FourCC.H264, div_freq / movie_div, new OpenCvSharp.Size(image_width, image_height));
             if (!vr.IsOpened())
             {
                 return;
@@ -63,7 +63,7 @@ namespace VVVF_Generator_Porting.Generation
                 Bitmap free_image = new(image_width, image_height);
                 Graphics free_g = Graphics.FromImage(free_image);
                 free_g.FillRectangle(new SolidBrush(Color.White), 0, 0, image_width, image_height);
-                MemoryStream free_ms = new MemoryStream();
+                MemoryStream free_ms = new();
                 free_image.Save(free_ms, ImageFormat.Png);
                 byte[] free_img = free_ms.GetBuffer();
                 Mat free_mat = OpenCvSharp.Mat.FromImageData(free_img);
@@ -125,7 +125,7 @@ namespace VVVF_Generator_Porting.Generation
                 add_Sine_Time(1.0 / (hex_div) * ((get_Sine_Freq() == 0) ? 0 : 1 / get_Sine_Freq()));
                 add_Saw_Time(1.0 / (hex_div) * ((get_Sine_Freq() == 0) ? 0 : 1 / get_Sine_Freq()));
 
-                Control_Values cv_U = new Control_Values
+                Control_Values cv_U = new()
                 {
                     brake = is_Braking(),
                     mascon_on = !is_Mascon_Off(),
@@ -136,7 +136,7 @@ namespace VVVF_Generator_Porting.Generation
                 Wave_Values wv_U = Yaml_VVVF_Wave.calculate_Yaml(cv_U, sound_data);
                 points_U[i] = wv_U.pwm_value;
 
-                Control_Values cv_V = new Control_Values
+                Control_Values cv_V = new()
                 {
                     brake = is_Braking(),
                     mascon_on = !is_Mascon_Off(),
@@ -147,7 +147,7 @@ namespace VVVF_Generator_Porting.Generation
                 Wave_Values wv_V = Yaml_VVVF_Wave.calculate_Yaml(cv_V, sound_data);
                 points_V[i] = wv_V.pwm_value;
 
-                Control_Values cv_W = new Control_Values
+                Control_Values cv_W = new()
                 {
                     brake = is_Braking(),
                     mascon_on = !is_Mascon_Off(),
@@ -419,7 +419,7 @@ namespace VVVF_Generator_Porting.Generation
                 Bitmap image = new(image_width, image_height);
                 Graphics g = Graphics.FromImage(image);
                 g.FillRectangle(new SolidBrush(Color.White), 0, 0, image_width, image_height);
-                MemoryStream ms = new MemoryStream();
+                MemoryStream ms = new();
                 image.Save(ms, ImageFormat.Png);
                 byte[] img = ms.GetBuffer();
                 Mat mat = OpenCvSharp.Mat.FromImageData(img);
@@ -570,7 +570,7 @@ namespace VVVF_Generator_Porting.Generation
 
                 sound_block_count++;
 
-                loop = check_for_freq_change();
+                loop = Check_For_Freq_Change();
 
             }
 
@@ -830,7 +830,7 @@ namespace VVVF_Generator_Porting.Generation
 
                 sound_block_count++;
 
-                loop = check_for_freq_change();
+                loop = Check_For_Freq_Change();
 
             }
 
@@ -841,7 +841,7 @@ namespace VVVF_Generator_Porting.Generation
                 Graphics g = Graphics.FromImage(image);
                 g.FillRectangle(new SolidBrush(Color.White), 0, 0, image_width, image_height);
                 g.DrawImage(max_hexagon, 0, 0);
-                MemoryStream ms = new MemoryStream();
+                MemoryStream ms = new();
                 image.Save(ms, ImageFormat.Png);
                 byte[] img = ms.GetBuffer();
                 Mat mat = OpenCvSharp.Mat.FromImageData(img);
@@ -924,7 +924,7 @@ namespace VVVF_Generator_Porting.Generation
                 add_Sine_Time(1.0 / (hex_div) * ((get_Sine_Freq() * M_1_2PI == 0) ? 0 : 1 / get_Sine_Freq()));
                 add_Saw_Time(1.0 / (hex_div) * ((get_Sine_Freq() == 0) ? 0 : 1 / get_Sine_Freq()));
 
-                Control_Values cv_U = new Control_Values
+                Control_Values cv_U = new()
                 {
                     brake = is_Braking(),
                     mascon_on = !is_Mascon_Off(),
@@ -934,7 +934,7 @@ namespace VVVF_Generator_Porting.Generation
                 };
                 Wave_Values wv_U = Yaml_VVVF_Wave.calculate_Yaml(cv_U, sound_data);
 
-                Control_Values cv_V = new Control_Values
+                Control_Values cv_V = new()
                 {
                     brake = is_Braking(),
                     mascon_on = !is_Mascon_Off(),
@@ -944,7 +944,7 @@ namespace VVVF_Generator_Porting.Generation
                 };
                 Wave_Values wv_V = Yaml_VVVF_Wave.calculate_Yaml(cv_V, sound_data);
 
-                Control_Values cv_W = new Control_Values
+                Control_Values cv_W = new()
                 {
                     brake = is_Braking(),
                     mascon_on = !is_Mascon_Off(),

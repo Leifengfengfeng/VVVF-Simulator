@@ -3,12 +3,12 @@ using System;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
-using static VVVF_Generator_Porting.vvvf_wave_calculate;
-using static VVVF_Generator_Porting.vvvf_wave_control;
-using static VVVF_Generator_Porting.Generation.Generate_Common;
-using VVVF_Generator_Porting.Yaml_VVVF_Sound;
+using static VVVF_Simulator.vvvf_wave_calculate;
+using static VVVF_Simulator.vvvf_wave_control;
+using static VVVF_Simulator.Generation.Generate_Common;
+using VVVF_Simulator.Yaml_VVVF_Sound;
 
-namespace VVVF_Generator_Porting.Generation
+namespace VVVF_Simulator.Generation
 {
     public class Generate_Wave_Form
     {
@@ -141,7 +141,7 @@ namespace VVVF_Generator_Porting.Generation
 
                 sound_block_count++;
 
-                loop = check_for_freq_change();
+                loop = Check_For_Freq_Change();
 
             }
 
@@ -336,7 +336,7 @@ namespace VVVF_Generator_Porting.Generation
 
                 sound_block_count++;
 
-                loop = check_for_freq_change();
+                loop = Check_For_Freq_Change();
 
             }
 
@@ -501,7 +501,7 @@ namespace VVVF_Generator_Porting.Generation
 
                 sound_block_count++;
 
-                loop = check_for_freq_change();
+                loop = Check_For_Freq_Change();
 
             }
 

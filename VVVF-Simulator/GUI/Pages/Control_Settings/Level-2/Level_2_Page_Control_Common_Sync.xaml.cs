@@ -12,10 +12,10 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using VVVF_Data_Generator;
-using static VVVF_Data_Generator.Yaml_Sound_Data;
+using VVVF_Simulator;
+using static VVVF_Simulator.Yaml_VVVF_Sound.Yaml_Sound_Data;
 
-namespace VVVF_Yaml_Generator.Pages.Control_Settings
+namespace VVVF_Simulator.Pages.Control_Settings
 {
     /// <summary>
     /// Page_Control_Common_Sync.xaml の相互作用ロジック

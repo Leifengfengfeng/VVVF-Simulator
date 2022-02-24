@@ -1,6 +1,6 @@
-﻿using static VVVF_Generator_Porting.my_math;
+﻿using static VVVF_Simulator.my_math;
 
-namespace VVVF_Generator_Porting
+namespace VVVF_Simulator
 {
     public class vvvf_wave_control
     {
