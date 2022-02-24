@@ -12,14 +12,10 @@ namespace VVVF_Simulator.Generation
 {
     public class Generate_Wave_Form
     {
-        public static void generate_wave_U_V(String output_path, Yaml_Sound_Data sound_data)
+        public static void generate_wave_U_V(String fileName, Yaml_Sound_Data sound_data)
         {
             reset_control_variables();
             reset_all_variables();
-
-            DateTime dt = DateTime.Now;
-            String gen_time = dt.ToString("yyyy-MM-dd_HH-mm-ss");
-            String fileName = output_path + "\\" + gen_time + ".avi";
 
             bool temp = true;
             Int32 sound_block_count = 0;
@@ -173,14 +169,10 @@ namespace VVVF_Simulator.Generation
             vr.Dispose();
         }
 
-        public static void generate_wave_UVW(String output_path, Yaml_Sound_Data sound_data)
+        public static void generate_wave_UVW(String fileName, Yaml_Sound_Data sound_data)
         {
             reset_control_variables();
             reset_all_variables();
-
-            DateTime dt = DateTime.Now;
-            String gen_time = dt.ToString("yyyy-MM-dd_HH-mm-ss");
-            String fileName = output_path + "\\" + gen_time + ".avi";
 
             bool temp = true;
             Int32 sound_block_count = 0;
@@ -367,16 +359,12 @@ namespace VVVF_Simulator.Generation
             vr.Dispose();
         }
 
-        public static void generate_taroimo_like_wave_U_V(String output_path, Yaml_Sound_Data sound_data)
+        public static void generate_taroimo_like_wave_U_V(String fileName, Yaml_Sound_Data sound_data)
         {
             reset_control_variables();
             reset_all_variables();
 
             set_Allowed_Random_Freq_Move(false);
-
-            DateTime dt = DateTime.Now;
-            String gen_time = dt.ToString("yyyy-MM-dd_HH-mm-ss");
-            String fileName = output_path + "\\" + gen_time + ".avi";
 
             bool temp = true;
             Int32 sound_block_count = 0;
