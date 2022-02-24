@@ -55,6 +55,9 @@ namespace VVVF_Simulator
         {
             DataContext = view_data;
             InitializeComponent();
+
+            Mascon mascon = new Mascon();
+            mascon.Show();
         }
 
         
@@ -270,19 +273,25 @@ namespace VVVF_Simulator
 
             view_data.blocking = true;
 
-            solve_Command(command);
+            Task task = Task.Run(() => {
+                Yaml_Sound_Data clone = Yaml_Generation.DeepClone(Yaml_Generation.current_data);
+                solve_Command(command, clone);
+            });
+            
 
             view_data.blocking = false;
             SystemSounds.Beep.Play();
         }
-        private void solve_Command(String[] command)
+        private void solve_Command(String[] command, Yaml_Sound_Data data)
         {
+            
+
             if (command[0].Equals("Audio"))
             {
                 var dialog = new SaveFileDialog { Filter = "wav (*.wav)|*.wav" };
                 if (dialog.ShowDialog() == false) return;
                 if (command[1].Equals("VVVF"))
-                    Generation.Generate_Sound.generate_sound(dialog.FileName, Yaml_Generation.current_data);
+                    Generation.Generate_Sound.generate_sound(dialog.FileName, data);
                 else if (command[1].Equals("Environment"))
                     Generation.Generate_Sound.generate_env_sound(dialog.FileName);
             }
@@ -291,7 +300,7 @@ namespace VVVF_Simulator
                 var dialog = new SaveFileDialog { Filter = "mp4 (*.mp4)|*.mp4" };
                 if (dialog.ShowDialog() == false) return;
                 if (command[1].Equals("Original"))
-                    Generation.Generate_Control_Info.generate_status_video(dialog.FileName, Yaml_Generation.current_data);
+                    Generation.Generate_Control_Info.generate_status_video(dialog.FileName, data);
                 else if (command[1].Equals("Taroimo"))
                 {
                     Generate_Language_Select lang_select = new Generate_Language_Select(this);
@@ -299,7 +308,7 @@ namespace VVVF_Simulator
 
                     Generation.Generate_Control_Info.generate_status_taroimo_like_video(
                         dialog.FileName,
-                        Yaml_Generation.current_data,
+                        data,
                         gen_param.Video_Language[0],
                         gen_param.Video_Language[1]
                     );
@@ -311,11 +320,11 @@ namespace VVVF_Simulator
                 var dialog = new SaveFileDialog { Filter = "mp4 (*.mp4)|*.mp4" };
                 if (dialog.ShowDialog() == false) return;
                 if (command[1].Equals("Original"))
-                    Generation.Generate_Wave_Form.generate_wave_U_V(dialog.FileName, Yaml_Generation.current_data);
+                    Generation.Generate_Wave_Form.generate_wave_U_V(dialog.FileName, data);
                 else if (command[1].Equals("Taroimo"))
-                    Generation.Generate_Wave_Form.generate_taroimo_like_wave_U_V(dialog.FileName, Yaml_Generation.current_data);
+                    Generation.Generate_Wave_Form.generate_taroimo_like_wave_U_V(dialog.FileName, data);
                 else if (command[1].Equals("UVW"))
-                    Generation.Generate_Wave_Form.generate_taroimo_like_wave_U_V(dialog.FileName, Yaml_Generation.current_data);
+                    Generation.Generate_Wave_Form.generate_taroimo_like_wave_U_V(dialog.FileName, data);
             }
             else if (command[0].Equals("Hexagon"))
             {
@@ -327,7 +336,7 @@ namespace VVVF_Simulator
                     MessageBoxResult result = MessageBox.Show("Enable zero vector circle?", "Info", MessageBoxButton.YesNo, MessageBoxImage.Question);
                     bool circle = result == MessageBoxResult.Yes;
 
-                    Generation.Generate_Hexagon.generate_wave_hexagon(dialog.FileName, Yaml_Generation.current_data, circle);
+                    Generation.Generate_Hexagon.generate_wave_hexagon(dialog.FileName, data, circle);
                 }
                 else if (command[1].Equals("Taroimo"))
                 {
@@ -337,7 +346,7 @@ namespace VVVF_Simulator
                     MessageBoxResult result = MessageBox.Show("Enable zero vector circle?", "Info", MessageBoxButton.YesNo, MessageBoxImage.Question);
                     bool circle = result == MessageBoxResult.Yes;
 
-                    Generation.Generate_Hexagon.generate_wave_hexagon_taroimo_like(dialog.FileName, Yaml_Generation.current_data, circle);
+                    Generation.Generate_Hexagon.generate_wave_hexagon_taroimo_like(dialog.FileName, data, circle);
                 }
                 else if (command[1].Equals("Explain"))
                 {
@@ -350,7 +359,7 @@ namespace VVVF_Simulator
                     Double_Ask_Form double_Ask_Dialog = new Double_Ask_Form(this, "Enter the frequency.");
                     double_Ask_Dialog.ShowDialog();
 
-                    bool t = Generation.Generate_Hexagon.generate_wave_hexagon_explain(dialog.FileName, Yaml_Generation.current_data, circle, gen_param.Double_Values[0]);
+                    bool t = Generation.Generate_Hexagon.generate_wave_hexagon_explain(dialog.FileName, data, circle, gen_param.Double_Values[0]);
                     Debug.Print(t.ToString());
                 }
                 else if (command[1].Equals("Image"))
@@ -364,16 +373,15 @@ namespace VVVF_Simulator
                     Double_Ask_Form double_Ask_Dialog = new Double_Ask_Form(this, "Enter the frequency.");
                     double_Ask_Dialog.ShowDialog();
 
-                    Generation.Generate_Hexagon.generate_wave_hexagon_picture(dialog.FileName, Yaml_Generation.current_data, circle, gen_param.Double_Values[0]);
+                    Generation.Generate_Hexagon.generate_wave_hexagon_picture(dialog.FileName, data, circle, gen_param.Double_Values[0]);
                 }
             }
             else if (command[0].Equals("RealTime"))
             {
                 if (command[1].Equals("RealTime"))
                 {
-                    Task task = Task.Run(() => {
-                        Generation.Generate_RealTime.realtime_sound(Yaml_Generation.current_data);
-                    });
+                    Generation.Generate_RealTime.realtime_sound(data);
+
                 }
                     
             }

@@ -457,5 +457,11 @@ namespace VVVF_Simulator.Yaml_VVVF_Sound
                 return false;
             }
         }
+
+        public static Yaml_Sound_Data DeepClone(Yaml_Sound_Data src)
+        {
+            Yaml_Sound_Data deserializeObject = new Deserializer().Deserialize<Yaml_Sound_Data>(new Serializer().Serialize(src));
+            return deserializeObject;
+        }
     }
 }
