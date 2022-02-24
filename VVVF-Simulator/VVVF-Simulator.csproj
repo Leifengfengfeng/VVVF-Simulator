@@ -6,9 +6,18 @@
     <RootNamespace>VVVF_Simulator</RootNamespace>
     <Nullable>enable</Nullable>
     <UseWPF>true</UseWPF>
+    <ApplicationIcon>vvvf-simulator.ico</ApplicationIcon>
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Include="vvvf-simulator.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Costura.Fody" Version="5.7.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
     <PackageReference Include="NAudio" Version="2.0.1" />
     <PackageReference Include="OpenCvSharp4" Version="4.5.5.20211231" />
     <PackageReference Include="OpenCvSharp4.runtime.win" Version="4.5.5.20211231" />

@@ -137,7 +137,7 @@ namespace VVVF_Simulator.Generation
                 while (provider.BufferedBytes > 16000) ;
             }
         }
-        public static void realtime_sound()
+        public static void realtime_sound(Yaml_Sound_Data ysd)
         {
             while (true)
             {
@@ -159,7 +159,7 @@ namespace VVVF_Simulator.Generation
                 Console.WriteLine("Press R to Select New Sound...");
                 Console.WriteLine("Press ENTER to exit...");
 
-                int stat = realtime_sound_calculate(bufferedWaveProvider, Yaml_Generation.current_data);
+                int stat = realtime_sound_calculate(bufferedWaveProvider, ysd);
 
                 wavPlayer.Stop();
 

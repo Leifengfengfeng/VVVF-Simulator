@@ -31,49 +31,14 @@ namespace VVVF_Simulator
             Button button = (Button)sender;
             string name = button.Name;
             if (name.Equals("settings_level"))
-                setting_window.Navigate(new Uri("Pages/Settings/level_setting.xaml", UriKind.Relative));
+                setting_window.Navigate(new Uri("GUI/Pages/Settings/level_setting.xaml", UriKind.Relative));
             else if(name.Equals("settings_minimum"))
-                setting_window.Navigate(new Uri("Pages/Settings/minimum_freq_setting.xaml", UriKind.Relative));
+                setting_window.Navigate(new Uri("GUI/Pages/Settings/minimum_freq_setting.xaml", UriKind.Relative));
             else if(name.Equals("settings_mascon"))
-                setting_window.Navigate(new Uri("Pages/Settings/mascon_off_setting.xaml", UriKind.Relative));
+                setting_window.Navigate(new Uri("GUI/Pages/Settings/mascon_off_setting.xaml", UriKind.Relative));
         }
 
-        private void file_button_click(object sender, RoutedEventArgs e)
-        {
-            Button button = (Button)sender;
-            Object? tag = button.Tag;
-            if (tag == null) return;
-            if (tag.Equals("Load"))
-            {
-                var dialog = new OpenFileDialog
-                {
-                    Filter = "Yaml (*.yaml)|*.yaml|All (*.*)|*.*"
-                };
-                if (dialog.ShowDialog() == false) return;
-
-                if (Yaml_Generation.load_Yaml(dialog.FileName))
-                    MessageBox.Show("Load OK.", "Great", MessageBoxButton.OK, MessageBoxImage.Information);
-                else
-                    MessageBox.Show("Invalid yaml or path.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-
-            }
-            else if (tag.Equals("Save"))
-            {
-                var dialog = new SaveFileDialog
-                {
-                    Filter = "Yaml (*.yaml)|*.yaml"
-                };
-
-                // ダイアログを表示する
-                if (dialog.ShowDialog() == false) return;
-
-                if (Yaml_Generation.save_Yaml(dialog.FileName))
-                    MessageBox.Show("Save OK.", "Great", MessageBoxButton.OK, MessageBoxImage.Information);
-                else
-                    MessageBox.Show("Error occurred on saving.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
-        }
-
+        // ACCELERATING SETTING EVENTS
         private void accelerate_Click(object sender, RoutedEventArgs e)
         {
             Button btn = (Button)sender;
@@ -94,7 +59,6 @@ namespace VVVF_Simulator
 
             accelerate_settings.Items.Refresh();
         }
-
         private void accelerate_setting_load(object sender, RoutedEventArgs e)
         {
             accelerate_settings.ItemsSource = Yaml_Generation.current_data.accelerate_pattern;
@@ -129,6 +93,8 @@ namespace VVVF_Simulator
 
         }
 
+
+        // BRAKING SETTING EVENTS
         private void brake_Click(object sender, RoutedEventArgs e)
         {
             Button btn = (Button)sender;
@@ -147,13 +113,11 @@ namespace VVVF_Simulator
 
             brake_settings.Items.Refresh();
         }
-
         private void brake_settings_load(object sender, RoutedEventArgs e)
         {
             brake_settings.ItemsSource = Yaml_Generation.current_data.braking_pattern;
             brake_selected_show();
         }
-
         private void brake_settings_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             brake_selected_show();
@@ -187,7 +151,6 @@ namespace VVVF_Simulator
             accelerate_settings.Items.Refresh();
             brake_settings.Items.Refresh();
         }
-
         public void update_Control_Showing()
         {
             if (setting_tabs.SelectedIndex == 2)
@@ -225,6 +188,59 @@ namespace VVVF_Simulator
                     accelerate_selected_show();
                 }
             }
+        }
+
+        private void File_Menu_Click(object sender, RoutedEventArgs e)
+        {
+            MenuItem button = (MenuItem)sender;
+            Object? tag = button.Tag;
+            if (tag == null) return;
+            if (tag.Equals("Load"))
+            {
+                var dialog = new OpenFileDialog
+                {
+                    Filter = "Yaml (*.yaml)|*.yaml|All (*.*)|*.*"
+                };
+                if (dialog.ShowDialog() == false) return;
+
+                if (Yaml_Generation.load_Yaml(dialog.FileName))
+                    MessageBox.Show("Load OK.", "Great", MessageBoxButton.OK, MessageBoxImage.Information);
+                else
+                    MessageBox.Show("Invalid yaml or path.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+
+            }
+            else if (tag.Equals("Save"))
+            {
+                var dialog = new SaveFileDialog
+                {
+                    Filter = "Yaml (*.yaml)|*.yaml"
+                };
+
+                // ダイアログを表示する
+                if (dialog.ShowDialog() == false) return;
+
+                if (Yaml_Generation.save_Yaml(dialog.FileName))
+                    MessageBox.Show("Save OK.", "Great", MessageBoxButton.OK, MessageBoxImage.Information);
+                else
+                    MessageBox.Show("Error occurred on saving.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private void Generation_Menu_Click(object sender, RoutedEventArgs e)
+        {
+            MenuItem button = (MenuItem)sender;
+            Object? tag = button.Tag;
+            if (tag == null) return;
+            if (tag.Equals("VVVF_Sound"))
+            {
+                var dialog = new SaveFileDialog{ Filter = "wav (*.wav)|*.wav" };
+                if (dialog.ShowDialog() == false) return;
+
+                IsEnabled = false;
+                Generation.Generate_Sound.generate_sound(dialog.FileName, Yaml_Generation.current_data);
+                IsEnabled = true;
+            }
+
         }
     }
 }

@@ -17,12 +17,8 @@ namespace VVVF_Simulator.Generation
             reset_all_variables();
 
             Int32 sound_block_count = 0;
-            DateTime dt = DateTime.Now;
-            String gen_time = dt.ToString("yyyy-MM-dd_HH-mm-ss");
 
-            String fileName = output_path + "\\" + gen_time + ".wav";
-
-            BinaryWriter writer = new BinaryWriter(new FileStream(fileName, FileMode.Create));
+            BinaryWriter writer = new BinaryWriter(new FileStream(output_path, FileMode.Create));
 
             //WAV FORMAT DATA
             writer.Write(0x46464952); // RIFF
@@ -115,12 +111,8 @@ namespace VVVF_Simulator.Generation
             reset_all_variables();
 
             Int32 sound_block_count = 0;
-            DateTime dt = DateTime.Now;
-            String gen_time = dt.ToString("yyyy-MM-dd_HH-mm-ss");
 
-            String fileName = output_path + "\\" + gen_time + ".wav";
-
-            BinaryWriter writer = new BinaryWriter(new FileStream(fileName, FileMode.Create));
+            BinaryWriter writer = new (new FileStream(output_path, FileMode.Create));
 
             //WAV FORMAT DATA
             writer.Write(0x46464952); // RIFF

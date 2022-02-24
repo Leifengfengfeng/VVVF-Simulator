@@ -5,91 +5,106 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:VVVF_Simulator"
         mc:Ignorable="d"
-        Title="VVVF Simulator" Height="450" Width="900">
-    <Grid Margin="0,0,0,0">
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="53*"/>
-            <ColumnDefinition Width="147*"/>
-        </Grid.ColumnDefinitions>
-        <TabControl x:Name="setting_tabs" Margin="10,10,16,10">
-            <TabItem Header="File">
-                <Grid Background="#FFFFFFFF">
-                    <Button x:Name="save_file_button" Content="Save Yaml" Tag="Save" HorizontalAlignment="Stretch" Margin="0,10,0,0" VerticalAlignment="Top" Height="28" FontFamily="M PLUS 2 Medium" FontSize="16" BorderBrush="#FF0012FF" Click="file_button_click"/>
-                    <Button x:Name="load_file_button" Content="Load Yaml" Tag="Load" HorizontalAlignment="Stretch" Margin="0,43,0,0" VerticalAlignment="Top" Height="28" FontFamily="M PLUS 2 Medium" FontSize="16" BorderBrush="#FF0012FF" Click="file_button_click"/>
-                </Grid>
-            </TabItem>
-            <TabItem Header="Settings">
-                <Grid Background="#FFFFFFFF">
-                    <StackPanel/>
-                    <Button x:Name="settings_level" Content="Level" HorizontalAlignment="Stretch" Margin="0,10,0,0" VerticalAlignment="Top" Height="28" FontFamily="M PLUS 2 Medium" FontSize="16" BorderBrush="#FF0012FF" Click="setting_button_Click"/>
-                    <Button x:Name="settings_minimum" Content="Minimum Frequency" HorizontalAlignment="Stretch" Margin="0,43,0,0" VerticalAlignment="Top" Height="28" FontFamily="M PLUS 2 Medium" FontSize="16" BorderBrush="#FF0012FF" Click="setting_button_Click"/>
-                    <Button x:Name="settings_mascon" Content="Mascon Off" HorizontalAlignment="Stretch" Margin="0,76,0,0" VerticalAlignment="Top" Height="28" FontFamily="M PLUS 2 Medium" FontSize="16" BorderBrush="#FF0010FF" Click="setting_button_Click"/>
-                </Grid>
-            </TabItem>
-            <TabItem Header="Accelerate">
-                <Grid Background="#FFFFFFFF">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="343*"/>
-                        <RowDefinition Height="43*"/>
-                    </Grid.RowDefinitions>
-                    <StackPanel Grid.RowSpan="2"/>
-                    <Grid Grid.RowSpan="2"/>
-                    <Button x:Name="accelerate_add" Tag="add" Content="+" Grid.Row="1" HorizontalAlignment="Left" VerticalAlignment="Center" Height="28" Width="28" FontFamily="Arial Rounded MT Bold" FontSize="12" BorderBrush="#FF0012FF" Click="accelerate_Click" Margin="15,0,0,0"/>
-                    <Button x:Name="accelerate_remove" Tag="remove" Content="-" HorizontalAlignment="Left" VerticalAlignment="Center" Height="28" Width="28" FontFamily="Arial Rounded MT Bold" BorderBrush="#FF0012FF" Click="accelerate_Click" Grid.Row="1" Margin="60,0,0,0"/>
-                    <Button x:Name="accelerate_reset" Tag="reset" Content="RESET" Grid.Row="1" HorizontalAlignment="Right" Margin="0,0,15,0" VerticalAlignment="Center" Height="28" Width="66" FontFamily="M PLUS 2 Medium" FontSize="16" BorderBrush="#FF0010FF" Click="accelerate_Click"/>
-                    <Border BorderBrush="#FF969696" BorderThickness="1" Grid.Row="1"/>
-                    <ListView x:Name="accelerate_settings" SelectionMode="Single" Loaded="accelerate_setting_load" SelectionChanged="accelerate_settings_SelectionChanged">
-                        <ListView.ItemTemplate>
-                            <DataTemplate>
-                                <StackPanel>
-                                    <TextBlock Text="{Binding from}"/>
-                                    <TextBlock Text="{Binding pulse_Mode}" FontSize="20"/>
-                                </StackPanel>
-                            </DataTemplate>
-                        </ListView.ItemTemplate>
-                        <ListView.ContextMenu>
-                            <ContextMenu>
-                                <MenuItem Header="Sort" Click="MenuItem_Click" Tag="accelerate.sort"/>
-                            </ContextMenu>
-                        </ListView.ContextMenu>
-                    </ListView>
+        Title="VVVF Simulator" Height="500" Width="900">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="25"/>
+            <RowDefinition Height="115*"/>
+        </Grid.RowDefinitions>
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="260"/>
+                <ColumnDefinition Width="5*"/>
+            </Grid.ColumnDefinitions>
+            <Grid>
+                <TabControl x:Name="setting_tabs" Margin="10,10,10,10">
+
+                    <TabItem Header="Settings">
+                        <Grid Background="#FFFFFFFF">
+                            <StackPanel/>
+                            <Button x:Name="settings_level" Content="Level" HorizontalAlignment="Stretch" Margin="0,10,0,0" VerticalAlignment="Top" Height="28" FontFamily="M PLUS 2 Medium" FontSize="16" BorderBrush="#FF0012FF" Click="setting_button_Click"/>
+                            <Button x:Name="settings_minimum" Content="Minimum Frequency" HorizontalAlignment="Stretch" Margin="0,43,0,0" VerticalAlignment="Top" Height="28" FontFamily="M PLUS 2 Medium" FontSize="16" BorderBrush="#FF0012FF" Click="setting_button_Click"/>
+                            <Button x:Name="settings_mascon" Content="Mascon Off" HorizontalAlignment="Stretch" Margin="0,76,0,0" VerticalAlignment="Top" Height="28" FontFamily="M PLUS 2 Medium" FontSize="16" BorderBrush="#FF0010FF" Click="setting_button_Click"/>
+                        </Grid>
+                    </TabItem>
+                    <TabItem Header="Accelerate">
+                        <Grid Background="#FFFFFFFF">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="343*"/>
+                                <RowDefinition Height="43*"/>
+                            </Grid.RowDefinitions>
+                            <StackPanel Grid.RowSpan="2"/>
+                            <Grid Grid.RowSpan="2"/>
+                            <Button x:Name="accelerate_add" Tag="add" Content="+" Grid.Row="1" HorizontalAlignment="Left" VerticalAlignment="Center" Height="28" Width="28" FontFamily="Arial Rounded MT Bold" FontSize="12" BorderBrush="#FF0012FF" Click="accelerate_Click" Margin="15,0,0,0"/>
+                            <Button x:Name="accelerate_remove" Tag="remove" Content="-" HorizontalAlignment="Left" VerticalAlignment="Center" Height="28" Width="28" FontFamily="Arial Rounded MT Bold" BorderBrush="#FF0012FF" Click="accelerate_Click" Grid.Row="1" Margin="60,0,0,0"/>
+                            <Button x:Name="accelerate_reset" Tag="reset" Content="RESET" Grid.Row="1" HorizontalAlignment="Right" Margin="0,0,15,0" VerticalAlignment="Center" Height="28" Width="66" FontFamily="M PLUS 2 Medium" FontSize="16" BorderBrush="#FF0010FF" Click="accelerate_Click"/>
+                            <Border BorderBrush="#FF969696" BorderThickness="1" Grid.Row="1"/>
+                            <ListView x:Name="accelerate_settings" SelectionMode="Single" Loaded="accelerate_setting_load" SelectionChanged="accelerate_settings_SelectionChanged">
+                                <ListView.ItemTemplate>
+                                    <DataTemplate>
+                                        <StackPanel>
+                                            <TextBlock Text="{Binding from}"/>
+                                            <TextBlock Text="{Binding pulse_Mode}" FontSize="20"/>
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </ListView.ItemTemplate>
+                                <ListView.ContextMenu>
+                                    <ContextMenu>
+                                        <MenuItem Header="Sort" Click="MenuItem_Click" Tag="accelerate.sort"/>
+                                    </ContextMenu>
+                                </ListView.ContextMenu>
+                            </ListView>
 
 
-                </Grid>
-            </TabItem>
-            <TabItem Header="Brake">
-                <Grid Background="#FFFFFFFF">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="343*"/>
-                        <RowDefinition Height="43*"/>
-                    </Grid.RowDefinitions>
-                    <StackPanel Grid.RowSpan="2"/>
-                    <Grid Grid.RowSpan="2"/>
-                    <Button x:Name="brake_add" Tag="add" Content="+" Grid.Row="1" HorizontalAlignment="Left" VerticalAlignment="Center" Height="28" Width="28" FontFamily="Arial Rounded MT Bold" FontSize="12" BorderBrush="#FF0012FF" Click="brake_Click" Margin="15,0,0,0"/>
-                    <Button x:Name="brake_remove" Tag="remove" Content="-" HorizontalAlignment="Left" VerticalAlignment="Center" Height="28" Width="28" FontFamily="Arial Rounded MT Bold" BorderBrush="#FF0012FF" Click="brake_Click" Grid.Row="1" Margin="60,0,0,0"/>
-                    <Button x:Name="brake_reset" Tag="reset" Content="RESET" Grid.Row="1" HorizontalAlignment="Right" Margin="0,0,15,0" VerticalAlignment="Center" Height="28" Width="66" FontFamily="M PLUS 2 Medium" FontSize="16" BorderBrush="#FF0010FF" Click="brake_Click"/>
-                    <Border BorderBrush="#FF969696" BorderThickness="1" Grid.Row="1"/>
-                    <ListView x:Name="brake_settings" SelectionMode="Single" Loaded="brake_settings_load" SelectionChanged="brake_settings_SelectionChanged">
-                        <ListView.ItemTemplate>
-                            <DataTemplate>
-                                <StackPanel>
-                                    <TextBlock Text="{Binding from}"/>
-                                    <TextBlock Text="{Binding pulse_Mode}" FontSize="20"/>
-                                </StackPanel>
-                            </DataTemplate>
-                        </ListView.ItemTemplate>
-                        <ListView.ContextMenu>
-                            <ContextMenu>
-                                <MenuItem Header="Sort" Click="MenuItem_Click" Tag="brake.sort"/>
-                            </ContextMenu>
-                        </ListView.ContextMenu>
-                    </ListView>
+                        </Grid>
+                    </TabItem>
+                    <TabItem Header="Brake">
+                        <Grid Background="#FFFFFFFF">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="343*"/>
+                                <RowDefinition Height="43*"/>
+                            </Grid.RowDefinitions>
+                            <StackPanel Grid.RowSpan="2"/>
+                            <Grid Grid.RowSpan="2"/>
+                            <Button x:Name="brake_add" Tag="add" Content="+" Grid.Row="1" HorizontalAlignment="Left" VerticalAlignment="Center" Height="28" Width="28" FontFamily="Arial Rounded MT Bold" FontSize="12" BorderBrush="#FF0012FF" Click="brake_Click" Margin="15,0,0,0"/>
+                            <Button x:Name="brake_remove" Tag="remove" Content="-" HorizontalAlignment="Left" VerticalAlignment="Center" Height="28" Width="28" FontFamily="Arial Rounded MT Bold" BorderBrush="#FF0012FF" Click="brake_Click" Grid.Row="1" Margin="60,0,0,0"/>
+                            <Button x:Name="brake_reset" Tag="reset" Content="RESET" Grid.Row="1" HorizontalAlignment="Right" Margin="0,0,15,0" VerticalAlignment="Center" Height="28" Width="66" FontFamily="M PLUS 2 Medium" FontSize="16" BorderBrush="#FF0010FF" Click="brake_Click"/>
+                            <Border BorderBrush="#FF969696" BorderThickness="1" Grid.Row="1"/>
+                            <ListView x:Name="brake_settings" SelectionMode="Single" Loaded="brake_settings_load" SelectionChanged="brake_settings_SelectionChanged">
+                                <ListView.ItemTemplate>
+                                    <DataTemplate>
+                                        <StackPanel>
+                                            <TextBlock Text="{Binding from}"/>
+                                            <TextBlock Text="{Binding pulse_Mode}" FontSize="20"/>
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </ListView.ItemTemplate>
+                                <ListView.ContextMenu>
+                                    <ContextMenu>
+                                        <MenuItem Header="Sort" Click="MenuItem_Click" Tag="brake.sort"/>
+                                    </ContextMenu>
+                                </ListView.ContextMenu>
+                            </ListView>
 
 
-                </Grid>
-            </TabItem>
-        </TabControl>
-        <Frame Grid.Column="1" x:Name="setting_window" NavigationUIVisibility="Hidden"/>
-
+                        </Grid>
+                    </TabItem>
+                </TabControl>
+            </Grid>
+            <Grid Grid.Column="1">
+                <Frame x:Name="setting_window" NavigationUIVisibility="Hidden"/>
+            </Grid>
+        </Grid>
+        <DockPanel LastChildFill="True">
+            <Menu DockPanel.Dock="Top">
+                <MenuItem Header="File">
+                    <MenuItem Header="Save Yaml" Tag="Save" Click="File_Menu_Click"/>
+                    <MenuItem Header="Load Yaml" Tag="Load" Click="File_Menu_Click"/>
+                </MenuItem>
+                <MenuItem Header="Generation">
+                    <MenuItem Header="Sound Generation" Tag="VVVF_Sound" Click="Generation_Menu_Click"/>
+                </MenuItem>
+            </Menu>
+        </DockPanel>
     </Grid>
 </Window>
