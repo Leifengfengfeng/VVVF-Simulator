@@ -650,10 +650,10 @@ namespace VVVF_Simulator.Generation
             }
         }
 
-        public enum Language_Mode { 
+        public enum Taroimo_Status_Language_Mode { 
             Japanese, English
         }
-        public static void generate_status_taroimo_like_video(String output_path, Yaml_Sound_Data sound_data, Language_Mode font , Language_Mode language)
+        public static void generate_status_taroimo_like_video(String output_path, Yaml_Sound_Data sound_data, Taroimo_Status_Language_Mode font , Taroimo_Status_Language_Mode language)
         {
             reset_control_variables();
             reset_all_variables();
@@ -691,7 +691,7 @@ namespace VVVF_Simulator.Generation
                 new Font(new FontFamily("Meiryo"), 60, FontStyle.Regular, GraphicsUnit.Pixel),
                 new(new FontFamily("Fugaz One"), 80, FontStyle.Regular, GraphicsUnit.Pixel),
             };
-            Font[] lng_fonts = font == Language_Mode.Japanese ? jpn_fonts : eng_fonts;
+            Font[] lng_fonts = font == Taroimo_Status_Language_Mode.Japanese ? jpn_fonts : eng_fonts;
             //Control stat , Carrier , Async , Sync , Output, Freq ,Volt , Carrier_Num, Key , Carrier_Unit
             Point[] jpn_f_jpn_str_compen = new Point[] { 
                 new Point(0, 43), // control stat
@@ -726,13 +726,13 @@ namespace VVVF_Simulator.Generation
                 new Point(6, -7), // Voltage (12
                 new Point(-20, -7), // Voltage Unit (13
             };
-            Point[] lng_str_compen = language == Language_Mode.Japanese ? jpn_f_jpn_str_compen : font == Language_Mode.Japanese ? eng_f_jpn_str_compen : eng_f_eng_str_compen;
+            Point[] lng_str_compen = language == Taroimo_Status_Language_Mode.Japanese ? jpn_f_jpn_str_compen : font == Taroimo_Status_Language_Mode.Japanese ? eng_f_jpn_str_compen : eng_f_eng_str_compen;
 
             String[] jpn_f_jpn_words = new String[] { "惰行", "力行", "制動", "停止", "キャリア", "非同期モード", "パルス", "同期モード", "出力", "周波数", "電圧" };
             String[] eng_f_eng_words = new String[] { "Cruising", "Accelerate", "Braking", "Stopping", "Carrier", "Async Mode", "Pulse", "Sync Mode", "Output", "Freq", "Volt" };
             String[] eng_f_jpn_words = new String[] { "Cruise", "Accel", "Brake", "Stop", "Carrier", "Async Mode", "Pulse", "Sync Mode", "Output", "Freq", "Volt" };
 
-            String[] lng_words = language == Language_Mode.Japanese ? jpn_f_jpn_words : font == Language_Mode.Japanese ? eng_f_jpn_words : eng_f_eng_words;
+            String[] lng_words = language == Taroimo_Status_Language_Mode.Japanese ? jpn_f_jpn_words : font == Taroimo_Status_Language_Mode.Japanese ? eng_f_jpn_words : eng_f_eng_words;
 
             Bitmap background = new(image_width, image_height);
             Graphics backgound_g = Graphics.FromImage(background);

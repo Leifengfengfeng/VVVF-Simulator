@@ -255,7 +255,7 @@ namespace VVVF_Simulator
         public class Generation_Params
         {
             public List<double> Double_Values = new();
-            public List<Generation.Generate_Control_Info.Language_Mode> Video_Language = new();
+            public List<Generation.Generate_Control_Info.Taroimo_Status_Language_Mode> Video_Language = new();
         }
         public Generation_Params gen_param = new();
         private void Generation_Menu_Click(object sender, RoutedEventArgs e)
@@ -292,12 +292,18 @@ namespace VVVF_Simulator
                 if (command[1].Equals("Original"))
                     Generation.Generate_Control_Info.generate_status_video(dialog.FileName, Yaml_Generation.current_data);
                 else if (command[1].Equals("Taroimo"))
+                {
+                    Generate_Language_Select lang_select = new Generate_Language_Select(this);
+                    lang_select.ShowDialog();
+
                     Generation.Generate_Control_Info.generate_status_taroimo_like_video(
                         dialog.FileName,
                         Yaml_Generation.current_data,
                         gen_param.Video_Language[0],
                         gen_param.Video_Language[1]
                     );
+                }
+                    
             }
             else if (command[0].Equals("WaveForm"))
             {
