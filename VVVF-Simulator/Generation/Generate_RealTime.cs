@@ -156,9 +156,6 @@ namespace VVVF_Simulator.Generation
 
                 wavPlayer.Play();
 
-                Console.WriteLine("Press R to Select New Sound...");
-                Console.WriteLine("Press ENTER to exit...");
-
                 int stat = realtime_sound_calculate(bufferedWaveProvider, ysd);
 
                 wavPlayer.Stop();

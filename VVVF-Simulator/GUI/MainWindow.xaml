@@ -6,6 +6,10 @@
         xmlns:local="clr-namespace:VVVF_Simulator"
         mc:Ignorable="d"
         Title="VVVF Simulator" Height="500" Width="900">
+    <Window.Resources>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+    </Window.Resources>
+    
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="25"/>
@@ -35,11 +39,11 @@
                             </Grid.RowDefinitions>
                             <StackPanel Grid.RowSpan="2"/>
                             <Grid Grid.RowSpan="2"/>
-                            <Button x:Name="accelerate_add" Tag="add" Content="+" Grid.Row="1" HorizontalAlignment="Left" VerticalAlignment="Center" Height="28" Width="28" FontFamily="Arial Rounded MT Bold" FontSize="12" BorderBrush="#FF0012FF" Click="accelerate_Click" Margin="15,0,0,0"/>
-                            <Button x:Name="accelerate_remove" Tag="remove" Content="-" HorizontalAlignment="Left" VerticalAlignment="Center" Height="28" Width="28" FontFamily="Arial Rounded MT Bold" BorderBrush="#FF0012FF" Click="accelerate_Click" Grid.Row="1" Margin="60,0,0,0"/>
-                            <Button x:Name="accelerate_reset" Tag="reset" Content="RESET" Grid.Row="1" HorizontalAlignment="Right" Margin="0,0,15,0" VerticalAlignment="Center" Height="28" Width="66" FontFamily="M PLUS 2 Medium" FontSize="16" BorderBrush="#FF0010FF" Click="accelerate_Click"/>
+                            <Button x:Name="accelerate_add" Tag="accelerate_add" Content="+" Grid.Row="1" HorizontalAlignment="Left" VerticalAlignment="Center" Height="28" Width="28" FontFamily="Arial Rounded MT Bold" FontSize="12" BorderBrush="#FF0012FF" Click="settings_edit_Click" Margin="15,0,0,0"/>
+                            <Button x:Name="accelerate_remove" Tag="accelerate_remove" Content="-" HorizontalAlignment="Left" VerticalAlignment="Center" Height="28" Width="28" FontFamily="Arial Rounded MT Bold" BorderBrush="#FF0012FF" Click="settings_edit_Click" Grid.Row="1" Margin="60,0,0,0"/>
+                            <Button x:Name="accelerate_reset" Tag="accelerate_reset" Content="RESET" Grid.Row="1" HorizontalAlignment="Right" Margin="0,0,15,0" VerticalAlignment="Center" Height="28" Width="66" FontFamily="M PLUS 2 Medium" FontSize="16" BorderBrush="#FF0010FF" Click="settings_edit_Click"/>
                             <Border BorderBrush="#FF969696" BorderThickness="1" Grid.Row="1"/>
-                            <ListView x:Name="accelerate_settings" SelectionMode="Single" Loaded="accelerate_setting_load" SelectionChanged="accelerate_settings_SelectionChanged">
+                            <ListView x:Name="accelerate_settings" SelectionMode="Single" Loaded="settings_load" Tag="accelerate" >
                                 <ListView.ItemTemplate>
                                     <DataTemplate>
                                         <StackPanel>
@@ -66,11 +70,11 @@
                             </Grid.RowDefinitions>
                             <StackPanel Grid.RowSpan="2"/>
                             <Grid Grid.RowSpan="2"/>
-                            <Button x:Name="brake_add" Tag="add" Content="+" Grid.Row="1" HorizontalAlignment="Left" VerticalAlignment="Center" Height="28" Width="28" FontFamily="Arial Rounded MT Bold" FontSize="12" BorderBrush="#FF0012FF" Click="brake_Click" Margin="15,0,0,0"/>
-                            <Button x:Name="brake_remove" Tag="remove" Content="-" HorizontalAlignment="Left" VerticalAlignment="Center" Height="28" Width="28" FontFamily="Arial Rounded MT Bold" BorderBrush="#FF0012FF" Click="brake_Click" Grid.Row="1" Margin="60,0,0,0"/>
-                            <Button x:Name="brake_reset" Tag="reset" Content="RESET" Grid.Row="1" HorizontalAlignment="Right" Margin="0,0,15,0" VerticalAlignment="Center" Height="28" Width="66" FontFamily="M PLUS 2 Medium" FontSize="16" BorderBrush="#FF0010FF" Click="brake_Click"/>
+                            <Button x:Name="brake_add" Tag="brake_add" Content="+" Grid.Row="1" HorizontalAlignment="Left" VerticalAlignment="Center" Height="28" Width="28" FontFamily="Arial Rounded MT Bold" FontSize="12" BorderBrush="#FF0012FF" Click="settings_edit_Click" Margin="15,0,0,0"/>
+                            <Button x:Name="brake_remove" Tag="brake_remove" Content="-" HorizontalAlignment="Left" VerticalAlignment="Center" Height="28" Width="28" FontFamily="Arial Rounded MT Bold" BorderBrush="#FF0012FF" Click="settings_edit_Click" Grid.Row="1" Margin="60,0,0,0"/>
+                            <Button x:Name="brake_reset" Tag="brake_reset" Content="RESET" Grid.Row="1" HorizontalAlignment="Right" Margin="0,0,15,0" VerticalAlignment="Center" Height="28" Width="66" FontFamily="M PLUS 2 Medium" FontSize="16" BorderBrush="#FF0010FF" Click="settings_edit_Click"/>
                             <Border BorderBrush="#FF969696" BorderThickness="1" Grid.Row="1"/>
-                            <ListView x:Name="brake_settings" SelectionMode="Single" Loaded="brake_settings_load" SelectionChanged="brake_settings_SelectionChanged">
+                            <ListView x:Name="brake_settings" SelectionMode="Single" Loaded="settings_load" Tag="brake" SelectionChanged="settings_SelectionChanged">
                                 <ListView.ItemTemplate>
                                     <DataTemplate>
                                         <StackPanel>
@@ -106,7 +110,7 @@
                     <MenuItem Header="Environment Sound" Tag="Audio_Environment" Click="Generation_Menu_Click"/>
                 </MenuItem>
                 <MenuItem Header="Control">
-                    <MenuItem Header="Original Control" Tag="Control_Original" Click="Generation_Menu_Click"/>
+                    <MenuItem Header="Original" Tag="Control_Original" Click="Generation_Menu_Click"/>
                     <MenuItem Header="Taroimo" Tag="Control_Taroimo" Click="Generation_Menu_Click"/>
                 </MenuItem>
                 <MenuItem Header="WaveForm">
@@ -125,5 +129,6 @@
                 </MenuItem>
             </Menu>
         </DockPanel>
+        <Grid x:Name="Hider" Background="#7F000000" Visibility="{Binding blocking, Converter={StaticResource BooleanToVisibilityConverter}}" Grid.RowSpan="2" d:IsHidden="True"/>
     </Grid>
 </Window>

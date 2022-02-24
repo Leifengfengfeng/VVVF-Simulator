@@ -14,6 +14,8 @@ using YamlDotNet.Serialization;
 using static VVVF_Simulator.vvvf_wave_calculate;
 using static VVVF_Simulator.Yaml_VVVF_Sound.Yaml_Sound_Data;
 using VVVF_Simulator.GUI.UtilForm;
+using System.ComponentModel;
+using System.Media;
 
 namespace VVVF_Simulator
 {
@@ -22,10 +24,39 @@ namespace VVVF_Simulator
     /// </summary>
     public partial class MainWindow : Window
     {
+        private ViewData view_data = new ViewData();
+        public class ViewData : ViewModelBase
+        {
+            private bool _blocking = false;
+            public bool blocking
+            {
+                get
+                {
+                    return _blocking;
+                }
+                set
+                {
+                    _blocking = value;
+                    RaisePropertyChanged(nameof(blocking));
+                }
+            }
+        };
+        public class ViewModelBase : INotifyPropertyChanged
+        {
+            public event PropertyChangedEventHandler? PropertyChanged;
+            protected virtual void RaisePropertyChanged(string propertyName)
+            {
+                this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            }
+        }
+
         public MainWindow()
         {
+            DataContext = view_data;
             InitializeComponent();
         }
+
+        
 
         private void setting_button_Click(object sender, RoutedEventArgs e)
         {
@@ -39,36 +70,61 @@ namespace VVVF_Simulator
                 setting_window.Navigate(new Uri("GUI/Pages/Settings/mascon_off_setting.xaml", UriKind.Relative));
         }
 
-        // ACCELERATING SETTING EVENTS
-        private void accelerate_Click(object sender, RoutedEventArgs e)
+        private void settings_edit_Click(object sender, RoutedEventArgs e)
         {
             Button btn = (Button)sender;
             object? tag = btn.Tag;
             if (tag == null) return;
-            if (tag.Equals("remove"))
-            {
-                Yaml_Generation.current_data.accelerate_pattern.RemoveAt(accelerate_settings.SelectedIndex);
-            }
-            else if (tag.Equals("add"))
-            {
-                Yaml_Generation.current_data.accelerate_pattern.Add(new Yaml_Control_Data());
-            }
-            else if (tag.Equals("reset"))
-            {
-                Yaml_Generation.current_data.accelerate_pattern.Clear();
-            }
+            String? tag_str = tag.ToString();
+            if (tag_str == null) return;
+            String[] command = tag_str.Split("_");
 
-            accelerate_settings.Items.Refresh();
+            var list_view = command[0].Equals("accelerate") ? accelerate_settings : accelerate_settings;
+            var settings = command[0].Equals("accelerate") ? Yaml_Generation.current_data.accelerate_pattern : Yaml_Generation.current_data.braking_pattern;
+
+            if (command[1].Equals("remove"))
+                settings.RemoveAt(list_view.SelectedIndex);
+            else if (command[1].Equals("add"))
+                settings.Add(new Yaml_Control_Data());
+            else if (command[1].Equals("reset"))
+                settings.Clear();
+
+            list_view.Items.Refresh();
         }
-        private void accelerate_setting_load(object sender, RoutedEventArgs e)
+        private void settings_load(object sender, RoutedEventArgs e)
         {
-            accelerate_settings.ItemsSource = Yaml_Generation.current_data.accelerate_pattern;
-            accelerate_selected_show();
+            ListView btn = (ListView)sender;
+            object? tag = btn.Tag;
+            if (tag == null) return;
+            String? tag_str = tag.ToString();
+            if (tag_str == null) return;
+
+            if (tag.Equals("accelerate"))
+            {
+                accelerate_settings.ItemsSource = Yaml_Generation.current_data.accelerate_pattern;
+                accelerate_selected_show();
+            }
+            else
+            {
+                brake_settings.ItemsSource = Yaml_Generation.current_data.braking_pattern;
+                brake_selected_show();
+            }
         }
-        private void accelerate_settings_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void settings_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            accelerate_selected_show();
+            ListView btn = (ListView)sender;
+            object? tag = btn.Tag;
+            if (tag == null) return;
+            String? tag_str = tag.ToString();
+            if (tag_str == null) return;
+
+
+            if(tag.Equals("accelerate"))
+                accelerate_selected_show();
+            else
+                brake_selected_show();
         }
+       
         private void accelerate_selected_show()
         {
             int selected = accelerate_settings.SelectedIndex;
@@ -92,36 +148,6 @@ namespace VVVF_Simulator
                     setting_window.Navigate(new Level_3_Page_Control_Common_Sync(selected_data, this));
             }
 
-        }
-
-
-        // BRAKING SETTING EVENTS
-        private void brake_Click(object sender, RoutedEventArgs e)
-        {
-            Button btn = (Button)sender;
-            object? tag = btn.Tag;
-            if (tag == null) return;
-            if (tag.Equals("remove"))
-            {
-                Yaml_Generation.current_data.braking_pattern.RemoveAt(brake_settings.SelectedIndex);
-            }else if (tag.Equals("add"))
-            {
-                Yaml_Generation.current_data.braking_pattern.Add(new Yaml_Control_Data());
-            }else if (tag.Equals("reset"))
-            {
-                Yaml_Generation.current_data.braking_pattern.Clear();
-            }
-
-            brake_settings.Items.Refresh();
-        }
-        private void brake_settings_load(object sender, RoutedEventArgs e)
-        {
-            brake_settings.ItemsSource = Yaml_Generation.current_data.braking_pattern;
-            brake_selected_show();
-        }
-        private void brake_settings_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            brake_selected_show();
         }
         private void brake_selected_show()
         {
@@ -190,7 +216,6 @@ namespace VVVF_Simulator
                 }
             }
         }
-
         private void File_Menu_Click(object sender, RoutedEventArgs e)
         {
             MenuItem button = (MenuItem)sender;
@@ -227,11 +252,12 @@ namespace VVVF_Simulator
             }
         }
 
-        public class Generation_Param_Vari
+        public class Generation_Params
         {
             public List<double> Double_Values = new();
+            public List<Generation.Generate_Control_Info.Language_Mode> Video_Language = new();
         }
-        public Generation_Param_Vari gen_param = new();
+        public Generation_Params gen_param = new();
         private void Generation_Menu_Click(object sender, RoutedEventArgs e)
         {
             MenuItem button = (MenuItem)sender;
@@ -241,6 +267,15 @@ namespace VVVF_Simulator
             if (tag_str == null) return;
             String[] command = tag_str.Split("_");
 
+            view_data.blocking = true;
+
+            solve_Command(command);
+
+            view_data.blocking = false;
+            SystemSounds.Beep.Play();
+        }
+        private void solve_Command(String[] command)
+        {
             if (command[0].Equals("Audio"))
             {
                 var dialog = new SaveFileDialog { Filter = "wav (*.wav)|*.wav" };
@@ -258,10 +293,10 @@ namespace VVVF_Simulator
                     Generation.Generate_Control_Info.generate_status_video(dialog.FileName, Yaml_Generation.current_data);
                 else if (command[1].Equals("Taroimo"))
                     Generation.Generate_Control_Info.generate_status_taroimo_like_video(
-                        dialog.FileName, 
-                        Yaml_Generation.current_data, 
-                        Generation.Generate_Control_Info.Language_Mode.Japanese, 
-                        Generation.Generate_Control_Info.Language_Mode.Japanese
+                        dialog.FileName,
+                        Yaml_Generation.current_data,
+                        gen_param.Video_Language[0],
+                        gen_param.Video_Language[1]
                     );
             }
             else if (command[0].Equals("WaveForm"))
@@ -305,10 +340,10 @@ namespace VVVF_Simulator
                     MessageBoxResult result = MessageBox.Show("Enable zero vector circle?", "Info", MessageBoxButton.YesNo, MessageBoxImage.Question);
                     bool circle = result == MessageBoxResult.Yes;
 
-                    Double_Ask_Form double_Ask_Dialog = new Double_Ask_Form(this,"Enter the frequency.");
+                    Double_Ask_Form double_Ask_Dialog = new Double_Ask_Form(this, "Enter the frequency.");
                     double_Ask_Dialog.ShowDialog();
 
-                    bool t = Generation.Generate_Hexagon.generate_wave_hexagon_explain(dialog.FileName, Yaml_Generation.current_data, circle , gen_param.Double_Values[0]);
+                    bool t = Generation.Generate_Hexagon.generate_wave_hexagon_explain(dialog.FileName, Yaml_Generation.current_data, circle, gen_param.Double_Values[0]);
                     Debug.Print(t.ToString());
                 }
                 else if (command[1].Equals("Image"))
