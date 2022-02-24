@@ -1,0 +1,16 @@
+﻿<Window x:Class="VVVF_Simulator.GUI.UtilForm.Double_Ask_Form"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:VVVF_Simulator.GUI.UtilForm"
+        mc:Ignorable="d"
+        FocusManager.FocusedElement="{Binding ElementName=Num_Box}"
+        Title="Double_Ask_Form" Height="200" Width="300" ResizeMode="NoResize">
+    <Grid>
+        <Label x:Name="Str_Title" Content="{Binding Str_Title}" HorizontalAlignment="Left" Margin="14,23,0,0" VerticalAlignment="Top"/>
+        <TextBox x:Name="Num_Box" Margin="15,0,15,0" TextWrapping="Wrap" Text="" VerticalAlignment="Center" Width="199"/>
+        <Button Content="OK" HorizontalAlignment="Center" Margin="0,74,0,0" VerticalAlignment="Center" Width="199" Click="Button_Click"/>
+
+    </Grid>
+</Window>

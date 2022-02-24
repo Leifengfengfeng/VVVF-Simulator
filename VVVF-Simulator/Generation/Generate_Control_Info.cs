@@ -161,16 +161,12 @@ namespace VVVF_Simulator.Generation
             reset_control_variables();
             reset_all_variables();
 
-            DateTime dt = DateTime.Now;
-            String gen_time = dt.ToString("yyyy-MM-dd_HH-mm-ss");
-            String fileName = output_path + "\\" + gen_time + ".avi";
-
             Int32 sound_block_count = 0;
 
             int image_width = 500;
             int image_height = 1080;
             int movie_div = 3000;
-            VideoWriter vr = new (fileName, OpenCvSharp.FourCC.H264, div_freq / movie_div, new OpenCvSharp.Size(image_width, image_height));
+            VideoWriter vr = new (output_path, OpenCvSharp.FourCC.H264, div_freq / movie_div, new OpenCvSharp.Size(image_width, image_height));
 
             if (!vr.IsOpened())
             {
@@ -654,23 +650,22 @@ namespace VVVF_Simulator.Generation
             }
         }
 
-        public static void generate_status_taroimo_like_video(String output_path, Yaml_Sound_Data sound_data)
+        public enum Language_Mode { 
+            Japanese, English
+        }
+        public static void generate_status_taroimo_like_video(String output_path, Yaml_Sound_Data sound_data, Language_Mode font , Language_Mode language)
         {
             reset_control_variables();
             reset_all_variables();
 
             set_Allowed_Random_Freq_Move(false);
 
-            DateTime dt = DateTime.Now;
-            String gen_time = dt.ToString("yyyy-MM-dd_HH-mm-ss");
-            String fileName = output_path + "\\"+ gen_time + ".avi";
-
             Int32 sound_block_count = 0;
 
             int image_width = 960;
             int image_height = 1620;
             int movie_div = 3000;
-            VideoWriter vr = new (fileName, OpenCvSharp.FourCC.H264, div_freq / movie_div, new OpenCvSharp.Size(image_width, image_height));
+            VideoWriter vr = new (output_path, OpenCvSharp.FourCC.H264, div_freq / movie_div, new OpenCvSharp.Size(image_width, image_height));
 
             if (!vr.IsOpened())
             {
@@ -680,52 +675,6 @@ namespace VVVF_Simulator.Generation
 
             bool loop = true, temp = false, video_finished = false, final_show = false, first_show = true;
             int freeze_count = 0;
-
-            bool lang_jpn, font_jpn;
-            while (true)
-            {
-                Console.WriteLine("Language mode (EN / JA) : ");
-                String mode = Console.ReadLine();
-                if (mode.ToLower().Equals("ja"))
-                {
-                    lang_jpn = true;
-                    font_jpn = true;
-                    break;
-                }
-                else if (mode.ToLower().Equals("en"))
-                {
-                    lang_jpn = false;
-                    font_jpn = false;
-                    break;
-                }
-                else
-                {
-                    Console.WriteLine("Invalid value.");
-                }
-            }
-
-            if (!lang_jpn)
-            {
-                while (true)
-                {
-                    Console.WriteLine("Font mode (EN / JA) : ");
-                    String mode = Console.ReadLine();
-                    if (mode.ToLower().Equals("ja"))
-                    {
-                        font_jpn = true;
-                        break;
-                    }
-                    else if (mode.ToLower().Equals("en"))
-                    {
-                        font_jpn = false;
-                        break;
-                    }
-                    else
-                    {
-                        Console.WriteLine("Invalid value.");
-                    }
-                }
-            }
 
             Font[] jpn_fonts = new Font[] {
                 new(new FontFamily("VDL ロゴＧ R"), 75, FontStyle.Regular, GraphicsUnit.Pixel), //topic
@@ -742,7 +691,7 @@ namespace VVVF_Simulator.Generation
                 new Font(new FontFamily("Meiryo"), 60, FontStyle.Regular, GraphicsUnit.Pixel),
                 new(new FontFamily("Fugaz One"), 80, FontStyle.Regular, GraphicsUnit.Pixel),
             };
-            Font[] lng_fonts = font_jpn ? jpn_fonts : eng_fonts;
+            Font[] lng_fonts = font == Language_Mode.Japanese ? jpn_fonts : eng_fonts;
             //Control stat , Carrier , Async , Sync , Output, Freq ,Volt , Carrier_Num, Key , Carrier_Unit
             Point[] jpn_f_jpn_str_compen = new Point[] { 
                 new Point(0, 43), // control stat
@@ -777,13 +726,13 @@ namespace VVVF_Simulator.Generation
                 new Point(6, -7), // Voltage (12
                 new Point(-20, -7), // Voltage Unit (13
             };
-            Point[] lng_str_compen = lang_jpn ? jpn_f_jpn_str_compen : font_jpn ? eng_f_jpn_str_compen : eng_f_eng_str_compen;
+            Point[] lng_str_compen = language == Language_Mode.Japanese ? jpn_f_jpn_str_compen : font == Language_Mode.Japanese ? eng_f_jpn_str_compen : eng_f_eng_str_compen;
 
             String[] jpn_f_jpn_words = new String[] { "惰行", "力行", "制動", "停止", "キャリア", "非同期モード", "パルス", "同期モード", "出力", "周波数", "電圧" };
             String[] eng_f_eng_words = new String[] { "Cruising", "Accelerate", "Braking", "Stopping", "Carrier", "Async Mode", "Pulse", "Sync Mode", "Output", "Freq", "Volt" };
             String[] eng_f_jpn_words = new String[] { "Cruise", "Accel", "Brake", "Stop", "Carrier", "Async Mode", "Pulse", "Sync Mode", "Output", "Freq", "Volt" };
 
-            String[] lng_words = lang_jpn ? jpn_f_jpn_words : font_jpn ? eng_f_jpn_words : eng_f_eng_words;
+            String[] lng_words = language == Language_Mode.Japanese ? jpn_f_jpn_words : font == Language_Mode.Japanese ? eng_f_jpn_words : eng_f_eng_words;
 
             Bitmap background = new(image_width, image_height);
             Graphics backgound_g = Graphics.FromImage(background);

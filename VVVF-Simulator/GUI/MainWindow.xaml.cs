@@ -13,6 +13,7 @@ using VVVF_Simulator.Pages.Control_Settings.Level_3;
 using YamlDotNet.Serialization;
 using static VVVF_Simulator.vvvf_wave_calculate;
 using static VVVF_Simulator.Yaml_VVVF_Sound.Yaml_Sound_Data;
+using VVVF_Simulator.GUI.UtilForm;
 
 namespace VVVF_Simulator
 {
@@ -226,21 +227,109 @@ namespace VVVF_Simulator
             }
         }
 
+        public class Generation_Param_Vari
+        {
+            public List<double> Double_Values = new();
+        }
+        public Generation_Param_Vari gen_param = new();
         private void Generation_Menu_Click(object sender, RoutedEventArgs e)
         {
             MenuItem button = (MenuItem)sender;
             Object? tag = button.Tag;
             if (tag == null) return;
-            if (tag.Equals("VVVF_Sound"))
+            String? tag_str = tag.ToString();
+            if (tag_str == null) return;
+            String[] command = tag_str.Split("_");
+
+            if (command[0].Equals("Audio"))
             {
-                var dialog = new SaveFileDialog{ Filter = "wav (*.wav)|*.wav" };
+                var dialog = new SaveFileDialog { Filter = "wav (*.wav)|*.wav" };
                 if (dialog.ShowDialog() == false) return;
-
-                IsEnabled = false;
-                Generation.Generate_Sound.generate_sound(dialog.FileName, Yaml_Generation.current_data);
-                IsEnabled = true;
+                if (command[1].Equals("VVVF"))
+                    Generation.Generate_Sound.generate_sound(dialog.FileName, Yaml_Generation.current_data);
+                else if (command[1].Equals("Environment"))
+                    Generation.Generate_Sound.generate_env_sound(dialog.FileName);
             }
+            else if (command[0].Equals("Control"))
+            {
+                var dialog = new SaveFileDialog { Filter = "mp4 (*.mp4)|*.mp4" };
+                if (dialog.ShowDialog() == false) return;
+                if (command[1].Equals("Original"))
+                    Generation.Generate_Control_Info.generate_status_video(dialog.FileName, Yaml_Generation.current_data);
+                else if (command[1].Equals("Taroimo"))
+                    Generation.Generate_Control_Info.generate_status_taroimo_like_video(
+                        dialog.FileName, 
+                        Yaml_Generation.current_data, 
+                        Generation.Generate_Control_Info.Language_Mode.Japanese, 
+                        Generation.Generate_Control_Info.Language_Mode.Japanese
+                    );
+            }
+            else if (command[0].Equals("WaveForm"))
+            {
+                var dialog = new SaveFileDialog { Filter = "mp4 (*.mp4)|*.mp4" };
+                if (dialog.ShowDialog() == false) return;
+                if (command[1].Equals("Original"))
+                    Generation.Generate_Wave_Form.generate_wave_U_V(dialog.FileName, Yaml_Generation.current_data);
+                else if (command[1].Equals("Taroimo"))
+                    Generation.Generate_Wave_Form.generate_taroimo_like_wave_U_V(dialog.FileName, Yaml_Generation.current_data);
+                else if (command[1].Equals("UVW"))
+                    Generation.Generate_Wave_Form.generate_taroimo_like_wave_U_V(dialog.FileName, Yaml_Generation.current_data);
+            }
+            else if (command[0].Equals("Hexagon"))
+            {
+                if (command[1].Equals("Original"))
+                {
+                    var dialog = new SaveFileDialog { Filter = "mp4 (*.mp4)|*.mp4" };
+                    if (dialog.ShowDialog() == false) return;
 
+                    MessageBoxResult result = MessageBox.Show("Enable zero vector circle?", "Info", MessageBoxButton.YesNo, MessageBoxImage.Question);
+                    bool circle = result == MessageBoxResult.Yes;
+
+                    Generation.Generate_Hexagon.generate_wave_hexagon(dialog.FileName, Yaml_Generation.current_data, circle);
+                }
+                else if (command[1].Equals("Taroimo"))
+                {
+                    var dialog = new SaveFileDialog { Filter = "mp4 (*.mp4)|*.mp4" };
+                    if (dialog.ShowDialog() == false) return;
+
+                    MessageBoxResult result = MessageBox.Show("Enable zero vector circle?", "Info", MessageBoxButton.YesNo, MessageBoxImage.Question);
+                    bool circle = result == MessageBoxResult.Yes;
+
+                    Generation.Generate_Hexagon.generate_wave_hexagon_taroimo_like(dialog.FileName, Yaml_Generation.current_data, circle);
+                }
+                else if (command[1].Equals("Explain"))
+                {
+                    var dialog = new SaveFileDialog { Filter = "mp4 (*.mp4)|*.mp4" };
+                    if (dialog.ShowDialog() == false) return;
+
+                    MessageBoxResult result = MessageBox.Show("Enable zero vector circle?", "Info", MessageBoxButton.YesNo, MessageBoxImage.Question);
+                    bool circle = result == MessageBoxResult.Yes;
+
+                    Double_Ask_Form double_Ask_Dialog = new Double_Ask_Form(this,"Enter the frequency.");
+                    double_Ask_Dialog.ShowDialog();
+
+                    bool t = Generation.Generate_Hexagon.generate_wave_hexagon_explain(dialog.FileName, Yaml_Generation.current_data, circle , gen_param.Double_Values[0]);
+                    Debug.Print(t.ToString());
+                }
+                else if (command[1].Equals("Image"))
+                {
+                    var dialog = new SaveFileDialog { Filter = "png (*.png)|*.png" };
+                    if (dialog.ShowDialog() == false) return;
+
+                    MessageBoxResult result = MessageBox.Show("Enable zero vector circle?", "Info", MessageBoxButton.YesNo, MessageBoxImage.Question);
+                    bool circle = result == MessageBoxResult.Yes;
+
+                    Double_Ask_Form double_Ask_Dialog = new Double_Ask_Form(this, "Enter the frequency.");
+                    double_Ask_Dialog.ShowDialog();
+
+                    Generation.Generate_Hexagon.generate_wave_hexagon_picture(dialog.FileName, Yaml_Generation.current_data, circle, gen_param.Double_Values[0]);
+                }
+            }
+            else if (command[0].Equals("RealTime"))
+            {
+                if (command[1].Equals("RealTime"))
+                    Generation.Generate_RealTime.realtime_sound(Yaml_Generation.current_data);
+            }
         }
     }
 }

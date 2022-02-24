@@ -101,8 +101,27 @@
                     <MenuItem Header="Save Yaml" Tag="Save" Click="File_Menu_Click"/>
                     <MenuItem Header="Load Yaml" Tag="Load" Click="File_Menu_Click"/>
                 </MenuItem>
-                <MenuItem Header="Generation">
-                    <MenuItem Header="Sound Generation" Tag="VVVF_Sound" Click="Generation_Menu_Click"/>
+                <MenuItem Header="Audio">
+                    <MenuItem Header="VVVF Sound" Tag="Audio_VVVF" Click="Generation_Menu_Click"/>
+                    <MenuItem Header="Environment Sound" Tag="Audio_Environment" Click="Generation_Menu_Click"/>
+                </MenuItem>
+                <MenuItem Header="Control">
+                    <MenuItem Header="Original Control" Tag="Control_Original" Click="Generation_Menu_Click"/>
+                    <MenuItem Header="Taroimo" Tag="Control_Taroimo" Click="Generation_Menu_Click"/>
+                </MenuItem>
+                <MenuItem Header="WaveForm">
+                    <MenuItem Header="Original" Tag="WaveForm_Original" Click="Generation_Menu_Click"/>
+                    <MenuItem Header="Taroimo" Tag="WaveForm_Taroimo" Click="Generation_Menu_Click"/>
+                    <MenuItem Header="U V W" Tag="WaveForm_UVW" Click="Generation_Menu_Click"/>
+                </MenuItem>
+                <MenuItem Header="Hexagon">
+                    <MenuItem Header="Original" Tag="Hexagon_Original" Click="Generation_Menu_Click"/>
+                    <MenuItem Header="Taroimo" Tag="Hexagon_Taroimo" Click="Generation_Menu_Click"/>
+                    <MenuItem Header="Explain" Tag="Hexagon_Explain" Click="Generation_Menu_Click"/>
+                    <MenuItem Header="Image" Tag="Hexagon_Image" Click="Generation_Menu_Click"/>
+                </MenuItem>
+                <MenuItem Header="RealTime">
+                    <MenuItem Header="RealTime" Tag="RealTime_RealTime" Click="Generation_Menu_Click"/>
                 </MenuItem>
             </Menu>
         </DockPanel>

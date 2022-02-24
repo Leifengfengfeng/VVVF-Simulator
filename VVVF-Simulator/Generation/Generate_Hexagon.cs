@@ -14,14 +14,10 @@ namespace VVVF_Simulator.Generation
     public class Generate_Hexagon
     {
 
-        public static void generate_wave_hexagon_explain(String output_path, Yaml_Sound_Data sound_data)
+        public static bool generate_wave_hexagon_explain(String output_path, Yaml_Sound_Data sound_data , bool circle, double d)
         {
             reset_control_variables();
             reset_all_variables();
-
-            DateTime dt = DateTime.Now;
-            String gen_time = dt.ToString("yyyy-MM-dd_HH-mm-ss");
-            String fileName = output_path + "\\" + gen_time + ".avi";
 
             int movie_div = 3000;
 
@@ -36,26 +32,10 @@ namespace VVVF_Simulator.Generation
             int hex_div_seed = 10000;
             int hex_div = 6 * hex_div_seed;
 
-            Boolean draw_zero_vector_circle = true;
-            while (true)
-            {
-                try
-                {
-                    Console.WriteLine("Draw a circle which shows zero vector? ( true / false )");
-                    draw_zero_vector_circle = Boolean.Parse(Console.ReadLine());
-                    break;
-                }
-                catch (Exception)
-                {
-                    Console.WriteLine("Invalid value.");
-                }
-            }
+            Boolean draw_zero_vector_circle = circle;
 
-            VideoWriter vr = new(fileName, OpenCvSharp.FourCC.H264, div_freq / movie_div, new OpenCvSharp.Size(image_width, image_height));
-            if (!vr.IsOpened())
-            {
-                return;
-            }
+            VideoWriter vr = new (output_path, FourCC.H264, div_freq / movie_div, new OpenCvSharp.Size(image_width, image_height));
+            if (!vr.IsOpened()) return false;
 
             Boolean START_F192_WAIT = false;
             if (START_F192_WAIT)
@@ -79,23 +59,8 @@ namespace VVVF_Simulator.Generation
             set_Sine_Time(0);
             set_Saw_Time(0);
 
-            while (true)
-            {
-                try
-                {
-                    Console.WriteLine("Enter the Freq.");
-
-                    double freq = Double.Parse(Console.ReadLine());
-                    set_Control_Frequency(freq);
-                    set_Sine_Angle_Freq(freq * M_2PI);
-
-                    break;
-                }
-                catch (Exception)
-                {
-                    Console.WriteLine("Invalid value.");
-                }
-            }
+            set_Control_Frequency(d);
+            set_Sine_Angle_Freq(d * M_2PI);
 
             Bitmap PWM_wave_image = new(pwm_image_width, pwm_image_height);
             Graphics PWM_wave_g = Graphics.FromImage(PWM_wave_image);
@@ -366,31 +331,15 @@ namespace VVVF_Simulator.Generation
 
             vr.Release();
             vr.Dispose();
+
+            return true;
         }
-        public static void generate_wave_hexagon(String output_path, Yaml_Sound_Data sound_data)
+        public static void generate_wave_hexagon(String fileName, Yaml_Sound_Data sound_data, bool circle)
         {
             reset_control_variables();
             reset_all_variables();
 
-            DateTime dt = DateTime.Now;
-            String gen_time = dt.ToString("yyyy-MM-dd_HH-mm-ss");
-            String appear_sound_name = "";
-            String fileName = output_path + "\\" + appear_sound_name + "-" + gen_time + ".avi";
-
-            Boolean draw_zero_vector_circle = true;
-            while (true)
-            {
-                try
-                {
-                    Console.WriteLine("Draw a circle which shows zero vector? ( true / false )");
-                    draw_zero_vector_circle = Boolean.Parse(Console.ReadLine());
-                    break;
-                }
-                catch (Exception)
-                {
-                    Console.WriteLine("Invalid value.");
-                }
-            }
+            Boolean draw_zero_vector_circle = circle;
 
             bool temp = true;
             Int32 sound_block_count = 0;
@@ -599,31 +548,14 @@ namespace VVVF_Simulator.Generation
             vr.Dispose();
         }
 
-        public static void generate_wave_hexagon_taroimo_like(String output_path, Yaml_Sound_Data sound_data)
+        public static void generate_wave_hexagon_taroimo_like(String fileName, Yaml_Sound_Data sound_data, Boolean circle)
         {
             reset_control_variables();
             reset_all_variables();
 
             set_Allowed_Random_Freq_Move(false);
 
-            DateTime dt = DateTime.Now;
-            String gen_time = dt.ToString("yyyy-MM-dd_HH-mm-ss");
-            String fileName = output_path + "\\" + gen_time + ".avi";
-
-            Boolean draw_zero_vector_circle = true;
-            while (true)
-            {
-                try
-                {
-                    Console.WriteLine("Draw a circle which shows zero vector? ( true / false )");
-                    draw_zero_vector_circle = Boolean.Parse(Console.ReadLine());
-                    break;
-                }
-                catch (Exception)
-                {
-                    Console.WriteLine("Invalid value.");
-                }
-            }
+            Boolean draw_zero_vector_circle = circle;
 
             bool temp = true;
             Int32 sound_block_count = 0;
@@ -860,45 +792,22 @@ namespace VVVF_Simulator.Generation
             vr.Dispose();
         }
     
-        public static void generate_wave_hexagon_picture(String output_path, Yaml_Sound_Data sound_data)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="fileName"> Path for png file </param>
+        /// <param name="sound_data">SOUND DATA</param>
+        /// <param name="circle">Setting whether see zero vector circle or not</param>
+        /// <param name="d">Frequency you want to see</param>
+        public static void generate_wave_hexagon_picture(String fileName, Yaml_Sound_Data sound_data, Boolean circle, double d)
         {
             reset_control_variables();
             reset_all_variables();
 
-            DateTime dt = DateTime.Now;
-            String gen_time = dt.ToString("yyyy-MM-dd_HH-mm-ss");
-            String fileName = output_path + "\\" + gen_time + ".png";
+            Boolean draw_zero_vector_circle = circle;
 
-            Boolean draw_zero_vector_circle = true;
-            while (true)
-            {
-                try
-                {
-                    Console.WriteLine("Draw a circle which shows zero vector? ( true / false )");
-                    draw_zero_vector_circle = Boolean.Parse(Console.ReadLine());
-                    break;
-                }
-                catch (Exception)
-                {
-                    Console.WriteLine("Invalid value.");
-                }
-            }
-
-            while (true)
-            {
-                try
-                {
-                    Console.WriteLine("Enter the frequency you want to see.");
-                    double d = Double.Parse(Console.ReadLine());
-                    set_Sine_Angle_Freq(d * M_2PI);
-                    set_Control_Frequency(d);
-                    break;
-                }
-                catch (Exception)
-                {
-                    Console.WriteLine("Invalid value.");
-                }
-            }
+            set_Sine_Angle_Freq(d * M_2PI);
+            set_Control_Frequency(d);
 
             int image_width = 1000;
             int image_height = 1000;
