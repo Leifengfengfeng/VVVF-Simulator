@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 using static VVVF_Simulator.vvvf_wave_calculate;
-using static VVVF_Simulator.vvvf_wave_control;
+using static VVVF_Simulator.VVVF_Control_Values;
 using static VVVF_Simulator.Generation.Generate_Common;
 using static VVVF_Simulator.my_math;
 using static VVVF_Simulator.Generation.Generate_Sound.Harmonic_Data;
@@ -13,8 +13,9 @@ namespace VVVF_Simulator.Generation
     {
         public static void generate_sound(String output_path, Yaml_Sound_Data sound_name)
         {
-            reset_control_variables();
-            reset_all_variables();
+            VVVF_Control_Values control = new();
+            control.reset_control_variables();
+            control.reset_all_variables();
 
             Int32 sound_block_count = 0;
 
@@ -39,28 +40,28 @@ namespace VVVF_Simulator.Generation
 
             while (loop)
             {
-                add_Sine_Time(1.00 / div_freq);
-                add_Saw_Time(1.00 / div_freq);
+                control.add_Sine_Time(1.00 / div_freq);
+                control.add_Saw_Time(1.00 / div_freq);
 
                 Control_Values cv_U = new Control_Values
                 {
-                    brake = is_Braking(),
-                    mascon_on = !is_Mascon_Off(),
-                    free_run = is_Free_Running(),
+                    brake = control.is_Braking(),
+                    mascon_on = !control.is_Mascon_Off(),
+                    free_run = control.is_Free_Running(),
                     initial_phase = Math.PI * 2.0 / 3.0 * 0,
-                    wave_stat = get_Control_Frequency()
+                    wave_stat = control.get_Control_Frequency()
                 };
-                Wave_Values wv_U = Yaml_VVVF_Wave.calculate_Yaml(cv_U, sound_name);
+                Wave_Values wv_U = Yaml_VVVF_Wave.calculate_Yaml(control, cv_U, sound_name);
 
                 Control_Values cv_V = new Control_Values
                 {
-                    brake = is_Braking(),
-                    mascon_on = !is_Mascon_Off(),
-                    free_run = is_Free_Running(),
+                    brake = control.is_Braking(),
+                    mascon_on = !control.is_Mascon_Off(),
+                    free_run = control.is_Free_Running(),
                     initial_phase = Math.PI * 2.0 / 3.0 * 1,
-                    wave_stat = get_Control_Frequency()
+                    wave_stat = control.get_Control_Frequency()
                 };
-                Wave_Values wv_V = Yaml_VVVF_Wave.calculate_Yaml(cv_V, sound_name);
+                Wave_Values wv_V = Yaml_VVVF_Wave.calculate_Yaml(control, cv_V, sound_name);
 
                 for (int i = 0; i < 1; i++)
                 {
@@ -74,7 +75,7 @@ namespace VVVF_Simulator.Generation
                 }
                 sound_block_count++;
 
-                loop = Check_For_Freq_Change();
+                loop = Check_For_Freq_Change(control);
 
             }
 
@@ -107,8 +108,9 @@ namespace VVVF_Simulator.Generation
 
         public static void generate_env_sound(String output_path)
         {
-            reset_control_variables();
-            reset_all_variables();
+            VVVF_Control_Values control = new();
+            control.reset_control_variables();
+            control.reset_all_variables();
 
             Int32 sound_block_count = 0;
 
@@ -133,8 +135,8 @@ namespace VVVF_Simulator.Generation
 
             while (loop)
             {
-                add_Sine_Time(1.00 / div_freq);
-                add_Saw_Time(1.00 / div_freq);
+                control.add_Sine_Time(1.00 / div_freq);
+                control.add_Saw_Time(1.00 / div_freq);
 
                 double sound_byte_int = 0;
                 int total_sound_count = 0;
@@ -155,12 +157,12 @@ namespace VVVF_Simulator.Generation
                 {
                     Harmonic_Data harmonic_data = harmonics[harmonic];
 
-                    double harmonic_freq = harmonic_data.harmonic * get_Sine_Freq();
+                    double harmonic_freq = harmonic_data.harmonic * control.get_Sine_Freq();
 
                     if (harmonic_freq > harmonic_data.disappear) continue;
-                    double sine_val = sin(get_Sine_Time() * get_Sine_Angle_Freq() * harmonic_data.harmonic);
+                    double sine_val = sin(control.get_Sine_Time() * control.get_Sine_Angle_Freq() * harmonic_data.harmonic);
 
-                    double amplitude = harmonic_data.amplitude.start_val + (harmonic_data.amplitude.end_val - harmonic_data.amplitude.start_val) / (harmonic_data.amplitude.end - harmonic_data.amplitude.start) * (get_Sine_Freq() - harmonic_data.amplitude.start);
+                    double amplitude = harmonic_data.amplitude.start_val + (harmonic_data.amplitude.end_val - harmonic_data.amplitude.start_val) / (harmonic_data.amplitude.end - harmonic_data.amplitude.start) * (control.get_Sine_Freq() - harmonic_data.amplitude.start);
                     if (amplitude > harmonic_data.amplitude.max_val) amplitude = harmonic_data.amplitude.max_val;
                     if (amplitude < harmonic_data.amplitude.min_val) amplitude = harmonic_data.amplitude.min_val;
 
@@ -175,7 +177,7 @@ namespace VVVF_Simulator.Generation
                 double[] saw_harmonics = new double[] { 3 };
                 for(int harmonic = 0; harmonic < saw_harmonics.Length; harmonic++)
                 {
-                    double saw_val = sin(get_Saw_Time() * get_Saw_Angle_Freq() * harmonic);
+                    double saw_val = sin(control.get_Saw_Time() * control.get_Saw_Angle_Freq() * harmonic);
                     saw_val *= 0x20;
                     sound_byte_int += Math.Round(saw_val);
                     total_sound_count++;
@@ -185,7 +187,7 @@ namespace VVVF_Simulator.Generation
 
                 writer.Write(sound_byte);
                 sound_block_count++;
-                loop = Check_For_Freq_Change();
+                loop = Check_For_Freq_Change(control);
 
             }
 

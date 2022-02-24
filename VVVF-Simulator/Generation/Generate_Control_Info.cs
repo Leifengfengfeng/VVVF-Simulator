@@ -4,7 +4,7 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using static VVVF_Simulator.vvvf_wave_calculate;
-using static VVVF_Simulator.vvvf_wave_control;
+using static VVVF_Simulator.VVVF_Control_Values;
 using static VVVF_Simulator.Generation.Generate_Common;
 using System.Drawing.Drawing2D;
 using Point = System.Drawing.Point;
@@ -158,8 +158,9 @@ namespace VVVF_Simulator.Generation
         }
         public static void generate_status_video(String output_path, Yaml_Sound_Data sound_data)
         {
-            reset_control_variables();
-            reset_all_variables();
+            VVVF_Control_Values control = new();
+            control.reset_control_variables();
+            control.reset_all_variables();
 
             Int32 sound_block_count = 0;
 
@@ -186,25 +187,25 @@ namespace VVVF_Simulator.Generation
             {
                 Control_Values cv_U = new()
                 {
-                    brake = is_Braking(),
-                    mascon_on = !is_Mascon_Off(),
-                    free_run = is_Free_Running(),
+                    brake = control.is_Braking(),
+                    mascon_on = !control.is_Mascon_Off(),
+                    free_run = control.is_Free_Running(),
                     initial_phase = Math.PI * 2.0 / 3.0 * 0,
-                    wave_stat = get_Control_Frequency()
+                    wave_stat = control.get_Control_Frequency()
                 };
-                Yaml_VVVF_Wave.calculate_Yaml(cv_U , sound_data);
+                Yaml_VVVF_Wave.calculate_Yaml(control , cv_U , sound_data);
 
                 if (sound_block_count % movie_div == 0 && temp || final_show || first_show)
                 {
-                    set_Sine_Time(0);
-                    set_Saw_Time(0);
+                    control.set_Sine_Time(0);
+                    control.set_Saw_Time(0);
 
                     Color gradation_color;
-                    if (is_Free_Running())
+                    if (control.is_Free_Running())
                     {
                         gradation_color = Color.FromArgb(0xE0, 0xFD, 0xE0);
                     }
-                    else if (!is_Braking())
+                    else if (!control.is_Braking())
                     {
                         gradation_color = Color.FromArgb(0xE0, 0xE0, 0xFD);
                     }
@@ -289,13 +290,13 @@ namespace VVVF_Simulator.Generation
                     g.DrawString("Freerun", title_fnt, title_brush, 17, 674);
                     g.FillRectangle(Brushes.LightGray, 0, 735, image_width, 8);
                     if (!final_show)
-                        g.DrawString(is_Mascon_Off().ToString(), val_fnt, letter_brush, 17, 750);
+                        g.DrawString(control.is_Mascon_Off().ToString(), val_fnt, letter_brush, 17, 750);
 
                     g.FillRectangle(new SolidBrush(Color.FromArgb(240, 240, 240)), 0, 847, image_width, 913 - 847);
                     g.DrawString("Brake", title_fnt, title_brush, 17, 852);
                     g.FillRectangle(Brushes.LightGray, 0, 913, image_width, 8);
                     if (!final_show)
-                        g.DrawString(is_Braking().ToString(), val_fnt, letter_brush, 17, 930);
+                        g.DrawString(control.is_Braking().ToString(), val_fnt, letter_brush, 17, 930);
 
 
 
@@ -329,7 +330,7 @@ namespace VVVF_Simulator.Generation
                 }
                 sound_block_count++;
 
-                video_finished = !Check_For_Freq_Change();
+                video_finished = !Check_For_Freq_Change(control);
                 if (video_finished)
                 {
                     final_show = true;
@@ -469,7 +470,7 @@ namespace VVVF_Simulator.Generation
             g.DrawLine(new (hole_c, (int)Math.Round((15)* size)), (int)Math.Round(start.X + 78.5 * size), (int)Math.Round(start.Y + 138 * size), (int)Math.Round(start.X + 78.5 * size), (int)Math.Round(start.Y + 173 * size));
         }
 
-        public static double get_wave_form_voltage_rate_with_surface(Yaml_Sound_Data sound_data)
+        public static double get_wave_form_voltage_rate_with_surface(Yaml_Sound_Data sound_data, VVVF_Control_Values control)
         {
             int hex_div_seed = 10000;
             int hex_div = 6 * hex_div_seed;
@@ -484,38 +485,38 @@ namespace VVVF_Simulator.Generation
 
             for (int i = 0; i < hex_div; i++)
             {
-                add_Sine_Time(1.0 / (hex_div) * ((get_Sine_Freq() == 0) ? 0 : 1 / get_Sine_Freq()));
-                add_Saw_Time(1.0 / (hex_div) * ((get_Sine_Freq() == 0) ? 0 : 1 / get_Sine_Freq()));
+                control.add_Sine_Time(1.0 / (hex_div) * ((control.get_Sine_Freq() == 0) ? 0 : 1 / control.get_Sine_Freq()));
+                control.add_Saw_Time(1.0 / (hex_div) * ((control.get_Sine_Freq() == 0) ? 0 : 1 / control.get_Sine_Freq()));
 
                 Control_Values cv_U = new()
                 {
-                    brake = is_Braking(),
-                    mascon_on = !is_Mascon_Off(),
-                    free_run = is_Free_Running(),
+                    brake = control.is_Braking(),
+                    mascon_on = !control.is_Mascon_Off(),
+                    free_run = control.is_Free_Running(),
                     initial_phase = Math.PI * 2.0 / 3.0 * 0,
-                    wave_stat = get_Control_Frequency()
+                    wave_stat = control.get_Control_Frequency()
                 };
-                Wave_Values wv_U = Yaml_VVVF_Wave.calculate_Yaml(cv_U, sound_data);
+                Wave_Values wv_U = Yaml_VVVF_Wave.calculate_Yaml(control, cv_U, sound_data);
 
                 Control_Values cv_V = new()
                 {
-                    brake = is_Braking(),
-                    mascon_on = !is_Mascon_Off(),
-                    free_run = is_Free_Running(),
+                    brake = control.is_Braking(),
+                    mascon_on = !control.is_Mascon_Off(),
+                    free_run = control.is_Free_Running(),
                     initial_phase = Math.PI * 2.0 / 3.0 * 1,
-                    wave_stat = get_Control_Frequency()
+                    wave_stat = control.get_Control_Frequency()
                 };
-                Wave_Values wv_V = Yaml_VVVF_Wave.calculate_Yaml(cv_V, sound_data);
+                Wave_Values wv_V = Yaml_VVVF_Wave.calculate_Yaml(control, cv_V, sound_data);
 
                 Control_Values cv_W = new()
                 {
-                    brake = is_Braking(),
-                    mascon_on = !is_Mascon_Off(),
-                    free_run = is_Free_Running(),
+                    brake = control.is_Braking(),
+                    mascon_on = !control.is_Mascon_Off(),
+                    free_run = control.is_Free_Running(),
                     initial_phase = Math.PI * 2.0 / 3.0 * 2,
-                    wave_stat = get_Control_Frequency()
+                    wave_stat = control.get_Control_Frequency()
                 };
-                Wave_Values wv_W = Yaml_VVVF_Wave.calculate_Yaml(cv_W, sound_data);
+                Wave_Values wv_W = Yaml_VVVF_Wave.calculate_Yaml(control, cv_W, sound_data);
 
                 double move_x = -0.5 * wv_W.pwm_value - 0.5 * wv_V.pwm_value + wv_U.pwm_value;
                 double move_y = -0.866025403784438646763 * wv_W.pwm_value + 0.866025403784438646763 * wv_V.pwm_value;
@@ -551,9 +552,9 @@ namespace VVVF_Simulator.Generation
             return voltage;
         }
 
-        public static double get_wave_form_voltage_rate_with_radius(Yaml_Sound_Data sound_data)
+        public static double get_wave_form_voltage_rate_with_radius(Yaml_Sound_Data sound_data, VVVF_Control_Values control)
         {
-            double hex_div_seed = 10000 * ((get_Sine_Freq() > 0 && get_Sine_Freq() < 1) ? 1 / get_Sine_Freq() : 1);
+            double hex_div_seed = 10000 * ((control.get_Sine_Freq() > 0 && control.get_Sine_Freq() < 1) ? 1 / control.get_Sine_Freq() : 1);
             int hex_div = (int)Math.Round(6 * hex_div_seed);
             double[] hexagon_coordinate = new double[] { 100, 500 };
 
@@ -561,38 +562,38 @@ namespace VVVF_Simulator.Generation
 
             for (int i = 0; i < hex_div; i++)
             {
-                add_Sine_Time(1.0 / (hex_div) * ((get_Sine_Freq() == 0) ? 0 : 1 / get_Sine_Freq()));
-                add_Saw_Time(1.0 / (hex_div) * ((get_Sine_Freq() == 0) ? 0 : 1 / get_Sine_Freq()));
+                control.add_Sine_Time(1.0 / (hex_div) * ((control.get_Sine_Freq() == 0) ? 0 : 1 / control.get_Sine_Freq()));
+                control.add_Saw_Time(1.0 / (hex_div) * ((control.get_Sine_Freq() == 0) ? 0 : 1 / control.get_Sine_Freq()));
 
                 Control_Values cv_U = new()
                 {
-                    brake = is_Braking(),
-                    mascon_on = !is_Mascon_Off(),
-                    free_run = is_Free_Running(),
+                    brake = control.is_Braking(),
+                    mascon_on = !control.is_Mascon_Off(),
+                    free_run = control.is_Free_Running(),
                     initial_phase = Math.PI * 2.0 / 3.0 * 0,
-                    wave_stat = get_Control_Frequency()
+                    wave_stat = control.get_Control_Frequency()
                 };
-                Wave_Values wv_U = Yaml_VVVF_Wave.calculate_Yaml(cv_U, sound_data);
+                Wave_Values wv_U = Yaml_VVVF_Wave.calculate_Yaml(control, cv_U, sound_data);
 
                 Control_Values cv_V = new()
                 {
-                    brake = is_Braking(),
-                    mascon_on = !is_Mascon_Off(),
-                    free_run = is_Free_Running(),
+                    brake = control.is_Braking(),
+                    mascon_on = !control.is_Mascon_Off(),
+                    free_run = control.is_Free_Running(),
                     initial_phase = Math.PI * 2.0 / 3.0 * 1,
-                    wave_stat = get_Control_Frequency()
+                    wave_stat = control.get_Control_Frequency()
                 };
-                Wave_Values wv_V = Yaml_VVVF_Wave.calculate_Yaml(cv_V, sound_data);
+                Wave_Values wv_V = Yaml_VVVF_Wave.calculate_Yaml(control, cv_V, sound_data);
 
                 Control_Values cv_W = new()
                 {
-                    brake = is_Braking(),
-                    mascon_on = !is_Mascon_Off(),
-                    free_run = is_Free_Running(),
+                    brake = control.is_Braking(),
+                    mascon_on = !control.is_Mascon_Off(),
+                    free_run = control.is_Free_Running(),
                     initial_phase = Math.PI * 2.0 / 3.0 * 2,
-                    wave_stat = get_Control_Frequency()
+                    wave_stat = control.get_Control_Frequency()
                 };
-                Wave_Values wv_W = Yaml_VVVF_Wave.calculate_Yaml(cv_W, sound_data);
+                Wave_Values wv_W = Yaml_VVVF_Wave.calculate_Yaml(control, cv_W, sound_data);
 
                 double move_x = -0.5 * wv_W.pwm_value - 0.5 * wv_V.pwm_value + wv_U.pwm_value;
                 double move_y = -0.866025403784438646763 * wv_W.pwm_value + 0.866025403784438646763 * wv_V.pwm_value;
@@ -653,12 +654,18 @@ namespace VVVF_Simulator.Generation
         public enum Taroimo_Status_Language_Mode { 
             Japanese, English
         }
-        public static void generate_status_taroimo_like_video(String output_path, Yaml_Sound_Data sound_data, Taroimo_Status_Language_Mode font , Taroimo_Status_Language_Mode language)
+        public static void generate_status_taroimo_like_video(
+            String output_path, 
+            Yaml_Sound_Data sound_data,
+            Taroimo_Status_Language_Mode font , 
+            Taroimo_Status_Language_Mode language
+        )
         {
-            reset_control_variables();
-            reset_all_variables();
+            VVVF_Control_Values control = new();
+            control.reset_control_variables();
+            control.reset_all_variables();
 
-            set_Allowed_Random_Freq_Move(false);
+            control.set_Allowed_Random_Freq_Move(false);
 
             Int32 sound_block_count = 0;
 
@@ -768,13 +775,13 @@ namespace VVVF_Simulator.Generation
             {
                 Control_Values cv_U = new()
                 {
-                    brake = is_Braking(),
-                    mascon_on = !is_Mascon_Off(),
-                    free_run = is_Free_Running(),
+                    brake = control.is_Braking(),
+                    mascon_on = !control.is_Mascon_Off(),
+                    free_run = control.is_Free_Running(),
                     initial_phase = Math.PI * 2.0 / 3.0 * 0,
-                    wave_stat = get_Control_Frequency()
+                    wave_stat = control.get_Control_Frequency()
                 };
-                Yaml_VVVF_Wave.calculate_Yaml(cv_U, sound_data);
+                Yaml_VVVF_Wave.calculate_Yaml(control, cv_U, sound_data);
 
                 if (sound_block_count % movie_div == 0 && temp || final_show || first_show)
                 {
@@ -784,18 +791,18 @@ namespace VVVF_Simulator.Generation
                     Bitmap control_stat_image = new(image_width, image_height);
                     Graphics control_stat_g = Graphics.FromImage(control_stat_image);
 
-                    set_Sine_Time(0);
-                    set_Saw_Time(0);
+                    control.set_Sine_Time(0);
+                    control.set_Saw_Time(0);
 
                     Color control_color,control_str_color;
                     String status_str;
-                    if (is_Free_Running())
+                    if (control.is_Free_Running())
                     {
                         control_color = Color.FromArgb(153, 204, 0);
                         control_str_color = Color.FromArgb(28, 68, 0);
                         status_str = lng_words[0];
                     }
-                    else if (!is_Braking())
+                    else if (!control.is_Braking())
                     {
                         control_color = Color.FromArgb(0, 204, 255);
                         control_str_color = Color.FromArgb(0, 56, 112);
@@ -1023,7 +1030,7 @@ namespace VVVF_Simulator.Generation
                     {
                         int base_pos = 620;
 
-                        double voltage = get_wave_form_voltage_rate_with_radius(sound_data);
+                        double voltage = get_wave_form_voltage_rate_with_radius(sound_data , control);
                         pre_voltage = Math.Round((voltage + pre_voltage) / 2.0, 1);
                         pre_voltage = (pre_voltage > 99.5) ? 100 : pre_voltage;
                         String sine_freq_str = String.Format("{0:f1}", pre_voltage);
@@ -1063,7 +1070,7 @@ namespace VVVF_Simulator.Generation
                     control_stat_image.Dispose();
                     control_stat_g.Dispose();
 
-                    if (final_show || first_show || is_Free_Running())
+                    if (final_show || first_show || control.is_Free_Running())
                     {
                         ColorMatrix cm = new()
                         {
@@ -1127,7 +1134,7 @@ namespace VVVF_Simulator.Generation
                 }
                 sound_block_count++;
 
-                video_finished = !Check_For_Freq_Change();
+                video_finished = !Check_For_Freq_Change(control);
                 if (video_finished)
                 {
                     final_show = true;

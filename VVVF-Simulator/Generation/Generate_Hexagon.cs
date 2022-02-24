@@ -4,7 +4,7 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using static VVVF_Simulator.vvvf_wave_calculate;
-using static VVVF_Simulator.vvvf_wave_control;
+using static VVVF_Simulator.VVVF_Control_Values;
 using static VVVF_Simulator.Generation.Generate_Common;
 using static VVVF_Simulator.my_math;
 using VVVF_Simulator.Yaml_VVVF_Sound;
@@ -14,10 +14,11 @@ namespace VVVF_Simulator.Generation
     public class Generate_Hexagon
     {
 
-        public static bool generate_wave_hexagon_explain(String output_path, Yaml_Sound_Data sound_data , bool circle, double d)
+        public static bool generate_wave_hexagon_explain(String output_path, Yaml_Sound_Data sound_data, bool circle, double d)
         {
-            reset_control_variables();
-            reset_all_variables();
+            VVVF_Control_Values control = new();
+            control.reset_control_variables();
+            control.reset_all_variables();
 
             int movie_div = 3000;
 
@@ -56,11 +57,11 @@ namespace VVVF_Simulator.Generation
                 free_image.Dispose();
             }
 
-            set_Sine_Time(0);
-            set_Saw_Time(0);
+            control.set_Sine_Time(0);
+            control.set_Saw_Time(0);
 
-            set_Control_Frequency(d);
-            set_Sine_Angle_Freq(d * M_2PI);
+            control.set_Control_Frequency(d);
+            control.set_Sine_Angle_Freq(d * M_2PI);
 
             Bitmap PWM_wave_image = new(pwm_image_width, pwm_image_height);
             Graphics PWM_wave_g = Graphics.FromImage(PWM_wave_image);
@@ -87,40 +88,40 @@ namespace VVVF_Simulator.Generation
 
             for (int i = 0; i < hex_div; i++)
             {
-                add_Sine_Time(1.0 / (hex_div) * ((get_Sine_Freq() == 0) ? 0 : 1 / get_Sine_Freq()));
-                add_Saw_Time(1.0 / (hex_div) * ((get_Sine_Freq() == 0) ? 0 : 1 / get_Sine_Freq()));
+                control.add_Sine_Time(1.0 / (hex_div) * ((control.get_Sine_Freq() == 0) ? 0 : 1 / control.get_Sine_Freq()));
+                control.add_Saw_Time(1.0 / (hex_div) * ((control.get_Sine_Freq() == 0) ? 0 : 1 / control.get_Sine_Freq()));
 
                 Control_Values cv_U = new()
                 {
-                    brake = is_Braking(),
-                    mascon_on = !is_Mascon_Off(),
-                    free_run = is_Free_Running(),
+                    brake = control.is_Braking(),
+                    mascon_on = !control.is_Mascon_Off(),
+                    free_run = control.is_Free_Running(),
                     initial_phase = Math.PI * 2.0 / 3.0 * 0,
-                    wave_stat = get_Control_Frequency()
+                    wave_stat = control.get_Control_Frequency()
                 };
-                Wave_Values wv_U = Yaml_VVVF_Wave.calculate_Yaml(cv_U, sound_data);
+                Wave_Values wv_U = Yaml_VVVF_Wave.calculate_Yaml(control, cv_U, sound_data);
                 points_U[i] = wv_U.pwm_value;
 
                 Control_Values cv_V = new()
                 {
-                    brake = is_Braking(),
-                    mascon_on = !is_Mascon_Off(),
-                    free_run = is_Free_Running(),
+                    brake = control.is_Braking(),
+                    mascon_on = !control.is_Mascon_Off(),
+                    free_run = control.is_Free_Running(),
                     initial_phase = Math.PI * 2.0 / 3.0 * 1,
-                    wave_stat = get_Control_Frequency()
+                    wave_stat = control.get_Control_Frequency()
                 };
-                Wave_Values wv_V = Yaml_VVVF_Wave.calculate_Yaml(cv_V, sound_data);
+                Wave_Values wv_V = Yaml_VVVF_Wave.calculate_Yaml(control, cv_V, sound_data);
                 points_V[i] = wv_V.pwm_value;
 
                 Control_Values cv_W = new()
                 {
-                    brake = is_Braking(),
-                    mascon_on = !is_Mascon_Off(),
-                    free_run = is_Free_Running(),
+                    brake = control.is_Braking(),
+                    mascon_on = !control.is_Mascon_Off(),
+                    free_run = control.is_Free_Running(),
                     initial_phase = Math.PI * 2.0 / 3.0 * 2,
-                    wave_stat = get_Control_Frequency()
+                    wave_stat = control.get_Control_Frequency()
                 };
-                Wave_Values wv_W = Yaml_VVVF_Wave.calculate_Yaml(cv_W, sound_data);
+                Wave_Values wv_W = Yaml_VVVF_Wave.calculate_Yaml(control, cv_W, sound_data);
                 points_W[i] = wv_W.pwm_value;
 
                 double move_x = 0;
@@ -336,8 +337,9 @@ namespace VVVF_Simulator.Generation
         }
         public static void generate_wave_hexagon(String fileName, Yaml_Sound_Data sound_data, bool circle)
         {
-            reset_control_variables();
-            reset_all_variables();
+            VVVF_Control_Values control = new();
+            control.reset_control_variables();
+            control.reset_all_variables();
 
             Boolean draw_zero_vector_circle = circle;
 
@@ -390,8 +392,8 @@ namespace VVVF_Simulator.Generation
 
                 if (sound_block_count % movie_div == 0 && temp)
                 {
-                    set_Sine_Time(0);
-                    set_Saw_Time(0);
+                    control.set_Sine_Time(0);
+                    control.set_Saw_Time(0);
 
                     Bitmap hexagon_image = new(image_width, image_height);
                     Graphics hexagon_g = Graphics.FromImage(hexagon_image);
@@ -406,38 +408,38 @@ namespace VVVF_Simulator.Generation
                     for (int i = 0; i < hex_div; i++)
                     {
 
-                        add_Sine_Time(1.0 / (hex_div) * ((get_Sine_Freq() * M_1_2PI == 0) ? 0 : 1 / get_Sine_Freq()));
-                        add_Saw_Time(1.0 / (hex_div) * ((get_Sine_Freq() == 0) ? 0 : 1 / get_Sine_Freq()));
+                        control.add_Sine_Time(1.0 / (hex_div) * ((control.get_Sine_Freq() * M_1_2PI == 0) ? 0 : 1 / control.get_Sine_Freq()));
+                        control.add_Saw_Time(1.0 / (hex_div) * ((control.get_Sine_Freq() == 0) ? 0 : 1 / control.get_Sine_Freq()));
 
                         Control_Values cv_U = new Control_Values
                         {
-                            brake = is_Braking(),
-                            mascon_on = !is_Mascon_Off(),
-                            free_run = is_Free_Running(),
+                            brake = control.is_Braking(),
+                            mascon_on = !control.is_Mascon_Off(),
+                            free_run = control.is_Free_Running(),
                             initial_phase = Math.PI * 2.0 / 3.0 * 0,
-                            wave_stat = get_Control_Frequency()
+                            wave_stat = control.get_Control_Frequency()
                         };
-                        Wave_Values wv_U = Yaml_VVVF_Wave.calculate_Yaml(cv_U, sound_data);
+                        Wave_Values wv_U = Yaml_VVVF_Wave.calculate_Yaml(control, cv_U, sound_data);
 
                         Control_Values cv_V = new Control_Values
                         {
-                            brake = is_Braking(),
-                            mascon_on = !is_Mascon_Off(),
-                            free_run = is_Free_Running(),
+                            brake = control.is_Braking(),
+                            mascon_on = !control.is_Mascon_Off(),
+                            free_run = control.is_Free_Running(),
                             initial_phase = Math.PI * 2.0 / 3.0 * 1,
-                            wave_stat = get_Control_Frequency()
+                            wave_stat = control.get_Control_Frequency()
                         };
-                        Wave_Values wv_V = Yaml_VVVF_Wave.calculate_Yaml(cv_V, sound_data);
+                        Wave_Values wv_V = Yaml_VVVF_Wave.calculate_Yaml(control, cv_V, sound_data);
 
                         Control_Values cv_W = new Control_Values
                         {
-                            brake = is_Braking(),
-                            mascon_on = !is_Mascon_Off(),
-                            free_run = is_Free_Running(),
+                            brake = control.is_Braking(),
+                            mascon_on = !control.is_Mascon_Off(),
+                            free_run = control.is_Free_Running(),
                             initial_phase = Math.PI * 2.0 / 3.0 * 2,
-                            wave_stat = get_Control_Frequency()
+                            wave_stat = control.get_Control_Frequency()
                         };
-                        Wave_Values wv_W = Yaml_VVVF_Wave.calculate_Yaml(cv_W, sound_data);
+                        Wave_Values wv_W = Yaml_VVVF_Wave.calculate_Yaml(control, cv_W, sound_data);
 
                         double move_x = -0.5 * wv_W.pwm_value - 0.5 * wv_V.pwm_value + wv_U.pwm_value;
                         double move_y = -0.866025403784438646763 * wv_W.pwm_value + 0.866025403784438646763 * wv_V.pwm_value;
@@ -519,7 +521,7 @@ namespace VVVF_Simulator.Generation
 
                 sound_block_count++;
 
-                loop = Check_For_Freq_Change();
+                loop = Check_For_Freq_Change(control);
 
             }
 
@@ -550,10 +552,11 @@ namespace VVVF_Simulator.Generation
 
         public static void generate_wave_hexagon_taroimo_like(String fileName, Yaml_Sound_Data sound_data, Boolean circle)
         {
-            reset_control_variables();
-            reset_all_variables();
+            VVVF_Control_Values control = new();
+            control.reset_control_variables();
+            control.reset_all_variables();
 
-            set_Allowed_Random_Freq_Move(false);
+            control.set_Allowed_Random_Freq_Move(false);
 
             Boolean draw_zero_vector_circle = circle;
 
@@ -631,8 +634,8 @@ namespace VVVF_Simulator.Generation
 
                 if (sound_block_count % movie_div == 0 && temp)
                 {
-                    set_Sine_Time(0);
-                    set_Saw_Time(0);
+                    control.set_Sine_Time(0);
+                    control.set_Saw_Time(0);
 
                     Bitmap hexagon_image = new(image_width, image_height);
                     Graphics hexagon_g = Graphics.FromImage(hexagon_image);
@@ -647,38 +650,38 @@ namespace VVVF_Simulator.Generation
                     for (int i = 0; i < hex_div; i++)
                     {
 
-                        add_Sine_Time(1.0 / (hex_div) * ((get_Sine_Freq() == 0) ? 0 : 1 / get_Sine_Freq()));
-                        add_Saw_Time(1.0 / (hex_div) * ((get_Sine_Freq() == 0) ? 0 : 1 / get_Sine_Freq()));
+                        control.add_Sine_Time(1.0 / (hex_div) * ((control.get_Sine_Freq() == 0) ? 0 : 1 / control.get_Sine_Freq()));
+                        control.add_Saw_Time(1.0 / (hex_div) * ((control.get_Sine_Freq() == 0) ? 0 : 1 / control.get_Sine_Freq()));
 
                         Control_Values cv_U = new Control_Values
                         {
-                            brake = is_Braking(),
-                            mascon_on = !is_Mascon_Off(),
-                            free_run = is_Free_Running(),
+                            brake = control.is_Braking(),
+                            mascon_on = !control.is_Mascon_Off(),
+                            free_run = control.is_Free_Running(),
                             initial_phase = Math.PI * 2.0 / 3.0 * 0,
-                            wave_stat = get_Control_Frequency()
+                            wave_stat = control.get_Control_Frequency()
                         };
-                        Wave_Values wv_U = Yaml_VVVF_Wave.calculate_Yaml(cv_U, sound_data);
+                        Wave_Values wv_U = Yaml_VVVF_Wave.calculate_Yaml(control, cv_U, sound_data);
 
                         Control_Values cv_V = new Control_Values
                         {
-                            brake = is_Braking(),
-                            mascon_on = !is_Mascon_Off(),
-                            free_run = is_Free_Running(),
+                            brake = control.is_Braking(),
+                            mascon_on = !control.is_Mascon_Off(),
+                            free_run = control.is_Free_Running(),
                             initial_phase = Math.PI * 2.0 / 3.0 * 1,
-                            wave_stat = get_Control_Frequency()
+                            wave_stat = control.get_Control_Frequency()
                         };
-                        Wave_Values wv_V = Yaml_VVVF_Wave.calculate_Yaml(cv_V, sound_data);
+                        Wave_Values wv_V = Yaml_VVVF_Wave.calculate_Yaml(control, cv_V, sound_data);
 
                         Control_Values cv_W = new Control_Values
                         {
-                            brake = is_Braking(),
-                            mascon_on = !is_Mascon_Off(),
-                            free_run = is_Free_Running(),
+                            brake = control.is_Braking(),
+                            mascon_on = !control.is_Mascon_Off(),
+                            free_run = control.is_Free_Running(),
                             initial_phase = Math.PI * 2.0 / 3.0 * 2,
-                            wave_stat = get_Control_Frequency()
+                            wave_stat = control.get_Control_Frequency()
                         };
-                        Wave_Values wv_W = Yaml_VVVF_Wave.calculate_Yaml(cv_W, sound_data);
+                        Wave_Values wv_W = Yaml_VVVF_Wave.calculate_Yaml(control, cv_W, sound_data);
 
                         double move_x = -0.5 * wv_W.pwm_value - 0.5 * wv_V.pwm_value + wv_U.pwm_value;
                         double move_y = -0.866025403784438646763 * wv_W.pwm_value + 0.866025403784438646763 * wv_V.pwm_value;
@@ -698,7 +701,7 @@ namespace VVVF_Simulator.Generation
                             if (!drawn_circle)
                             {
                                 drawn_circle = true;
-                                double radius = 5 * ((get_Control_Frequency() > 40) ? 1 : (get_Control_Frequency() / 40.0));
+                                double radius = 5 * ((control.get_Control_Frequency() > 40) ? 1 : (control.get_Control_Frequency() / 40.0));
                                 zero_circle_g.FillEllipse(new SolidBrush(Color.White),
                                     (int)Math.Round(hexagon_coordinate[0] - radius),
                                     (int)Math.Round(hexagon_coordinate[1] - radius),
@@ -762,7 +765,7 @@ namespace VVVF_Simulator.Generation
 
                 sound_block_count++;
 
-                loop = Check_For_Freq_Change();
+                loop = Check_For_Freq_Change(control);
 
             }
 
@@ -801,21 +804,23 @@ namespace VVVF_Simulator.Generation
         /// <param name="d">Frequency you want to see</param>
         public static void generate_wave_hexagon_picture(String fileName, Yaml_Sound_Data sound_data, Boolean circle, double d)
         {
-            reset_control_variables();
-            reset_all_variables();
+            VVVF_Control_Values control = new();
+
+            control.reset_control_variables();
+            control.reset_all_variables();
 
             Boolean draw_zero_vector_circle = circle;
 
-            set_Sine_Angle_Freq(d * M_2PI);
-            set_Control_Frequency(d);
+            control.set_Sine_Angle_Freq(d * M_2PI);
+            control.set_Control_Frequency(d);
 
             int image_width = 1000;
             int image_height = 1000;
 
             int hex_div_seed = 10000;
             int hex_div = 6 * hex_div_seed;
-            set_Sine_Time(0);
-            set_Saw_Time(0);
+            control.set_Sine_Time(0);
+            control.set_Saw_Time(0);
 
             Bitmap hexagon_image = new(image_width, image_height);
             Graphics hexagon_g = Graphics.FromImage(hexagon_image);
@@ -830,38 +835,38 @@ namespace VVVF_Simulator.Generation
             for (int i = 0; i < hex_div; i++)
             {
 
-                add_Sine_Time(1.0 / (hex_div) * ((get_Sine_Freq() * M_1_2PI == 0) ? 0 : 1 / get_Sine_Freq()));
-                add_Saw_Time(1.0 / (hex_div) * ((get_Sine_Freq() == 0) ? 0 : 1 / get_Sine_Freq()));
+                control.add_Sine_Time(1.0 / (hex_div) * ((control.get_Sine_Freq() * M_1_2PI == 0) ? 0 : 1 / control.get_Sine_Freq()));
+                control.add_Saw_Time(1.0 / (hex_div) * ((control.get_Sine_Freq() == 0) ? 0 : 1 / control.get_Sine_Freq()));
 
                 Control_Values cv_U = new()
                 {
-                    brake = is_Braking(),
-                    mascon_on = !is_Mascon_Off(),
-                    free_run = is_Free_Running(),
+                    brake = control.is_Braking(),
+                    mascon_on = !control.is_Mascon_Off(),
+                    free_run = control.is_Free_Running(),
                     initial_phase = Math.PI * 2.0 / 3.0 * 0,
-                    wave_stat = get_Control_Frequency()
+                    wave_stat = control.get_Control_Frequency()
                 };
-                Wave_Values wv_U = Yaml_VVVF_Wave.calculate_Yaml(cv_U, sound_data);
+                Wave_Values wv_U = Yaml_VVVF_Wave.calculate_Yaml(control, cv_U, sound_data);
 
                 Control_Values cv_V = new()
                 {
-                    brake = is_Braking(),
-                    mascon_on = !is_Mascon_Off(),
-                    free_run = is_Free_Running(),
+                    brake = control.is_Braking(),
+                    mascon_on = !control.is_Mascon_Off(),
+                    free_run = control.is_Free_Running(),
                     initial_phase = Math.PI * 2.0 / 3.0 * 1,
-                    wave_stat = get_Control_Frequency()
+                    wave_stat = control.get_Control_Frequency()
                 };
-                Wave_Values wv_V = Yaml_VVVF_Wave.calculate_Yaml(cv_V, sound_data);
+                Wave_Values wv_V = Yaml_VVVF_Wave.calculate_Yaml(control, cv_V, sound_data);
 
                 Control_Values cv_W = new()
                 {
-                    brake = is_Braking(),
-                    mascon_on = !is_Mascon_Off(),
-                    free_run = is_Free_Running(),
+                    brake = control.is_Braking(),
+                    mascon_on = !control.is_Mascon_Off(),
+                    free_run = control.is_Free_Running(),
                     initial_phase = Math.PI * 2.0 / 3.0 * 2,
-                    wave_stat = get_Control_Frequency()
+                    wave_stat = control.get_Control_Frequency()
                 };
-                Wave_Values wv_W = Yaml_VVVF_Wave.calculate_Yaml(cv_W, sound_data);
+                Wave_Values wv_W = Yaml_VVVF_Wave.calculate_Yaml(control, cv_W, sound_data);
 
                 double move_x = -0.5 * wv_W.pwm_value - 0.5 * wv_V.pwm_value + wv_U.pwm_value;
                 double move_y = -0.866025403784438646763 * wv_W.pwm_value + 0.866025403784438646763 * wv_V.pwm_value;

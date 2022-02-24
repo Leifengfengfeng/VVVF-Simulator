@@ -1,5 +1,5 @@
 ﻿using static VVVF_Simulator.Generation.Generate_Common;
-using static VVVF_Simulator.vvvf_wave_control;
+using static VVVF_Simulator.VVVF_Control_Values;
 using static VVVF_Simulator.my_math;
 using System;
 using static VVVF_Simulator.vvvf_wave_calculate.Amplitude_Argument;
@@ -386,12 +386,12 @@ namespace VVVF_Simulator
 			public double range;
         }
 
-		private static double get_Random_freq(Carrier_Freq data)
+		private static double get_Random_freq(Carrier_Freq data, VVVF_Control_Values control)
 		{
-            if (is_Allowed_Random_Freq_Move())
+            if (control.is_Allowed_Random_Freq_Move())
             {
 				double random_freq = 0;
-				if (get_Random_Freq_Move_Count() == 0 || get_Pre_Saw_Random_Freq() == 0)
+				if (control.get_Random_Freq_Move_Count() == 0 || control.get_Pre_Saw_Random_Freq() == 0)
 				{
 					int random_v = my_math.my_random();
 					double diff_freq = my_math.mod_d(random_v, data.range);
@@ -399,16 +399,16 @@ namespace VVVF_Simulator
 						diff_freq = -diff_freq;
 					double silent_random_freq = data.base_freq + diff_freq;
 					random_freq = silent_random_freq;
-					set_Pre_Saw_Random_Freq(silent_random_freq);
+					control.set_Pre_Saw_Random_Freq(silent_random_freq);
 				}
 				else
 				{
-					random_freq = get_Pre_Saw_Random_Freq();
+					random_freq = control.get_Pre_Saw_Random_Freq();
 				}
 
-				add_Random_Freq_Move_Count(1);
-				if (get_Random_Freq_Move_Count() == 100)
-					set_Random_Freq_Move_Count(0);
+				control.add_Random_Freq_Move_Count(1);
+				if (control.get_Random_Freq_Move_Count() == 100)
+					control.set_Random_Freq_Move_Count(0);
 
 				return random_freq;
             }
@@ -423,18 +423,18 @@ namespace VVVF_Simulator
 			return starting_carrier_freq + (ending_carrier_freq - starting_carrier_freq) / (ending_freq - starting_freq) * (current_frequency - starting_freq);
 		}
 
-		public static double get_Vibrato_Freq(double lowest, double highest, double interval_count)
+		public static double get_Vibrato_Freq(double lowest, double highest, double interval_count , VVVF_Control_Values control)
 		{
 			double random_freq = 0;
-			int vib_coun = get_Vibrato_Freq_Move_Count();
+			int vib_coun = control.get_Vibrato_Freq_Move_Count();
 			if (vib_coun < interval_count / 2.0)
 				random_freq = lowest + (highest - lowest) / (interval_count / 2.0) * vib_coun;
 			else
 				random_freq = highest + (lowest - highest) / (interval_count / 2.0) * (vib_coun - interval_count / 2.0);
 
-			add_Vibrato_Freq_Move_Count(1);
-			if (get_Vibrato_Freq_Move_Count() > interval_count)
-				set_Vibrato_Freq_Move_Count(0);
+			control.add_Vibrato_Freq_Move_Count(1);
+			if (control.get_Vibrato_Freq_Move_Count() > interval_count)
+				control.set_Vibrato_Freq_Move_Count(0);
 			return random_freq;
         }
 
@@ -451,57 +451,52 @@ namespace VVVF_Simulator
             }
 		}
 
-		public static double check_for_mascon_off(Control_Values cv, double max_voltage_freq)
+		public static double check_for_mascon_off(Control_Values cv, VVVF_Control_Values control, double max_voltage_freq)
         {
 			if (cv.free_run && !cv.mascon_on && cv.wave_stat > max_voltage_freq)
 			{
-				set_Control_Frequency(max_voltage_freq);
+				control.set_Control_Frequency(max_voltage_freq);
 				return max_voltage_freq;
 				
 			}
 			else if (cv.free_run && cv.mascon_on && cv.wave_stat > max_voltage_freq)
 			{
-				double rolling_freq = get_Sine_Angle_Freq() * M_1_2PI;
-				set_Control_Frequency(rolling_freq);
+				double rolling_freq = control.get_Sine_Angle_Freq() * M_1_2PI;
+				control.set_Control_Frequency(rolling_freq);
 				return rolling_freq;
 			}
 			return -1;
 		}
 
-		public static bool check_for_mascon_off_wave_stat(Control_Values cv, double freq)
-        {
-			return (cv.free_run && get_Sine_Angle_Freq() >= 24.9 * M_2PI);
-		}
-
-        public static Wave_Values calculate_three_level(Pulse_Mode pulse_mode, Carrier_Freq data, Sine_Control_Data sine_control, double dipolar)
+        public static Wave_Values calculate_three_level(VVVF_Control_Values control ,Pulse_Mode pulse_mode, Carrier_Freq data, Sine_Control_Data sine_control, double dipolar)
 		{
 			Video_Generate_Values.pulse_mode = pulse_mode;
 			Video_Generate_Values.sine_amplitude = sine_control.amplitude;
 			Video_Generate_Values.carrier_freq_data = data;
 			Video_Generate_Values.dipolar = dipolar;
 
-			double sine_angle_freq = get_Sine_Angle_Freq();
-			double sine_time = get_Sine_Time();
+			double sine_angle_freq = control.get_Sine_Angle_Freq();
+			double sine_time = control.get_Sine_Time();
 			double min_sine_angle_freq = sine_control.min_sine_freq * M_2PI;
 			if (sine_angle_freq < min_sine_angle_freq)
             {
-				set_Allowed_Sine_Time_Change(false);
+				control.set_Allowed_Sine_Time_Change(false);
 				sine_angle_freq = min_sine_angle_freq;
             }
             else
-				set_Allowed_Sine_Time_Change(true);
+				control.set_Allowed_Sine_Time_Change(true);
 
 			Video_Generate_Values.sine_angle_freq = sine_angle_freq;
 
 			if (pulse_mode == Pulse_Mode.Async)
             {
-				double desire_saw_angle_freq = (data.range == 0) ? data.base_freq * M_2PI : get_Random_freq(data) * M_2PI;
+				double desire_saw_angle_freq = (data.range == 0) ? data.base_freq * M_2PI : get_Random_freq(data, control) * M_2PI;
 
-				set_Saw_Time(get_Saw_Angle_Freq() / desire_saw_angle_freq * get_Saw_Time());
-				set_Saw_Angle_Freq(desire_saw_angle_freq);
+				control.set_Saw_Time(control.get_Saw_Angle_Freq() / desire_saw_angle_freq * control.get_Saw_Time());
+				control.set_Saw_Angle_Freq(desire_saw_angle_freq);
 
 				double sin_value = get_sin_value(sine_time * sine_angle_freq + sine_control.initial_phase, sine_control.amplitude);
-				double saw_value = get_saw_value(get_Saw_Time() * get_Saw_Angle_Freq());
+				double saw_value = get_saw_value(control.get_Saw_Time() * control.get_Saw_Angle_Freq());
 
 				double changed_saw = ((dipolar != -1) ? dipolar : 0.5) * saw_value;
 				int pwm_value = get_pwm_value(sin_value, changed_saw + 0.5) + get_pwm_value(sin_value, changed_saw - 0.5);
@@ -523,8 +518,8 @@ namespace VVVF_Simulator
 				double changed_saw = ((dipolar != -1) ? dipolar : 0.5) * saw_value;
 				int pwm_value = get_pwm_value(sin_value, changed_saw + 0.5) + get_pwm_value(sin_value, changed_saw - 0.5);
 
-				set_Saw_Angle_Freq(sine_angle_freq * get_Pulse_Num(pulse_mode));
-				set_Saw_Time(sine_time);
+				control.set_Saw_Angle_Freq(sine_angle_freq * get_Pulse_Num(pulse_mode));
+				control.set_Saw_Time(sine_time);
 
 				Wave_Values wv;
 				wv.sin_value = sin_value;
@@ -536,28 +531,28 @@ namespace VVVF_Simulator
 			
 		}
 
-		public static Wave_Values calculate_two_level(Pulse_Mode pulse_mode, Carrier_Freq carrier_freq_data, Sine_Control_Data sine_control)
+		public static Wave_Values calculate_two_level(VVVF_Control_Values control , Pulse_Mode pulse_mode, Carrier_Freq carrier_freq_data, Sine_Control_Data sine_control)
 		{
 			Video_Generate_Values.pulse_mode = pulse_mode;
 			Video_Generate_Values.sine_amplitude = sine_control.amplitude;
 			Video_Generate_Values.carrier_freq_data = carrier_freq_data;
 			Video_Generate_Values.dipolar = -1;
 
-			double sin_angle_freq = get_Sine_Angle_Freq();
-			double sin_time = get_Sine_Time();
+			double sin_angle_freq = control.get_Sine_Angle_Freq();
+			double sin_time = control.get_Sine_Time();
 			double min_sine_angle_freq = sine_control.min_sine_freq * M_2PI;
 			if (sin_angle_freq < min_sine_angle_freq)
 			{
-				set_Allowed_Sine_Time_Change(false);
+				control.set_Allowed_Sine_Time_Change(false);
 				sin_angle_freq = min_sine_angle_freq;
 			}
 			else
-				set_Allowed_Sine_Time_Change(true);
+				control.set_Allowed_Sine_Time_Change(true);
 
 			Video_Generate_Values.sine_angle_freq = sin_angle_freq;
 
-			double saw_time = get_Saw_Time();
-			double saw_angle_freq = get_Saw_Angle_Freq();
+			double saw_time = control.get_Saw_Time();
+			double saw_angle_freq = control.get_Saw_Angle_Freq();
 
 			double initial_phase = sine_control.initial_phase;
 			double amplitude = sine_control.amplitude;
@@ -569,7 +564,7 @@ namespace VVVF_Simulator
 			//if async
 			if (pulse_mode == Pulse_Mode.Async || pulse_mode == Pulse_Mode.Async_THI)
 			{
-				double desire_saw_angle_freq = (carrier_freq_data.range == 0) ? carrier_freq_data.base_freq * M_2PI : get_Random_freq(carrier_freq_data) * M_2PI;
+				double desire_saw_angle_freq = (carrier_freq_data.range == 0) ? carrier_freq_data.base_freq * M_2PI : get_Random_freq(carrier_freq_data, control) * M_2PI;
 				saw_time = saw_angle_freq / desire_saw_angle_freq * saw_time;
 				saw_angle_freq = desire_saw_angle_freq;
 
@@ -581,8 +576,8 @@ namespace VVVF_Simulator
 				double saw_value = get_saw_value(saw_time * saw_angle_freq);
 				int pwm_value = get_pwm_value(sin_value, saw_value) * 2;
 
-				set_Saw_Angle_Freq(saw_angle_freq);
-				set_Saw_Time(saw_time);
+				control.set_Saw_Angle_Freq(saw_angle_freq);
+				control.set_Saw_Time(saw_time);
 
 				Wave_Values wv;
 				wv.sin_value = sin_value;
@@ -763,8 +758,8 @@ namespace VVVF_Simulator
 				int pwm_value = get_pwm_value(sin_value, saw_value) * 2;
 				//Console.WriteLine(pwm_value);
 
-				set_Saw_Angle_Freq(sin_angle_freq * pulse_num);
-				set_Saw_Time(sin_time);
+				control.set_Saw_Angle_Freq(sin_angle_freq * pulse_num);
+				control.set_Saw_Time(sin_time);
 
 				Wave_Values wv;
 				wv.sin_value = sin_value;

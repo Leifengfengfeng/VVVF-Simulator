@@ -16,6 +16,7 @@ using static VVVF_Simulator.Yaml_VVVF_Sound.Yaml_Sound_Data;
 using VVVF_Simulator.GUI.UtilForm;
 using System.ComponentModel;
 using System.Media;
+using System.Threading.Tasks;
 
 namespace VVVF_Simulator
 {
@@ -369,7 +370,12 @@ namespace VVVF_Simulator
             else if (command[0].Equals("RealTime"))
             {
                 if (command[1].Equals("RealTime"))
-                    Generation.Generate_RealTime.realtime_sound(Yaml_Generation.current_data);
+                {
+                    Task task = Task.Run(() => {
+                        Generation.Generate_RealTime.realtime_sound(Yaml_Generation.current_data);
+                    });
+                }
+                    
             }
         }
     }

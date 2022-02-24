@@ -1,6 +1,6 @@
 ﻿using System;
 using static VVVF_Simulator.vvvf_wave_calculate;
-using static VVVF_Simulator.vvvf_wave_control;
+using static VVVF_Simulator.VVVF_Control_Values;
 
 namespace VVVF_Simulator.Generation
 {
@@ -29,41 +29,41 @@ namespace VVVF_Simulator.Generation
         /// It will be updated everytime this function colled.
         /// </summary>
         /// <returns></returns>
-        public static bool Check_For_Freq_Change()
+        public static bool Check_For_Freq_Change(VVVF_Control_Values control)
         {
             count++;
 
             //This is core of control. Never to change.
-            if (count % 60 == 0 && is_Do_Freq_Change() && get_Sine_Angle_Freq() * M_1_2PI == get_Control_Frequency())
+            if (count % 60 == 0 && control.is_Do_Freq_Change() && control.get_Sine_Angle_Freq() * M_1_2PI == control.get_Control_Frequency())
             {
-                double sin_new_angle_freq = get_Sine_Angle_Freq();
+                double sin_new_angle_freq = control.get_Sine_Angle_Freq();
                  
                 // But you can change 400 here. If you wanna accelerate more slower, change 400 to like 800;
-                if (!is_Braking()) sin_new_angle_freq += Math.PI / 450;
+                if (!control.is_Braking()) sin_new_angle_freq += Math.PI / 450;
                 else sin_new_angle_freq -= Math.PI / 450;
 
-                double amp = get_Sine_Angle_Freq() / sin_new_angle_freq;
+                double amp = control.get_Sine_Angle_Freq() / sin_new_angle_freq;
 
-                set_Sine_Angle_Freq(sin_new_angle_freq);
+                control.set_Sine_Angle_Freq(sin_new_angle_freq);
 
-                if (is_Allowed_Sine_Time_Change())
-                    multi_Sine_Time(amp);
+                if (control.is_Allowed_Sine_Time_Change())
+                    control.multi_Sine_Time(amp);
             }
 
-            if (get_Temp_Count() == 0)
+            if (control.get_Temp_Count() == 0)
             {
-                if (get_Sine_Angle_Freq() * M_1_2PI > 110 && !is_Braking() && is_Do_Freq_Change())
+                if (control.get_Sine_Angle_Freq() * M_1_2PI > 110 && !control.is_Braking() && control.is_Do_Freq_Change())
                 {
-                    set_Do_Freq_Change(false);
-                    set_Mascon_Off(true);
+                    control.set_Do_Freq_Change(false);
+                    control.set_Mascon_Off(true);
                     count = 0;
                 }
-                else if (count / div_freq > 2 && !is_Do_Freq_Change())
+                else if (count / div_freq > 2 && !control.is_Do_Freq_Change())
                 {
-                    set_Do_Freq_Change(true);
-                    set_Mascon_Off(false);
-                    set_Braking(true);
-                    set_Temp_Count(get_Temp_Count() + 1);
+                    control.set_Do_Freq_Change(true);
+                    control.set_Mascon_Off(false);
+                    control.set_Braking(true);
+                    control.set_Temp_Count(control.get_Temp_Count() + 1);
                 }
             }
             /*
@@ -103,36 +103,36 @@ namespace VVVF_Simulator.Generation
             */
             else
             {
-                if (get_Sine_Angle_Freq() * M_1_2PI < 0 && is_Braking() && is_Do_Freq_Change()) return false;
+                if (control.get_Sine_Angle_Freq() * M_1_2PI < 0 && control.is_Braking() && control.is_Do_Freq_Change()) return false;
             }
 
 
 
             //This is also core of controlling. This should never changed.
-            if (!is_Mascon_Off())
+            if (!control.is_Mascon_Off())
             {
-                if (!is_Free_Running())
-                    set_Control_Frequency(get_Sine_Angle_Freq() * M_1_2PI);
+                if (!control.is_Free_Running())
+                    control.set_Control_Frequency(control.get_Sine_Angle_Freq() * M_1_2PI);
                 else
                 {
-                    add_Control_Frequency((Math.PI * 2) / (double)get_Mascon_Off_Div());
+                    control.add_Control_Frequency((Math.PI * 2) / (double)control.get_Mascon_Off_Div());
 
-                    if (get_Sine_Angle_Freq() * M_1_2PI < get_Control_Frequency())
+                    if (control.get_Sine_Angle_Freq() * M_1_2PI < control.get_Control_Frequency())
                     {
-                        set_Control_Frequency(get_Sine_Angle_Freq() * M_1_2PI);
-                        set_Free_Running(false);
+                        control.set_Control_Frequency(control.get_Sine_Angle_Freq() * M_1_2PI);
+                        control.set_Free_Running(false);
                     }
                     else
                     {
-                        set_Free_Running(true);
+                        control.set_Free_Running(true);
                     }
                 }
             }
             else
             {
-                add_Control_Frequency(- (Math.PI * 2) / (double)get_Mascon_Off_Div());
-                if (get_Control_Frequency() < 0) set_Control_Frequency(0);
-                set_Free_Running(true);
+                control.add_Control_Frequency(- (Math.PI * 2) / (double)control.get_Mascon_Off_Div());
+                if (control.get_Control_Frequency() < 0) control.set_Control_Frequency(0);
+                control.set_Free_Running(true);
             }
 
             return true;
