@@ -11,41 +11,47 @@ namespace VVVF_Simulator.Generation
     public class Generate_RealTime
     {
         public static class RealTime_Parameter {
-            public static double change_amount { get; set; } = 0.001;
-            public static Boolean update { get; set; } = true;
+            public static double change_amount { get; set; } = 0;
             public static Boolean braking { get; set; } = false;
             public static Boolean quit { get; set; } = false;
             public static Boolean reselect { get; set; } = false;
             public static Boolean free_run { get; set; } = false;
+
+            public static VVVF_Control_Values control_values { get; set; } = new();
         }
         private static int realtime_sound_calculate(BufferedWaveProvider provider, Yaml_Sound_Data sound_data, VVVF_Control_Values control)
         {
             while (true)
             {
-                if (RealTime_Parameter.update)
+                control.set_Braking(RealTime_Parameter.braking);
+                control.set_Mascon_Off(RealTime_Parameter.free_run);
+
+                double change_amo = RealTime_Parameter.change_amount;
+
+                double sin_new_angle_freq = control.get_Sine_Angle_Freq();
+                sin_new_angle_freq += change_amo;
+                if (sin_new_angle_freq < 0) sin_new_angle_freq = 0;
+
+                if (!control.is_Free_Running())
                 {
-
-                    control.set_Braking(RealTime_Parameter.braking);
-                    control.set_Mascon_Off(RealTime_Parameter.free_run);
-
-                    double change_amo = RealTime_Parameter.change_amount;
-
-                    double sin_new_angle_freq = control.get_Sine_Angle_Freq();
-                    sin_new_angle_freq += change_amo;
-
-                    double amp = control.get_Sine_Angle_Freq() / sin_new_angle_freq;
-                    if (sin_new_angle_freq < 0) sin_new_angle_freq = 0;
-
-                    control.set_Sine_Angle_Freq(sin_new_angle_freq);
                     if (control.is_Allowed_Sine_Time_Change())
-                        control.multi_Sine_Time(amp);
+                    {
+                        if (sin_new_angle_freq != 0)
+                        {
+                            double amp = control.get_Sine_Angle_Freq() / sin_new_angle_freq;
+                            control.multi_Sine_Time(amp);
+                        }
+                        else
+                            control.set_Sine_Time(0);
+                    }
 
-                    if (!control.is_Mascon_Off())
-                        control.set_Control_Frequency(control.get_Sine_Angle_Freq() / (M_2PI));
-
-                    if (RealTime_Parameter.quit) return 0;
-                    else if (RealTime_Parameter.reselect) return 1;
+                    control.set_Control_Frequency(control.get_Sine_Angle_Freq() / (M_2PI));
+                    control.set_Sine_Angle_Freq(sin_new_angle_freq);
                 }
+
+
+                if (RealTime_Parameter.quit) return 0;
+                else if (RealTime_Parameter.reselect) return 1;
 
                 if (!control.is_Mascon_Off())
                 {
@@ -69,7 +75,10 @@ namespace VVVF_Simulator.Generation
                 else
                 {
                     control.add_Control_Frequency(- M_2PI / (control.get_Mascon_Off_Div() / 24));
-                    if (control.get_Control_Frequency() < 0) control.set_Control_Frequency(0);
+                    if (control.get_Control_Frequency() < 0)
+                    {
+                        control.set_Control_Frequency(0);
+                    }
                     control.set_Free_Running(true);
                 }
 
@@ -100,14 +109,16 @@ namespace VVVF_Simulator.Generation
                     Wave_Values wv_V = Yaml_VVVF_Wave.calculate_Yaml(control, cv_V, sound_data);
 
                     double pwm_value = wv_U.pwm_value - wv_V.pwm_value;
-                    byte sound_byte = 0x80;
 
-                    if (pwm_value == 2) sound_byte = 0xB0;
-                    else if (pwm_value == 1) sound_byte = 0x98;
-                    else if (pwm_value == -1) sound_byte = 0x68;
-                    else if (pwm_value == -2) sound_byte = 0x50;
+                    byte sound_byte = 0x80;
+                    if (pwm_value == 2) sound_byte += 0x40;
+                    else if (pwm_value == 1) sound_byte += 0x20;
+                    else if (pwm_value == -1) sound_byte -= 0x20;
+                    else if (pwm_value == -2) sound_byte -= 0x40;
 
                     add[i] = sound_byte;
+
+                    RealTime_Parameter.control_values = control;
                 }
 
 
@@ -119,6 +130,7 @@ namespace VVVF_Simulator.Generation
         }
         public static void realtime_sound(Yaml_Sound_Data ysd)
         {
+            RealTime_Parameter.quit = false;
             while (true)
             {
 

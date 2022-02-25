@@ -5,6 +5,67 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:VVVF_Simulator.GUI.UtilForm"
         mc:Ignorable="d"
-        Title="Mascon" Height="450" Width="800" KeyDown="Window_KeyDown" KeyUp="Window_KeyUp">
-    <Grid/>
+        Title="Mascon" Height="450" Width="800" KeyDown="Window_KeyDown" KeyUp="Window_KeyUp" Closing="Window_Closing">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="25"/>
+            <RowDefinition Height="1*"/>
+            <RowDefinition Height="25"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="25"/>
+            <ColumnDefinition Width="1*"/>
+            <ColumnDefinition Width="3*"/>
+            <ColumnDefinition Width="25"/>
+        </Grid.ColumnDefinitions>
+        <Grid Grid.Column="1" Grid.Row="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="1*"/>
+                <RowDefinition Height="1*"/>
+                <RowDefinition Height="1*"/>
+                <RowDefinition Height="1*"/>
+                <RowDefinition Height="1*"/>
+                <RowDefinition Height="1*"/>
+                <RowDefinition Height="1*"/>
+            </Grid.RowDefinitions>
+            <Grid Background="{Binding B3}">
+                <Label Content="B3" HorizontalAlignment="Center" VerticalAlignment="Center" FontFamily="M PLUS 2" FontSize="24" FontWeight="Bold"/>
+            </Grid>
+            <Grid Background="{Binding B2}" Grid.Row="1">
+                <Label Content="B2" HorizontalAlignment="Center" VerticalAlignment="Center" FontFamily="M PLUS 2" FontSize="24" FontWeight="Bold"/>
+            </Grid>
+            <Grid Background="{Binding B1}" Grid.Row="2">
+                <Label Content="B1" HorizontalAlignment="Center" VerticalAlignment="Center" FontFamily="M PLUS 2" FontSize="24" FontWeight="Bold"/>
+            </Grid>
+            <Grid Background="{Binding N}" Grid.Row="3">
+                <Label Content="N" HorizontalAlignment="Center" VerticalAlignment="Center" FontFamily="M PLUS 2" FontSize="24" FontWeight="Bold"/>
+
+            </Grid>
+            <Grid Background="{Binding P1}" Grid.Row="4">
+                <Label Content="P1" HorizontalAlignment="Center" VerticalAlignment="Center" FontFamily="M PLUS 2" FontSize="24" FontWeight="Bold"/>
+            </Grid>
+            <Grid Background="{Binding P2}" Grid.Row="5">
+                <Label Content="P2" HorizontalAlignment="Center" VerticalAlignment="Center" FontFamily="M PLUS 2" FontSize="24" FontWeight="Bold"/>
+            </Grid>
+            <Grid Background="{Binding P3}" Grid.Row="6">
+                <Label Content="P3" HorizontalAlignment="Center" VerticalAlignment="Center" FontFamily="M PLUS 2" FontSize="24" FontWeight="Bold"/>
+            </Grid>
+        </Grid>
+        <Grid Grid.Column="2" Grid.Row="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="100"/>
+                <RowDefinition Height="81*"/>
+            </Grid.RowDefinitions>
+            <Grid Grid.Row="0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="208*"/>
+                    <ColumnDefinition Width="298*"/>
+                    <ColumnDefinition Width="57*"/>
+                </Grid.ColumnDefinitions>
+                <Label Content="Sine Frequency : " HorizontalAlignment="Center" VerticalAlignment="Center" FontFamily="M PLUS 2" FontWeight="Bold" FontSize="20" Height="34" Width="169"/>
+                <Label Grid.Column="2" Content="Hz" HorizontalAlignment="Center" VerticalAlignment="Center" FontFamily="M PLUS 2" FontWeight="Bold" FontSize="20" Height="34" Width="34" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
+                <TextBlock Grid.Column="1" HorizontalAlignment="Center" TextWrapping="Wrap" Text="{Binding sine_freq, StringFormat={}{0:N1} }" VerticalAlignment="Center" Width="278" FontFamily="M PLUS 2" FontWeight="Bold" FontSize="48" TextAlignment="Center"/>
+            </Grid>
+        </Grid>
+    </Grid>
 </Window>

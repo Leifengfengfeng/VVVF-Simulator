@@ -43,7 +43,7 @@
                             <Button x:Name="accelerate_remove" Tag="accelerate_remove" Content="-" HorizontalAlignment="Left" VerticalAlignment="Center" Height="28" Width="28" FontFamily="Arial Rounded MT Bold" BorderBrush="#FF0012FF" Click="settings_edit_Click" Grid.Row="1" Margin="60,0,0,0"/>
                             <Button x:Name="accelerate_reset" Tag="accelerate_reset" Content="RESET" Grid.Row="1" HorizontalAlignment="Right" Margin="0,0,15,0" VerticalAlignment="Center" Height="28" Width="66" FontFamily="M PLUS 2 Medium" FontSize="16" BorderBrush="#FF0010FF" Click="settings_edit_Click"/>
                             <Border BorderBrush="#FF969696" BorderThickness="1" Grid.Row="1"/>
-                            <ListView x:Name="accelerate_settings" SelectionMode="Single" Loaded="settings_load" Tag="accelerate" >
+                            <ListView x:Name="accelerate_settings" SelectionMode="Single" Loaded="settings_load" Tag="accelerate" SelectionChanged="settings_SelectionChanged" >
                                 <ListView.ItemTemplate>
                                     <DataTemplate>
                                         <StackPanel>

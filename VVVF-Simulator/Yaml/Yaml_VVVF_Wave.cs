@@ -48,7 +48,7 @@ namespace VVVF_Simulator.Yaml_VVVF_Sound
 			double minimum_sine_freq, original_wave_stat = cv.wave_stat;
 			if (cv.brake) minimum_sine_freq = yvs.min_freq.braking;
 			else minimum_sine_freq = yvs.min_freq.accelerate;
-			if (cv.wave_stat < minimum_sine_freq) cv.wave_stat = minimum_sine_freq;
+			if (cv.wave_stat < minimum_sine_freq && !cv.free_run) cv.wave_stat = minimum_sine_freq;
 
 
 

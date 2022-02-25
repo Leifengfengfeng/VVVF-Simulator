@@ -55,9 +55,6 @@ namespace VVVF_Simulator
         {
             DataContext = view_data;
             InitializeComponent();
-
-            Mascon mascon = new Mascon();
-            mascon.Show();
         }
 
         
@@ -271,21 +268,44 @@ namespace VVVF_Simulator
             if (tag_str == null) return;
             String[] command = tag_str.Split("_");
 
-            view_data.blocking = true;
 
-            Task task = Task.Run(() => {
-                Yaml_Sound_Data clone = Yaml_Generation.DeepClone(Yaml_Generation.current_data);
-                solve_Command(command, clone);
-            });
+
+
+            if (command[0].Equals("RealTime"))
+            {
+                if (command[1].Equals("RealTime"))
+                {
+                    Generation.Generate_RealTime.RealTime_Parameter.quit = false;
+
+                    Mascon mascon = new();
+                    mascon.Show();
+
+                    view_data.blocking = true;
+                    Task task = Task.Run(() => {
+                        Yaml_Sound_Data clone = Yaml_Generation.DeepClone(Yaml_Generation.current_data);
+                        Generation.Generate_RealTime.realtime_sound(clone);
+                        view_data.blocking = false;
+                        SystemSounds.Beep.Play();
+                    });
+
+                }
+
+            }
+            else
+            {
+                Task task = Task.Run(() => {
+                    Yaml_Sound_Data clone = Yaml_Generation.DeepClone(Yaml_Generation.current_data);
+                    solve_Command(command, clone);
+                });
+            }
             
 
-            view_data.blocking = false;
-            SystemSounds.Beep.Play();
+            
         }
         private void solve_Command(String[] command, Yaml_Sound_Data data)
         {
-            
 
+            view_data.blocking = true;
             if (command[0].Equals("Audio"))
             {
                 var dialog = new SaveFileDialog { Filter = "wav (*.wav)|*.wav" };
@@ -376,15 +396,9 @@ namespace VVVF_Simulator
                     Generation.Generate_Hexagon.generate_wave_hexagon_picture(dialog.FileName, data, circle, gen_param.Double_Values[0]);
                 }
             }
-            else if (command[0].Equals("RealTime"))
-            {
-                if (command[1].Equals("RealTime"))
-                {
-                    Generation.Generate_RealTime.realtime_sound(data);
-
-                }
-                    
-            }
+            
+            view_data.blocking = false;
+            SystemSounds.Beep.Play();
         }
     }
 }
