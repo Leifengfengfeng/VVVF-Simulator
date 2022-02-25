@@ -12,6 +12,7 @@ using System.Windows.Forms;
 using Size = System.Drawing.Size;
 using System.Collections.Generic;
 using VVVF_Simulator.Yaml_VVVF_Sound;
+using System.Diagnostics;
 
 namespace VVVF_Simulator.Generation
 {
@@ -556,8 +557,8 @@ namespace VVVF_Simulator.Generation
         {
             double hex_div_seed = 10000 * ((control.get_Sine_Freq() > 0 && control.get_Sine_Freq() < 1) ? 1 / control.get_Sine_Freq() : 1);
             int hex_div = (int)Math.Round(6 * hex_div_seed);
-            double[] hexagon_coordinate = new double[] { 100, 500 };
 
+            double current_x = 0;
             double min_x = 2000, max_x = 0;
 
             for (int i = 0; i < hex_div; i++)
@@ -595,25 +596,20 @@ namespace VVVF_Simulator.Generation
                 };
                 Wave_Values wv_W = Yaml_VVVF_Wave.calculate_Yaml(control, cv_W, sound_data);
 
-                double move_x = -0.5 * wv_W.pwm_value - 0.5 * wv_V.pwm_value + wv_U.pwm_value;
-                double move_y = -0.866025403784438646763 * wv_W.pwm_value + 0.866025403784438646763 * wv_V.pwm_value;
-                double int_move_x = 200 * move_x / hex_div_seed;
-                double int_move_y = 200 * move_y / hex_div_seed;
+                double move_x = -( wv_W.pwm_value + wv_V.pwm_value ) + 2 * wv_U.pwm_value;
 
-                hexagon_coordinate[0] = hexagon_coordinate[0] + int_move_x;
-                hexagon_coordinate[1] = hexagon_coordinate[1] + int_move_y;
+                current_x = current_x + move_x;
 
-                if (min_x > Math.Round(hexagon_coordinate[0]))
-                    min_x = hexagon_coordinate[0];
-                if (max_x < Math.Round(hexagon_coordinate[0]))
-                    max_x = hexagon_coordinate[0];
+                if (min_x > current_x)
+                    min_x = current_x;
+                if (max_x < current_x)
+                    max_x = current_x;
             }
 
-            double voltage = Math.Round((max_x - min_x) / 8.0,1);
+            double diff_raw = max_x - min_x;
+            double raw_voltage = diff_raw / 800.0;
+            double voltage = Math.Round(raw_voltage, 1);
             
-            if (voltage > 100)
-                voltage = 100;
-
             return voltage;
         }
 

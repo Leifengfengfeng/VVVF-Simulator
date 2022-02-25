@@ -4,6 +4,13 @@ namespace VVVF_Simulator
 {
     public class VVVF_Control_Values
     {
+        public VVVF_Control_Values Clone()
+        {
+            return (VVVF_Control_Values)MemberwiseClone();
+        }
+
+
+
         // variables for controlling parameters
         private int mascon_off_div = 18000;
         private bool do_frequency_change = true;

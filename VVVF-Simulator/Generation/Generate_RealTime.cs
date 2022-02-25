@@ -18,6 +18,7 @@ namespace VVVF_Simulator.Generation
             public static Boolean free_run { get; set; } = false;
 
             public static VVVF_Control_Values control_values { get; set; } = new();
+            public static Yaml_Sound_Data sound_data { get; set; } = new();
         }
         private static int realtime_sound_calculate(BufferedWaveProvider provider, Yaml_Sound_Data sound_data, VVVF_Control_Values control)
         {
@@ -131,6 +132,7 @@ namespace VVVF_Simulator.Generation
         public static void realtime_sound(Yaml_Sound_Data ysd)
         {
             RealTime_Parameter.quit = false;
+            RealTime_Parameter.sound_data = ysd;
             while (true)
             {
 

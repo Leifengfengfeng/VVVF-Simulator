@@ -54,17 +54,28 @@
         <Grid Grid.Column="2" Grid.Row="1">
             <Grid.RowDefinitions>
                 <RowDefinition Height="100"/>
-                <RowDefinition Height="81*"/>
+                <RowDefinition Height="100"/>
+                <RowDefinition Height="85*"/>
             </Grid.RowDefinitions>
-            <Grid Grid.Row="0">
+            <Grid Grid.Row="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="208*"/>
                     <ColumnDefinition Width="298*"/>
                     <ColumnDefinition Width="57*"/>
                 </Grid.ColumnDefinitions>
-                <Label Content="Sine Frequency : " HorizontalAlignment="Center" VerticalAlignment="Center" FontFamily="M PLUS 2" FontWeight="Bold" FontSize="20" Height="34" Width="169"/>
+                <Label Content="Sine Frequency : " HorizontalAlignment="Center" VerticalAlignment="Center" FontFamily="M PLUS 2" FontWeight="Bold" FontSize="20" Height="34" Width="169" HorizontalContentAlignment="Right"/>
                 <Label Grid.Column="2" Content="Hz" HorizontalAlignment="Center" VerticalAlignment="Center" FontFamily="M PLUS 2" FontWeight="Bold" FontSize="20" Height="34" Width="34" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
                 <TextBlock Grid.Column="1" HorizontalAlignment="Center" TextWrapping="Wrap" Text="{Binding sine_freq, StringFormat={}{0:N1} }" VerticalAlignment="Center" Width="278" FontFamily="M PLUS 2" FontWeight="Bold" FontSize="48" TextAlignment="Center"/>
+            </Grid>
+            <Grid Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="208*"/>
+                    <ColumnDefinition Width="298*"/>
+                    <ColumnDefinition Width="57*"/>
+                </Grid.ColumnDefinitions>
+                <Label Content="Voltage : " HorizontalAlignment="Center" VerticalAlignment="Center" FontFamily="M PLUS 2" FontWeight="Bold" FontSize="20" Height="34" Width="169" HorizontalContentAlignment="Right"/>
+                <Label Grid.Column="2" Content="%" HorizontalAlignment="Center" VerticalAlignment="Center" FontFamily="M PLUS 2" FontWeight="Bold" FontSize="20" Height="34" Width="34" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
+                <TextBlock Grid.Column="1" HorizontalAlignment="Center" TextWrapping="Wrap" Text="{Binding voltage, StringFormat=\{0:N1\}}" VerticalAlignment="Center" Width="278" FontFamily="M PLUS 2" FontWeight="Bold" FontSize="48" TextAlignment="Center"/>
             </Grid>
         </Grid>
     </Grid>
