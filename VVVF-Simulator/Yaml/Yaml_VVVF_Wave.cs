@@ -1,18 +1,18 @@
-﻿using static VVVF_Generator_Porting.vvvf_wave_calculate;
-using static VVVF_Generator_Porting.vvvf_wave_control;
-using static VVVF_Generator_Porting.my_math;
-using static VVVF_Generator_Porting.vvvf_wave_calculate.Amplitude_Argument;
-using static VVVF_Generator_Porting.Yaml_VVVF_Sound.Yaml_Sound_Data;
+﻿using static VVVF_Simulator.vvvf_wave_calculate;
+using static VVVF_Simulator.VVVF_Control_Values;
+using static VVVF_Simulator.my_math;
+using static VVVF_Simulator.vvvf_wave_calculate.Amplitude_Argument;
+using static VVVF_Simulator.Yaml_VVVF_Sound.Yaml_Sound_Data;
 using System;
 using System.Collections.Generic;
-using static VVVF_Generator_Porting.Yaml_VVVF_Sound.Yaml_Sound_Data.Yaml_Control_Data;
-using static VVVF_Generator_Porting.Yaml_VVVF_Sound.Yaml_Sound_Data.Yaml_Control_Data.Yaml_Free_Run_Condition;
-using static VVVF_Generator_Porting.Yaml_VVVF_Sound.Yaml_Sound_Data.Yaml_Mascon_Data;
-using static VVVF_Generator_Porting.Yaml_VVVF_Sound.Yaml_Sound_Data.Yaml_Control_Data.Yaml_Control_Data_Amplitude_Control;
-using static VVVF_Generator_Porting.Yaml_VVVF_Sound.Yaml_Sound_Data.Yaml_Control_Data.Yaml_Async_Parameter.Yaml_Async_Parameter_Carrier_Freq.Yaml_Async_Parameter_Carrier_Freq_Table;
-using static VVVF_Generator_Porting.Yaml_VVVF_Sound.Yaml_Sound_Data.Yaml_Control_Data.Yaml_Async_Parameter.Yaml_Async_Parameter_Random_Range;
+using static VVVF_Simulator.Yaml_VVVF_Sound.Yaml_Sound_Data.Yaml_Control_Data;
+using static VVVF_Simulator.Yaml_VVVF_Sound.Yaml_Sound_Data.Yaml_Control_Data.Yaml_Free_Run_Condition;
+using static VVVF_Simulator.Yaml_VVVF_Sound.Yaml_Sound_Data.Yaml_Mascon_Data;
+using static VVVF_Simulator.Yaml_VVVF_Sound.Yaml_Sound_Data.Yaml_Control_Data.Yaml_Control_Data_Amplitude_Control;
+using static VVVF_Simulator.Yaml_VVVF_Sound.Yaml_Sound_Data.Yaml_Control_Data.Yaml_Async_Parameter.Yaml_Async_Parameter_Carrier_Freq.Yaml_Async_Parameter_Carrier_Freq_Table;
+using static VVVF_Simulator.Yaml_VVVF_Sound.Yaml_Sound_Data.Yaml_Control_Data.Yaml_Async_Parameter.Yaml_Async_Parameter_Random_Range;
 
-namespace VVVF_Generator_Porting.Yaml_VVVF_Sound
+namespace VVVF_Simulator.Yaml_VVVF_Sound
 {
     public class Yaml_VVVF_Wave
     {
@@ -35,10 +35,10 @@ namespace VVVF_Generator_Porting.Yaml_VVVF_Sound
 			if (amp_param.max_amp != -1 && amp_param.max_amp < amp) amp = amp_param.max_amp;
 			return amp;
 		}
-		public static Wave_Values calculate_Yaml(Control_Values cv, Yaml_Sound_Data yvs)
+		public static Wave_Values calculate_Yaml(VVVF_Control_Values control , Control_Values cv, Yaml_Sound_Data yvs)
 		{
 			Pulse_Mode pulse_mode;
-			Carrier_Freq carrier_freq = new Carrier_Freq(0, 0);
+			Carrier_Freq carrier_freq = new(0, 0);
 			double amplitude = 0;
 			double dipolar = -1;
 
@@ -48,7 +48,7 @@ namespace VVVF_Generator_Porting.Yaml_VVVF_Sound
 			double minimum_sine_freq, original_wave_stat = cv.wave_stat;
 			if (cv.brake) minimum_sine_freq = yvs.min_freq.braking;
 			else minimum_sine_freq = yvs.min_freq.accelerate;
-			if (cv.wave_stat < minimum_sine_freq) cv.wave_stat = minimum_sine_freq;
+			if (cv.wave_stat < minimum_sine_freq && !cv.free_run) cv.wave_stat = minimum_sine_freq;
 
 
 
@@ -61,20 +61,20 @@ namespace VVVF_Generator_Porting.Yaml_VVVF_Sound
 			else mascon_on_off_check_data = yvs.mascon_data.accelerating;
 			if (cv.mascon_on)
 			{
-				mascon_off_check = check_for_mascon_off(cv, mascon_on_off_check_data.on.control_freq_go_to);
-				set_Mascon_Off_Div(mascon_on_off_check_data.on.div);
+				mascon_off_check = check_for_mascon_off(cv, control, mascon_on_off_check_data.on.control_freq_go_to);
+				control.set_Mascon_Off_Div(mascon_on_off_check_data.on.div);
 			}
 			else
 			{
-				mascon_off_check = check_for_mascon_off(cv, mascon_on_off_check_data.off.control_freq_go_to);
-				set_Mascon_Off_Div(mascon_on_off_check_data.off.div);
+				mascon_off_check = check_for_mascon_off(cv, control, mascon_on_off_check_data.off.control_freq_go_to);
+				control.set_Mascon_Off_Div(mascon_on_off_check_data.off.div);
 			}
 			if (mascon_off_check != -1) cv.wave_stat = mascon_off_check;
 
 			//
 			// control stat solve
 			//
-			List<Yaml_Control_Data> control_list = new List<Yaml_Control_Data>(cv.brake ? yvs.braking_pattern : yvs.accelerate_pattern);
+			List<Yaml_Control_Data> control_list = new(cv.brake ? yvs.braking_pattern : yvs.accelerate_pattern);
 			control_list.Sort((a, b) => (int)(b.from - a.from));
 
 			//determine what control data to solve
@@ -100,7 +100,7 @@ namespace VVVF_Generator_Porting.Yaml_VVVF_Sound
 
 				if (!cv.free_run) continue;
 				if (free_run_data.skip) continue;
-				if (cv.free_run && get_Sine_Angle_Freq() < ysd.from * M_2PI) continue;
+				if (cv.free_run && control.get_Sine_Angle_Freq() < ysd.from * M_2PI) continue;
 
 				if (!free_run_data.stuck_at_here && !condition_1) continue;
 				solve = x;
@@ -148,7 +148,7 @@ namespace VVVF_Generator_Porting.Yaml_VVVF_Sound
 					for(int i = 0; i < async_carrier_freq_table.Count; i++)
                     {
 						var carrier = async_carrier_freq_table[i];
-						bool condition_1 = carrier.free_run_stuck_here && (get_Sine_Freq() < carrier.from) && cv.free_run;
+						bool condition_1 = carrier.free_run_stuck_here && (control.get_Sine_Freq() < carrier.from) && cv.free_run;
 						bool condition_2 = cv.wave_stat > carrier.from;
 						if (!condition_1 && !condition_2) continue;
 
@@ -178,7 +178,7 @@ namespace VVVF_Generator_Porting.Yaml_VVVF_Sound
 						var moving_val = vibrato_data.lowest.moving_value;
 						lowest = get_Changing_Value(moving_val.start, moving_val.start_value, moving_val.end, moving_val.end_value, cv.wave_stat);
 					}
-					carrier_freq_val = get_Vibrato_Freq(lowest, highest, vibrato_data.interval);
+					carrier_freq_val = get_Vibrato_Freq(lowest, highest, vibrato_data.interval , control);
 				}
 
 				double random_range = 0;
@@ -227,12 +227,12 @@ namespace VVVF_Generator_Porting.Yaml_VVVF_Sound
 				double target_freq , target_amp;
 
 				if (free_run_amp_param.end_freq == -1)
-					target_freq = (get_Sine_Freq() > max_control_freq) ? max_control_freq : get_Sine_Freq();
+					target_freq = (control.get_Sine_Freq() > max_control_freq) ? max_control_freq : control.get_Sine_Freq();
 				else
 					target_freq = free_run_amp_param.end_freq;
 
 				if (free_run_amp_param.end_amp == -1)
-					target_amp = yaml_amplitude_calculate(solve_data.amplitude_control.default_data, get_Sine_Freq());
+					target_amp = yaml_amplitude_calculate(solve_data.amplitude_control.default_data, control.get_Sine_Freq());
 				else
 					target_amp = free_run_amp_param.end_amp;
 
@@ -252,13 +252,13 @@ namespace VVVF_Generator_Porting.Yaml_VVVF_Sound
 
 				if (free_run_amp_param.cut_off_amp > amplitude) amplitude = 0;
 				if (free_run_amp_param.max_amp != -1 && amplitude > free_run_amp_param.max_amp) amplitude = free_run_amp_param.max_amp;
-				if (!cv.mascon_on && amplitude == 0) set_Control_Frequency(0);
+				if (!cv.mascon_on && amplitude == 0) control.set_Control_Frequency(0);
 			}
 
 			if (cv.wave_stat == 0) amplitude = 0;
 
-			if (yvs.level == 3) return calculate_three_level(pulse_mode, carrier_freq, new Sine_Control_Data(cv.initial_phase, amplitude, minimum_sine_freq), dipolar);
-			else return calculate_two_level(pulse_mode, carrier_freq, new Sine_Control_Data(cv.initial_phase, amplitude, minimum_sine_freq));
+			if (yvs.level == 3) return calculate_three_level(control , pulse_mode, carrier_freq, new Sine_Control_Data(cv.initial_phase, amplitude, minimum_sine_freq), dipolar);
+			else return calculate_two_level(control, pulse_mode, carrier_freq, new Sine_Control_Data(cv.initial_phase, amplitude, minimum_sine_freq));
 		}
 	}
 }

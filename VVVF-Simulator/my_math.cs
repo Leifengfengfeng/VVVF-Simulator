@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace VVVF_Generator_Porting
+namespace VVVF_Simulator
 {
     public class my_math
     {
@@ -78,6 +78,9 @@ namespace VVVF_Generator_Porting
                 cycles = (long)(radian * M_1_PI);
             double pi_radian = radian - (double)cycles * M_PI;
             int loc = (int)round((double)pi_radian * 636.3014624813976);
+
+            loc = (loc < 0) ? 0 : (loc > sin_table.Length) ? 0 : loc;
+
             double val = sin_table[loc];
             if ((cycles & 0x01) == 1)
                 val = -(double)val;

@@ -3,23 +3,20 @@ using System;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
-using static VVVF_Generator_Porting.vvvf_wave_calculate;
-using static VVVF_Generator_Porting.vvvf_wave_control;
-using static VVVF_Generator_Porting.Generation.Generate_Common;
-using VVVF_Generator_Porting.Yaml_VVVF_Sound;
+using static VVVF_Simulator.vvvf_wave_calculate;
+using static VVVF_Simulator.VVVF_Control_Values;
+using static VVVF_Simulator.Generation.Generate_Common;
+using VVVF_Simulator.Yaml_VVVF_Sound;
 
-namespace VVVF_Generator_Porting.Generation
+namespace VVVF_Simulator.Generation
 {
     public class Generate_Wave_Form
     {
-        public static void generate_wave_U_V(String output_path, Yaml_Sound_Data sound_data)
+        public static void generate_wave_U_V(String fileName, Yaml_Sound_Data sound_data)
         {
-            reset_control_variables();
-            reset_all_variables();
-
-            DateTime dt = DateTime.Now;
-            String gen_time = dt.ToString("yyyy-MM-dd_HH-mm-ss");
-            String fileName = output_path + "\\" + gen_time + ".avi";
+            VVVF_Control_Values control = new();
+            control.reset_control_variables();
+            control.reset_all_variables();
 
             bool temp = true;
             Int32 sound_block_count = 0;
@@ -70,8 +67,8 @@ namespace VVVF_Generator_Porting.Generation
 
                 if (sound_block_count % movie_div == 0 && temp)
                 {
-                    set_Sine_Time(0);
-                    set_Saw_Time(0);
+                    control.set_Sine_Time(0);
+                    control.set_Saw_Time(0);
 
                     Bitmap image = new(image_width, image_height);
                     Graphics g = Graphics.FromImage(image);
@@ -86,27 +83,27 @@ namespace VVVF_Generator_Porting.Generation
                         {
                             Control_Values cv_U = new Control_Values
                             {
-                                brake = is_Braking(),
-                                mascon_on = !is_Mascon_Off(),
-                                free_run = is_Free_Running(),
+                                brake = control.is_Braking(),
+                                mascon_on = !control.is_Mascon_Off(),
+                                free_run = control.is_Free_Running(),
                                 initial_phase = Math.PI * 2.0 / 3.0 * 0,
-                                wave_stat = get_Control_Frequency()
+                                wave_stat = control.get_Control_Frequency()
                             };
-                            Wave_Values wv_U = Yaml_VVVF_Wave.calculate_Yaml(cv_U, sound_data);
+                            Wave_Values wv_U = Yaml_VVVF_Wave.calculate_Yaml(control, cv_U, sound_data);
                             Control_Values cv_V = new Control_Values
                             {
-                                brake = is_Braking(),
-                                mascon_on = !is_Mascon_Off(),
-                                free_run = is_Free_Running(),
+                                brake = control.is_Braking(),
+                                mascon_on = !control.is_Mascon_Off(),
+                                free_run = control.is_Free_Running(),
                                 initial_phase = Math.PI * 2.0 / 3.0 * 1,
-                                wave_stat = get_Control_Frequency()
+                                wave_stat = control.get_Control_Frequency()
                             };
-                            Wave_Values wv_V = Yaml_VVVF_Wave.calculate_Yaml(cv_V, sound_data);
+                            Wave_Values wv_V = Yaml_VVVF_Wave.calculate_Yaml(control, cv_V, sound_data);
 
                             if (j == 0)
                             {
-                                add_Saw_Time(Math.PI / (120000.0 * calculate_div));
-                                add_Sine_Time(Math.PI / (120000.0 * calculate_div));
+                                control.add_Saw_Time(Math.PI / (120000.0 * calculate_div));
+                                control.add_Sine_Time(Math.PI / (120000.0 * calculate_div));
                             }
 
                             values[j * 2] = wv_U;
@@ -141,7 +138,7 @@ namespace VVVF_Generator_Porting.Generation
 
                 sound_block_count++;
 
-                loop = check_for_freq_change();
+                loop = Check_For_Freq_Change(control);
 
             }
 
@@ -173,14 +170,11 @@ namespace VVVF_Generator_Porting.Generation
             vr.Dispose();
         }
 
-        public static void generate_wave_UVW(String output_path, Yaml_Sound_Data sound_data)
+        public static void generate_wave_UVW(String fileName, Yaml_Sound_Data sound_data)
         {
-            reset_control_variables();
-            reset_all_variables();
-
-            DateTime dt = DateTime.Now;
-            String gen_time = dt.ToString("yyyy-MM-dd_HH-mm-ss");
-            String fileName = output_path + "\\" + gen_time + ".avi";
+            VVVF_Control_Values control = new();
+            control.reset_control_variables();
+            control.reset_all_variables();
 
             bool temp = true;
             Int32 sound_block_count = 0;
@@ -229,8 +223,8 @@ namespace VVVF_Generator_Porting.Generation
 
                 if (sound_block_count % movie_div == 0 && temp)
                 {
-                    set_Saw_Time(0);
-                    set_Sine_Time(0);
+                    control.set_Saw_Time(0);
+                    control.set_Sine_Time(0);
 
                     Bitmap image = new(image_width, image_height);
                     Graphics g = Graphics.FromImage(image);
@@ -249,41 +243,41 @@ namespace VVVF_Generator_Porting.Generation
                         {
                             Control_Values cv_U = new Control_Values
                             {
-                                brake = is_Braking(),
-                                mascon_on = !is_Mascon_Off(),
-                                free_run = is_Free_Running(),
+                                brake = control.is_Braking(),
+                                mascon_on = !control.is_Mascon_Off(),
+                                free_run = control.is_Free_Running(),
                                 initial_phase = Math.PI * 2.0 / 3.0 * 0,
-                                wave_stat = get_Control_Frequency()
+                                wave_stat = control.get_Control_Frequency()
                             };
-                            Wave_Values wv_U = Yaml_VVVF_Wave.calculate_Yaml(cv_U, sound_data);
+                            Wave_Values wv_U = Yaml_VVVF_Wave.calculate_Yaml(control, cv_U, sound_data);
                             points_U[j] = wv_U.pwm_value;
 
                             Control_Values cv_V = new Control_Values
                             {
-                                brake = is_Braking(),
-                                mascon_on = !is_Mascon_Off(),
-                                free_run = is_Free_Running(),
+                                brake = control.is_Braking(),
+                                mascon_on = !control.is_Mascon_Off(),
+                                free_run = control.is_Free_Running(),
                                 initial_phase = Math.PI * 2.0 / 3.0 * 1,
-                                wave_stat = get_Control_Frequency()
+                                wave_stat = control.get_Control_Frequency()
                             };
-                            Wave_Values wv_V = Yaml_VVVF_Wave.calculate_Yaml(cv_V, sound_data);
+                            Wave_Values wv_V = Yaml_VVVF_Wave.calculate_Yaml(control, cv_V, sound_data);
                             points_V[j] = wv_V.pwm_value;
 
                             Control_Values cv_W = new Control_Values
                             {
-                                brake = is_Braking(),
-                                mascon_on = !is_Mascon_Off(),
-                                free_run = is_Free_Running(),
+                                brake = control.is_Braking(),
+                                mascon_on = !control.is_Mascon_Off(),
+                                free_run = control.is_Free_Running(),
                                 initial_phase = Math.PI * 2.0 / 3.0 * 2,
-                                wave_stat = get_Control_Frequency()
+                                wave_stat = control.get_Control_Frequency()
                             };
-                            Wave_Values wv_W = Yaml_VVVF_Wave.calculate_Yaml(cv_W, sound_data);
+                            Wave_Values wv_W = Yaml_VVVF_Wave.calculate_Yaml(control, cv_W, sound_data);
                             points_W[j] = wv_W.pwm_value;
 
                             if (j == 0)
                             {
-                                add_Saw_Time(Math.PI / (120000.0 * calculate_div));
-                                add_Sine_Time(Math.PI / (120000.0 * calculate_div));
+                                control.add_Saw_Time(Math.PI / (120000.0 * calculate_div));
+                                control.add_Sine_Time(Math.PI / (120000.0 * calculate_div));
                             }
                         }
 
@@ -336,7 +330,7 @@ namespace VVVF_Generator_Porting.Generation
 
                 sound_block_count++;
 
-                loop = check_for_freq_change();
+                loop = Check_For_Freq_Change(control);
 
             }
 
@@ -367,16 +361,13 @@ namespace VVVF_Generator_Porting.Generation
             vr.Dispose();
         }
 
-        public static void generate_taroimo_like_wave_U_V(String output_path, Yaml_Sound_Data sound_data)
+        public static void generate_taroimo_like_wave_U_V(String fileName, Yaml_Sound_Data sound_data)
         {
-            reset_control_variables();
-            reset_all_variables();
+            VVVF_Control_Values control = new();
+            control.reset_control_variables();
+            control.reset_all_variables();
 
-            set_Allowed_Random_Freq_Move(false);
-
-            DateTime dt = DateTime.Now;
-            String gen_time = dt.ToString("yyyy-MM-dd_HH-mm-ss");
-            String fileName = output_path + "\\" + gen_time + ".avi";
+            control.set_Allowed_Random_Freq_Move(false);
 
             bool temp = true;
             Int32 sound_block_count = 0;
@@ -422,8 +413,8 @@ namespace VVVF_Generator_Porting.Generation
 
                 if (sound_block_count % movie_div == 0 && temp)
                 {
-                    set_Sine_Time(0);
-                    set_Saw_Time(0);
+                    control.set_Sine_Time(0);
+                    control.set_Saw_Time(0);
 
                     Bitmap image = new(image_width, image_height);
                     Graphics g = Graphics.FromImage(image);
@@ -437,27 +428,27 @@ namespace VVVF_Generator_Porting.Generation
                         {
                             Control_Values cv_U = new Control_Values
                             {
-                                brake = is_Braking(),
-                                mascon_on = !is_Mascon_Off(),
-                                free_run = is_Free_Running(),
+                                brake = control.is_Braking(),
+                                mascon_on = !control.is_Mascon_Off(),
+                                free_run = control.is_Free_Running(),
                                 initial_phase = Math.PI / 6.0,
-                                wave_stat = get_Control_Frequency()
+                                wave_stat = control.get_Control_Frequency()
                             };
-                            Wave_Values wv_U = Yaml_VVVF_Wave.calculate_Yaml(cv_U, sound_data);
+                            Wave_Values wv_U = Yaml_VVVF_Wave.calculate_Yaml(control, cv_U, sound_data);
                             Control_Values cv_V = new Control_Values
                             {
-                                brake = is_Braking(),
-                                mascon_on = !is_Mascon_Off(),
-                                free_run = is_Free_Running(),
+                                brake = control.is_Braking(),
+                                mascon_on = !control.is_Mascon_Off(),
+                                free_run = control.is_Free_Running(),
                                 initial_phase = Math.PI / 6.0 + Math.PI * 2.0 / 3.0 * 1,
-                                wave_stat = get_Control_Frequency()
+                                wave_stat = control.get_Control_Frequency()
                             };
-                            Wave_Values wv_V = Yaml_VVVF_Wave.calculate_Yaml(cv_V, sound_data);
+                            Wave_Values wv_V = Yaml_VVVF_Wave.calculate_Yaml(control, cv_V, sound_data);
 
                             if (j == 0)
                             {
-                                add_Saw_Time(2 / (60.0 * calculate_div * (image_width - 100)));
-                                add_Sine_Time(2 / (60.0 * calculate_div * (image_width - 100)));
+                                control.add_Saw_Time(2 / (60.0 * calculate_div * (image_width - 100)));
+                                control.add_Sine_Time(2 / (60.0 * calculate_div * (image_width - 100)));
                             }
 
                             values[j * 2] = wv_U;
@@ -501,7 +492,7 @@ namespace VVVF_Generator_Porting.Generation
 
                 sound_block_count++;
 
-                loop = check_for_freq_change();
+                loop = Check_For_Freq_Change(control);
 
             }
 

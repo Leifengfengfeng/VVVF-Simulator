@@ -1,133 +1,124 @@
 ﻿using NAudio.CoreAudioApi;
 using NAudio.Wave;
 using System;
-using static VVVF_Generator_Porting.vvvf_wave_calculate;
-using static VVVF_Generator_Porting.vvvf_wave_control;
-using static VVVF_Generator_Porting.my_math;
-using VVVF_Generator_Porting.Yaml_VVVF_Sound;
+using static VVVF_Simulator.vvvf_wave_calculate;
+using static VVVF_Simulator.VVVF_Control_Values;
+using static VVVF_Simulator.my_math;
+using VVVF_Simulator.Yaml_VVVF_Sound;
 
-namespace VVVF_Generator_Porting.Generation
+namespace VVVF_Simulator.Generation
 {
     public class Generate_RealTime
     {
+        public static class RealTime_Parameter {
+            public static double change_amount { get; set; } = 0;
+            public static Boolean braking { get; set; } = false;
+            public static Boolean quit { get; set; } = false;
+            public static Boolean reselect { get; set; } = false;
+            public static Boolean free_run { get; set; } = false;
 
-        private static int realtime_sound_calculate(BufferedWaveProvider provider, Yaml_Sound_Data sound_data)
+            public static VVVF_Control_Values control_values { get; set; } = new();
+        }
+        private static int realtime_sound_calculate(BufferedWaveProvider provider, Yaml_Sound_Data sound_data, VVVF_Control_Values control)
         {
             while (true)
             {
-                if (Console.KeyAvailable)
+                control.set_Braking(RealTime_Parameter.braking);
+                control.set_Mascon_Off(RealTime_Parameter.free_run);
+
+                double change_amo = RealTime_Parameter.change_amount;
+
+                double sin_new_angle_freq = control.get_Sine_Angle_Freq();
+                sin_new_angle_freq += change_amo;
+                if (sin_new_angle_freq < 0) sin_new_angle_freq = 0;
+
+                if (!control.is_Free_Running())
                 {
-                    ConsoleKeyInfo keyinfo = Console.ReadKey();
-                    ConsoleKey key = keyinfo.Key;
-
-                    if (key.Equals(ConsoleKey.B))
+                    if (control.is_Allowed_Sine_Time_Change())
                     {
-                        set_Braking(!is_Braking()); ;
-                        Console.WriteLine("\r\n Brake : " + is_Braking());
-
+                        if (sin_new_angle_freq != 0)
+                        {
+                            double amp = control.get_Sine_Angle_Freq() / sin_new_angle_freq;
+                            control.multi_Sine_Time(amp);
+                        }
+                        else
+                            control.set_Sine_Time(0);
                     }
-                    else if (key.Equals(ConsoleKey.W) || key.Equals(ConsoleKey.S) || key.Equals(ConsoleKey.X))
-                    {
-                        double change_amo = Math.PI;
 
-                        if (key.Equals(ConsoleKey.S))
-                            change_amo /= 2.0;
-                        else if (key.Equals(ConsoleKey.X))
-                            change_amo /= 4.0;
-
-                        if (is_Braking())
-                            change_amo = -change_amo;
-
-                        double sin_new_angle_freq = get_Sine_Angle_Freq();
-                        sin_new_angle_freq += change_amo;
-
-                        double amp = get_Sine_Angle_Freq() / sin_new_angle_freq;
-                        if (sin_new_angle_freq < 0) sin_new_angle_freq = 0;
-
-                        set_Sine_Angle_Freq(sin_new_angle_freq);
-                        if (is_Allowed_Sine_Time_Change())
-                            multi_Sine_Time(amp);
-
-                        if (!is_Mascon_Off())
-                            set_Control_Frequency(get_Sine_Angle_Freq() / (M_2PI));
-
-                        Console.WriteLine("\r\n CurrentFreq : " + get_Control_Frequency());
-                    }
-                    else if (key.Equals(ConsoleKey.N))
-                    {
-                        toggle_Mascon_Off();
-                        Console.WriteLine("\r\n Mascon : " + !is_Mascon_Off());
-                    }
-                    else if (key.Equals(ConsoleKey.Enter)) return 0;
-                    else if (key.Equals(ConsoleKey.R)) return 1;
+                    control.set_Control_Frequency(control.get_Sine_Angle_Freq() / (M_2PI));
+                    control.set_Sine_Angle_Freq(sin_new_angle_freq);
                 }
 
-                if (!is_Mascon_Off())
+
+                if (RealTime_Parameter.quit) return 0;
+                else if (RealTime_Parameter.reselect) return 1;
+
+                if (!control.is_Mascon_Off())
                 {
-                    if (!is_Free_Running())
-                        set_Control_Frequency(get_Sine_Angle_Freq() / M_2PI);
+                    if (!control.is_Free_Running())
+                        control.set_Control_Frequency(control.get_Sine_Angle_Freq() / M_2PI);
                     else
                     {
-                        add_Control_Frequency(M_2PI / (get_Mascon_Off_Div() / 24));
+                        control.add_Control_Frequency(M_2PI / (control.get_Mascon_Off_Div() / 24));
 
-                        if (get_Sine_Angle_Freq() < get_Control_Frequency() * M_2PI)
+                        if (control.get_Sine_Angle_Freq() < control.get_Control_Frequency() * M_2PI)
                         {
-                            set_Free_Running(false);
-                            set_Control_Frequency(get_Sine_Angle_Freq() * M_1_2PI);
+                            control.set_Free_Running(false);
+                            control.set_Control_Frequency(control.get_Sine_Angle_Freq() * M_1_2PI);
                         }
                         else
                         {
-                            set_Free_Running(true);
+                            control.set_Free_Running(true);
                         }
                     }
                 }
                 else
                 {
-                    add_Control_Frequency(- M_2PI / (get_Mascon_Off_Div() / 24));
-                    if (get_Control_Frequency() < 0) set_Control_Frequency(0);
-                    set_Free_Running(true);
+                    control.add_Control_Frequency(- M_2PI / (control.get_Mascon_Off_Div() / 24));
+                    if (control.get_Control_Frequency() < 0)
+                    {
+                        control.set_Control_Frequency(0);
+                    }
+                    control.set_Free_Running(true);
                 }
 
                 byte[] add = new byte[20];
 
                 for (int i = 0; i < 20; i++)
                 {
-                    add_Sine_Time(1.0 / 192000.0);
-                    add_Saw_Time(1.0 / 192000.0);
+                    control.add_Sine_Time(1.0 / 192000.0);
+                    control.add_Saw_Time(1.0 / 192000.0);
 
                     Control_Values cv_U = new Control_Values
                     {
-                        brake = is_Braking(),
-                        mascon_on = !is_Mascon_Off(),
-                        free_run = is_Free_Running(),
+                        brake = control.is_Braking(),
+                        mascon_on = !control.is_Mascon_Off(),
+                        free_run = control.is_Free_Running(),
                         initial_phase = Math.PI * 2.0 / 3.0 * 0,
-                        wave_stat = get_Control_Frequency()
+                        wave_stat = control.get_Control_Frequency()
                     };
-                    Wave_Values wv_U = Yaml_VVVF_Wave.calculate_Yaml(cv_U, sound_data);
+                    Wave_Values wv_U = Yaml_VVVF_Wave.calculate_Yaml(control, cv_U, sound_data);
                     Control_Values cv_V = new Control_Values
                     {
-                        brake = is_Braking(),
-                        mascon_on = !is_Mascon_Off(),
-                        free_run = is_Free_Running(),
+                        brake = control.is_Braking(),
+                        mascon_on = !control.is_Mascon_Off(),
+                        free_run = control.is_Free_Running(),
                         initial_phase = Math.PI * 2.0 / 3.0 * 1,
-                        wave_stat = get_Control_Frequency()
+                        wave_stat = control.get_Control_Frequency()
                     };
-                    Wave_Values wv_V = Yaml_VVVF_Wave.calculate_Yaml(cv_V, sound_data);
+                    Wave_Values wv_V = Yaml_VVVF_Wave.calculate_Yaml(control, cv_V, sound_data);
 
                     double pwm_value = wv_U.pwm_value - wv_V.pwm_value;
+
                     byte sound_byte = 0x80;
+                    if (pwm_value == 2) sound_byte += 0x40;
+                    else if (pwm_value == 1) sound_byte += 0x20;
+                    else if (pwm_value == -1) sound_byte -= 0x20;
+                    else if (pwm_value == -2) sound_byte -= 0x40;
 
-                    if (pwm_value == 2) sound_byte = 0xB0;
-                    else if (pwm_value == 1) sound_byte = 0x98;
-                    else if (pwm_value == -1) sound_byte = 0x68;
-                    else if (pwm_value == -2) sound_byte = 0x50;
-
-                    /*
-                    if (voltage_stat == 0) d = 0x80;
-                    else if (voltage_stat > 0) d = 0xC0;
-                    else d = 0x40;
-                    */
                     add[i] = sound_byte;
+
+                    RealTime_Parameter.control_values = control;
                 }
 
 
@@ -137,16 +128,11 @@ namespace VVVF_Generator_Porting.Generation
                 while (provider.BufferedBytes > 16000) ;
             }
         }
-        public static void realtime_sound()
+        public static void realtime_sound(Yaml_Sound_Data ysd)
         {
+            RealTime_Parameter.quit = false;
             while (true)
             {
-                String load_path = Program.get_Path("\r\nEnter the yaml file path");
-                Yaml_Sound_Data sound_data = Yaml_Analyze.get_Deserialized(load_path);
-
-
-                reset_control_variables();
-                reset_all_variables();
 
                 var bufferedWaveProvider = new BufferedWaveProvider(new WaveFormat(192000, 8, 1));
                 var mmDevice = new MMDeviceEnumerator()
@@ -154,16 +140,14 @@ namespace VVVF_Generator_Porting.Generation
 
                 IWavePlayer wavPlayer = new WasapiOut(mmDevice, AudioClientShareMode.Shared, false, 50);
 
-
-
                 wavPlayer.Init(bufferedWaveProvider);
-
                 wavPlayer.Play();
 
-                Console.WriteLine("Press R to Select New Sound...");
-                Console.WriteLine("Press ENTER to exit...");
+                VVVF_Control_Values control = new();
+                control.reset_all_variables();
+                control.reset_control_variables();
 
-                int stat = realtime_sound_calculate(bufferedWaveProvider, sound_data);
+                int stat = realtime_sound_calculate(bufferedWaveProvider, ysd, control);
 
                 wavPlayer.Stop();
 

@@ -1,13 +1,22 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <OutputType>Exe</OutputType>
+    <OutputType>WinExe</OutputType>
     <TargetFramework>net6.0-windows</TargetFramework>
-    <RootNamespace>VVVF-Simulator</RootNamespace>
+    <RootNamespace>VVVF_Simulator</RootNamespace>
+    <Nullable>enable</Nullable>
+    <UseWPF>true</UseWPF>
     <ApplicationIcon>vvvf-simulator.ico</ApplicationIcon>
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="GUI\Images\Settings\2-level.png" />
+    <None Remove="GUI\Images\Settings\3-level.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="GUI\Images\Settings\2-level.png" />
+    <Resource Include="GUI\Images\Settings\3-level.png" />
     <Content Include="vvvf-simulator.ico" />
   </ItemGroup>
 
@@ -17,69 +26,6 @@
     <PackageReference Include="OpenCvSharp4.runtime.win" Version="4.5.5.20211231" />
     <PackageReference Include="System.Drawing.Common" Version="6.0.0" />
     <PackageReference Include="YamlDotNet" Version="11.2.1" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Reference Include="AForge">
-      <HintPath>lib_aforge\AForge.dll</HintPath>
-    </Reference>
-    <Reference Include="AForge.Controls">
-      <HintPath>lib_aforge\AForge.Controls.dll</HintPath>
-    </Reference>
-    <Reference Include="AForge.Fuzzy">
-      <HintPath>lib_aforge\AForge.Fuzzy.dll</HintPath>
-    </Reference>
-    <Reference Include="AForge.Genetic">
-      <HintPath>lib_aforge\AForge.Genetic.dll</HintPath>
-    </Reference>
-    <Reference Include="AForge.Imaging">
-      <HintPath>lib_aforge\AForge.Imaging.dll</HintPath>
-    </Reference>
-    <Reference Include="AForge.Imaging.Formats">
-      <HintPath>lib_aforge\AForge.Imaging.Formats.dll</HintPath>
-    </Reference>
-    <Reference Include="AForge.Imaging.IPPrototyper">
-      <HintPath>lib_aforge\AForge.Imaging.IPPrototyper.dll</HintPath>
-    </Reference>
-    <Reference Include="AForge.MachineLearning">
-      <HintPath>lib_aforge\AForge.MachineLearning.dll</HintPath>
-    </Reference>
-    <Reference Include="AForge.Math">
-      <HintPath>lib_aforge\AForge.Math.dll</HintPath>
-    </Reference>
-    <Reference Include="AForge.Neuro">
-      <HintPath>lib_aforge\AForge.Neuro.dll</HintPath>
-    </Reference>
-    <Reference Include="AForge.Robotics.Lego">
-      <HintPath>lib_aforge\AForge.Robotics.Lego.dll</HintPath>
-    </Reference>
-    <Reference Include="AForge.Robotics.Surveyor">
-      <HintPath>lib_aforge\AForge.Robotics.Surveyor.dll</HintPath>
-    </Reference>
-    <Reference Include="AForge.Robotics.TeRK">
-      <HintPath>lib_aforge\AForge.Robotics.TeRK.dll</HintPath>
-    </Reference>
-    <Reference Include="AForge.Video">
-      <HintPath>lib_aforge\AForge.Video.dll</HintPath>
-    </Reference>
-    <Reference Include="AForge.Video.DirectShow">
-      <HintPath>lib_aforge\AForge.Video.DirectShow.dll</HintPath>
-    </Reference>
-    <Reference Include="AForge.Video.FFMPEG">
-      <HintPath>lib_aforge\AForge.Video.FFMPEG.dll</HintPath>
-    </Reference>
-    <Reference Include="AForge.Video.Kinect">
-      <HintPath>lib_aforge\AForge.Video.Kinect.dll</HintPath>
-    </Reference>
-    <Reference Include="AForge.Video.VFW">
-      <HintPath>lib_aforge\AForge.Video.VFW.dll</HintPath>
-    </Reference>
-    <Reference Include="AForge.Video.Ximea">
-      <HintPath>lib_aforge\AForge.Video.Ximea.dll</HintPath>
-    </Reference>
-    <Reference Include="AForge.Vision">
-      <HintPath>lib_aforge\AForge.Vision.dll</HintPath>
-    </Reference>
   </ItemGroup>
 
 </Project>

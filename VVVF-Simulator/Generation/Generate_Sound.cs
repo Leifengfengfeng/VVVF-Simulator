@@ -1,28 +1,25 @@
 ﻿using System;
 using System.IO;
-using static VVVF_Generator_Porting.vvvf_wave_calculate;
-using static VVVF_Generator_Porting.vvvf_wave_control;
-using static VVVF_Generator_Porting.Generation.Generate_Common;
-using static VVVF_Generator_Porting.my_math;
-using static VVVF_Generator_Porting.Generation.Generate_Sound.Harmonic_Data;
-using VVVF_Generator_Porting.Yaml_VVVF_Sound;
+using static VVVF_Simulator.vvvf_wave_calculate;
+using static VVVF_Simulator.VVVF_Control_Values;
+using static VVVF_Simulator.Generation.Generate_Common;
+using static VVVF_Simulator.my_math;
+using static VVVF_Simulator.Generation.Generate_Sound.Harmonic_Data;
+using VVVF_Simulator.Yaml_VVVF_Sound;
 
-namespace VVVF_Generator_Porting.Generation
+namespace VVVF_Simulator.Generation
 {
     public class Generate_Sound
     {
         public static void generate_sound(String output_path, Yaml_Sound_Data sound_name)
         {
-            reset_control_variables();
-            reset_all_variables();
+            VVVF_Control_Values control = new();
+            control.reset_control_variables();
+            control.reset_all_variables();
 
             Int32 sound_block_count = 0;
-            DateTime dt = DateTime.Now;
-            String gen_time = dt.ToString("yyyy-MM-dd_HH-mm-ss");
 
-            String fileName = output_path + "\\" + gen_time + ".wav";
-
-            BinaryWriter writer = new BinaryWriter(new FileStream(fileName, FileMode.Create));
+            BinaryWriter writer = new BinaryWriter(new FileStream(output_path, FileMode.Create));
 
             //WAV FORMAT DATA
             writer.Write(0x46464952); // RIFF
@@ -43,28 +40,28 @@ namespace VVVF_Generator_Porting.Generation
 
             while (loop)
             {
-                add_Sine_Time(1.00 / div_freq);
-                add_Saw_Time(1.00 / div_freq);
+                control.add_Sine_Time(1.00 / div_freq);
+                control.add_Saw_Time(1.00 / div_freq);
 
                 Control_Values cv_U = new Control_Values
                 {
-                    brake = is_Braking(),
-                    mascon_on = !is_Mascon_Off(),
-                    free_run = is_Free_Running(),
+                    brake = control.is_Braking(),
+                    mascon_on = !control.is_Mascon_Off(),
+                    free_run = control.is_Free_Running(),
                     initial_phase = Math.PI * 2.0 / 3.0 * 0,
-                    wave_stat = get_Control_Frequency()
+                    wave_stat = control.get_Control_Frequency()
                 };
-                Wave_Values wv_U = Yaml_VVVF_Wave.calculate_Yaml(cv_U, sound_name);
+                Wave_Values wv_U = Yaml_VVVF_Wave.calculate_Yaml(control, cv_U, sound_name);
 
                 Control_Values cv_V = new Control_Values
                 {
-                    brake = is_Braking(),
-                    mascon_on = !is_Mascon_Off(),
-                    free_run = is_Free_Running(),
+                    brake = control.is_Braking(),
+                    mascon_on = !control.is_Mascon_Off(),
+                    free_run = control.is_Free_Running(),
                     initial_phase = Math.PI * 2.0 / 3.0 * 1,
-                    wave_stat = get_Control_Frequency()
+                    wave_stat = control.get_Control_Frequency()
                 };
-                Wave_Values wv_V = Yaml_VVVF_Wave.calculate_Yaml(cv_V, sound_name);
+                Wave_Values wv_V = Yaml_VVVF_Wave.calculate_Yaml(control, cv_V, sound_name);
 
                 for (int i = 0; i < 1; i++)
                 {
@@ -78,7 +75,7 @@ namespace VVVF_Generator_Porting.Generation
                 }
                 sound_block_count++;
 
-                loop = check_for_freq_change();
+                loop = Check_For_Freq_Change(control);
 
             }
 
@@ -93,34 +90,31 @@ namespace VVVF_Generator_Porting.Generation
             writer.Close();
         }
 
-        public class Harmonic_Data { 
-            public double harmonic { get; set; }
-            public Harmonic_Data_Amplitude amplitude { get; set; }
-            public double disappear { get; set; }
+        public class Harmonic_Data {
+            public double harmonic { get; set; } = 0;
+            public Harmonic_Data_Amplitude amplitude { get; set; } = new Harmonic_Data_Amplitude();
+            public double disappear { get; set; } = 0;
 
             public class Harmonic_Data_Amplitude {
-                public double start;
-                public double start_val;
-                public double end;
-                public double end_val;
-                public double min_val;
-                public double max_val;
+                public double start { get; set; } = 0;
+                public double start_val { get; set; } = 0;
+                public double end { get; set; } = 0;
+                public double end_val { get; set; } = 0;
+                public double min_val { get; set; } = 0;
+                public double max_val { get; set; } = 0;
             }
 
         }
 
-        public static void generate_env_sound(String output_path, Yaml_Sound_Data sound_data)
+        public static void generate_env_sound(String output_path)
         {
-            reset_control_variables();
-            reset_all_variables();
+            VVVF_Control_Values control = new();
+            control.reset_control_variables();
+            control.reset_all_variables();
 
             Int32 sound_block_count = 0;
-            DateTime dt = DateTime.Now;
-            String gen_time = dt.ToString("yyyy-MM-dd_HH-mm-ss");
 
-            String fileName = output_path + "\\" + gen_time + ".wav";
-
-            BinaryWriter writer = new BinaryWriter(new FileStream(fileName, FileMode.Create));
+            BinaryWriter writer = new (new FileStream(output_path, FileMode.Create));
 
             //WAV FORMAT DATA
             writer.Write(0x46464952); // RIFF
@@ -141,76 +135,59 @@ namespace VVVF_Generator_Porting.Generation
 
             while (loop)
             {
-                add_Sine_Time(1.00 / div_freq);
-                add_Saw_Time(1.00 / div_freq);
+                control.add_Sine_Time(1.00 / div_freq);
+                control.add_Saw_Time(1.00 / div_freq);
 
-                int sound_byte_int = 0x80;
+                double sound_byte_int = 0;
                 int total_sound_count = 0;
-                Control_Values cv_U = new Control_Values
-                {
-                    brake = is_Braking(),
-                    mascon_on = !is_Mascon_Off(),
-                    free_run = is_Free_Running(),
-                    initial_phase = Math.PI * 2.0 / 3.0 * 0,
-                    wave_stat = get_Control_Frequency()
-                };
-                Wave_Values wv_U = Yaml_VVVF_Wave.calculate_Yaml(cv_U,sound_data);
-
-                Control_Values cv_V = new Control_Values
-                {
-                    brake = is_Braking(),
-                    mascon_on = !is_Mascon_Off(),
-                    free_run = is_Free_Running(),
-                    initial_phase = Math.PI * 2.0 / 3.0 * 1,
-                    wave_stat = get_Control_Frequency()
-                };
-                Wave_Values wv_V = Yaml_VVVF_Wave.calculate_Yaml(cv_V,sound_data);
-
-                double pwm_value = wv_U.pwm_value - wv_V.pwm_value;
-                byte pwm_byte = 0x80;
-                if (pwm_value == 2) pwm_byte += 0x40;
-                else if (pwm_value == 1) pwm_byte += 0x20;
-                else if (pwm_value == -1) pwm_byte -= 0x20;
-                else if (pwm_value == -2) pwm_byte -= 0x40;
-
 
                 Harmonic_Data[] harmonics = new Harmonic_Data[] {
+                    new Harmonic_Data{harmonic = 0.8, amplitude = new Harmonic_Data_Amplitude{start=0,start_val=0x30,end=60,end_val=0x30,min_val=0,max_val=0x30},disappear = 880},
+                    new Harmonic_Data{harmonic = 0.333, amplitude = new Harmonic_Data_Amplitude{start=0,start_val=0x30,end=60,end_val=0x30,min_val=0,max_val=0x30},disappear = 880},
                     new Harmonic_Data{harmonic = 1, amplitude = new Harmonic_Data_Amplitude{start=0,start_val=0x30,end=60,end_val=0x30,min_val=0,max_val=0x30},disappear = 880},
-                    new Harmonic_Data{harmonic = 6, amplitude = new Harmonic_Data_Amplitude{start=0,start_val=0x10,end=60,end_val=0x10,min_val=0,max_val=0x30},disappear = 880},
-                    new Harmonic_Data{harmonic = 18.34, amplitude = new Harmonic_Data_Amplitude{start=0,start_val=0x60,end=60,end_val=0x00,min_val=0,max_val=0x30},disappear = 880},
-                    new Harmonic_Data{harmonic = 23.1,amplitude = new Harmonic_Data_Amplitude{start=0,start_val=0x60,end=60,end_val=0x00,min_val=0,max_val=0x30},disappear = 880},
-                    new Harmonic_Data{harmonic = 70,amplitude = new Harmonic_Data_Amplitude{start=0,start_val=0x60,end=15,end_val=0x00,min_val=0,max_val=0x30},disappear = 880}
+                    new Harmonic_Data{harmonic = 10, amplitude = new Harmonic_Data_Amplitude{start=0,start_val=0x30,end=60,end_val=0x30,min_val=0,max_val=0x30},disappear = 880},
+                    new Harmonic_Data{harmonic = 6, amplitude = new Harmonic_Data_Amplitude{start=0,start_val=0x10,end=60,end_val=0x40,min_val=0,max_val=0x30},disappear = 880},
+                    new Harmonic_Data{harmonic = 50, amplitude = new Harmonic_Data_Amplitude{start=0,start_val=0x30,end=60,end_val=0x30,min_val=0,max_val=0x30},disappear = 880},
+
+                    new Harmonic_Data{harmonic = 18.34, amplitude = new Harmonic_Data_Amplitude{start=0,start_val=0x20,end=60,end_val=0x40,min_val=0,max_val=0x30},disappear = 880},
+                    new Harmonic_Data{harmonic = 23.1,amplitude = new Harmonic_Data_Amplitude{start=0,start_val=0x20,end=60,end_val=0x40,min_val=0,max_val=0x30},disappear = 880},
+                    new Harmonic_Data{harmonic = 70,amplitude = new Harmonic_Data_Amplitude{start=0,start_val=0x20,end=15,end_val=0x40,min_val=0,max_val=0x30},disappear = 880}
                 };
                 for(int harmonic = 0; harmonic < harmonics.Length; harmonic++)
                 {
                     Harmonic_Data harmonic_data = harmonics[harmonic];
-                    if (harmonic_data.harmonic * get_Sine_Freq() > harmonic_data.disappear) continue;
-                    double sine_val = sin(get_Sine_Time() * get_Sine_Angle_Freq() * harmonic_data.harmonic);
 
-                    double amplitude = harmonic_data.amplitude.start_val + (harmonic_data.amplitude.end_val - harmonic_data.amplitude.start_val) / (harmonic_data.amplitude.end - harmonic_data.amplitude.start) * (get_Sine_Freq() - harmonic_data.amplitude.start);
+                    double harmonic_freq = harmonic_data.harmonic * control.get_Sine_Freq();
+
+                    if (harmonic_freq > harmonic_data.disappear) continue;
+                    double sine_val = sin(control.get_Sine_Time() * control.get_Sine_Angle_Freq() * harmonic_data.harmonic);
+
+                    double amplitude = harmonic_data.amplitude.start_val + (harmonic_data.amplitude.end_val - harmonic_data.amplitude.start_val) / (harmonic_data.amplitude.end - harmonic_data.amplitude.start) * (control.get_Sine_Freq() - harmonic_data.amplitude.start);
                     if (amplitude > harmonic_data.amplitude.max_val) amplitude = harmonic_data.amplitude.max_val;
                     if (amplitude < harmonic_data.amplitude.min_val) amplitude = harmonic_data.amplitude.min_val;
-                    sine_val *= amplitude;
-                    sine_val += 0x80;
-                    sound_byte_int += (byte)Math.Round(sine_val);
+
+                    double amplitude_disappear = (harmonic_freq + 100.0 > harmonic_data.disappear) ?
+                        ((harmonic_data.disappear - harmonic_freq) / 100.0) : 1;
+
+                    sine_val *= amplitude * amplitude_disappear;
+                    sound_byte_int += Math.Round(sine_val);
                     total_sound_count++;
                 }
 
                 double[] saw_harmonics = new double[] { 3 };
                 for(int harmonic = 0; harmonic < saw_harmonics.Length; harmonic++)
                 {
-                    double saw_val = sin(get_Saw_Time() * get_Saw_Angle_Freq() * harmonic);
+                    double saw_val = sin(control.get_Saw_Time() * control.get_Saw_Angle_Freq() * harmonic);
                     saw_val *= 0x20;
-                    saw_val += 0x80;
-                    sound_byte_int += (byte)Math.Round(saw_val);
+                    sound_byte_int += Math.Round(saw_val);
                     total_sound_count++;
                 }
-                byte sound_byte = (byte)(sound_byte_int / total_sound_count);
-                sound_byte = (byte)((pwm_byte / 4 + sound_byte) / 2);
+                byte sound_byte = (byte)(sound_byte_int / total_sound_count + 0xFF/2);
+                //sound_byte = (byte)((pwm_byte / 4 + sound_byte) / 2);
 
                 writer.Write(sound_byte);
                 sound_block_count++;
-                loop = check_for_freq_change();
+                loop = Check_For_Freq_Change(control);
 
             }
 

@@ -1,0 +1,113 @@
+﻿<UserControl x:Class="VVVF_Simulator.Pages.Control_Settings.Control_Amplitude"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:VVVF_Simulator.Pages.Control_Settings"
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="661">
+
+    <UserControl.Resources>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+    </UserControl.Resources>
+    
+    <Grid Margin="0,0,0,0">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="50"/>
+            <RowDefinition Height="50"/>
+            <RowDefinition Height="200"/>
+        </Grid.RowDefinitions>
+        <Grid Background="#FF86AEFF">
+            <Label x:Name="title" Content="TITLE WILL BE HERE" FontSize="16" FontFamily="M PLUS 2" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White"/>
+        </Grid>
+        <Grid Grid.Row="1">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="103*"/>
+                    <ColumnDefinition Width="573*"/>
+                </Grid.ColumnDefinitions>
+                <Grid Background="#FFA5A5A5">
+                    <Label Content="Mode" HorizontalAlignment="Center" Margin="0,0,0,0" VerticalAlignment="Center" FontFamily="M PLUS 2 Medium" FontWeight="Bold" Foreground="White" FontSize="14"/>
+                </Grid>
+                <Grid Grid.Column="1" Background="White" HorizontalAlignment="Stretch">
+                    <ComboBox x:Name="amplitude_mode_selector" FontSize="16" FontFamily="M PLUS 2" FontWeight="Bold"  Margin="10,10,10,10" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" SelectionChanged="amplitude_mode_selector_Selected"/>
+
+                </Grid>
+            </Grid>
+
+        </Grid>
+        <Grid Grid.Row="2">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Name="Title" Width="103*"/>
+                    <ColumnDefinition Name="Value" Width="573*"/>
+                </Grid.ColumnDefinitions>
+                <Grid Background="#FFA5A5A5" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                    <Label Content="Value" HorizontalAlignment="Center" Margin="0,0,0,0" VerticalAlignment="Center" FontFamily="M PLUS 2 Medium" FontWeight="Bold" Foreground="White" FontSize="14"/>
+                </Grid>
+                <Grid Grid.Column="1" Background="White">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="1*"/>
+                            <RowDefinition Height="1*"/>
+                            <RowDefinition Height="1*"/>
+                            <RowDefinition Height="1*"/>
+                            <RowDefinition Height="1*"/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="1*"/>
+                            <ColumnDefinition Width="1*"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid Grid.Column="0" Grid.Row="0" Visibility="{Binding start_freq_visible, Converter={StaticResource BooleanToVisibilityConverter}}" Name="start_freq_grid">
+                            <Border BorderBrush="Black" BorderThickness="1"/>
+                            <Label Content="Start Freq(Hz)" HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Center" FontFamily="M PLUS 2 Medium"/>
+                            <TextBox x:Name="start_freq_box" TextWrapping="Wrap" Text="-1" Margin="97,10,10,10" FontFamily="M PLUS 2 Medium" FontSize="14" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" TextChanged="textbox_change" Tag="start_freq" />
+                        </Grid>
+                        <Grid Grid.Column="1" Grid.Row="0" Visibility="{Binding start_amp_visible, Converter={StaticResource BooleanToVisibilityConverter}}" x:Name="start_amp_grid">
+                            <Border BorderBrush="Black" BorderThickness="1"/>
+                            <Label Content="Start Amp" HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Center" FontFamily="M PLUS 2 Medium"/>
+                            <TextBox x:Name="start_amp_box" TextWrapping="Wrap" Text="-1" Margin="97,10,10,10" FontFamily="M PLUS 2 Medium" FontSize="14" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" TextChanged="textbox_change" Tag="start_amp" />
+                        </Grid>
+                        <Grid Grid.Column="0" Grid.Row="1" Visibility="{Binding end_freq_visible, Converter={StaticResource BooleanToVisibilityConverter}}" x:Name="end_freq_grid">
+                            <Border BorderBrush="Black" BorderThickness="1"/>
+                            <Label Content="End Freq(Hz)" HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Center" FontFamily="M PLUS 2 Medium"/>
+                            <TextBox x:Name="end_freq_box" TextWrapping="Wrap" Text="-1" Margin="97,10,10,10" FontFamily="M PLUS 2 Medium" FontSize="14" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" TextChanged="textbox_change" Tag="end_freq" />
+                        </Grid>
+                        <Grid Grid.Column="1" Grid.Row="1" Visibility="{Binding end_amp_visible, Converter={StaticResource BooleanToVisibilityConverter}}" x:Name="end_amp_grid">
+                            <Border BorderBrush="Black" BorderThickness="1"/>
+                            <Label Content="End Amp" HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Center" FontFamily="M PLUS 2 Medium"/>
+                            <TextBox x:Name="end_amp_box" TextWrapping="Wrap" Text="-1" Margin="97,10,10,10" FontFamily="M PLUS 2 Medium" FontSize="14" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" TextChanged="textbox_change" Tag="end_amp" />
+                        </Grid>
+                        <Grid Grid.Row="2" Visibility="{Binding cut_off_amp_visible, Converter={StaticResource BooleanToVisibilityConverter}}" x:Name="cut_off_amp_grid">
+                            <Border BorderBrush="Black" BorderThickness="1"/>
+                            <Label Content="Cutoff Amp" HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Center" FontFamily="M PLUS 2 Medium"/>
+                            <TextBox x:Name="cutoff_amp_box" TextWrapping="Wrap" Text="-1" Margin="97,10,10,10" FontFamily="M PLUS 2 Medium" FontSize="14" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" TextChanged="textbox_change" Tag="cutoff_amp" />
+                        </Grid>
+                        <Grid Grid.Column="1" Grid.Row="2" Visibility="{Binding max_amp_visible, Converter={StaticResource BooleanToVisibilityConverter}}" x:Name="max_amp_grid">
+                            <Border BorderBrush="Black" BorderThickness="1"/>
+                            <Label Content="Max Amp" HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Center" FontFamily="M PLUS 2 Medium"/>
+                            <TextBox x:Name="max_amp_box" TextWrapping="Wrap" Text="-1" Margin="97,10,10,10" FontFamily="M PLUS 2 Medium" FontSize="14" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" TextChanged="textbox_change" Tag="max_amp" />
+                        </Grid>
+                        <Grid Grid.Column="1" Grid.Row="3" Visibility="{Binding curve_rate_visible, Converter={StaticResource BooleanToVisibilityConverter}}" x:Name="curve_change_grid">
+                            <Border BorderBrush="Black" BorderThickness="1"/>
+                            <Label Content="Curve Rate" HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Center" FontFamily="M PLUS 2 Medium"/>
+                            <TextBox x:Name="curve_rate_box" TextWrapping="Wrap" Text="-1" Margin="97,10,10,10" FontFamily="M PLUS 2 Medium" FontSize="14" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" TextChanged="textbox_change" Tag="curve_rate" />
+                        </Grid>
+                        <Grid Grid.Row="3" Visibility="{Binding polynomial_visible, Converter={StaticResource BooleanToVisibilityConverter}}" x:Name="polynomial_grid">
+                            <Border BorderBrush="Black" BorderThickness="1"/>
+                            <Label Content="Polynomial" HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Center" FontFamily="M PLUS 2 Medium"/>
+                            <TextBox x:Name="polynomial_box" TextWrapping="Wrap" Text="-1" Margin="97,10,10,10" FontFamily="M PLUS 2 Medium" FontSize="14" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" TextChanged="textbox_change" Tag="polynomial" />
+                        </Grid>
+                        <Grid Grid.Row="4" Visibility="{Binding disable_range_visible, Converter={StaticResource BooleanToVisibilityConverter}}" x:Name="disable_range_grid">
+                            <Border BorderBrush="Black" BorderThickness="1"/>
+                            <CheckBox x:Name="disable_range_limit_check" Content="Disable Range Limit" HorizontalAlignment="Center" VerticalAlignment="Center" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Checked="CheckBox_Checked" Unchecked="CheckBox_Checked"/>
+                        </Grid>
+
+                    </Grid>
+                </Grid>
+            </Grid>
+        </Grid>
+
+    </Grid>
+
+</UserControl>
