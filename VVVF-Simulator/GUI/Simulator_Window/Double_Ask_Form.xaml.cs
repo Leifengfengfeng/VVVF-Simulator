@@ -19,17 +19,15 @@ namespace VVVF_Simulator.GUI.UtilForm
     /// </summary>
     public partial class Double_Ask_Form : Window
     {
-        MainWindow main;
         ViewData vd = new ViewData();
         private class ViewData
         {
             public String Str_Title { get; set; } = "SUS";
             public double Value { get; set; } = 0;
         }
-        public Double_Ask_Form(MainWindow main,String title)
+        public Double_Ask_Form(String title)
         {
             vd.Str_Title = title;
-            this.main = main;
 
             DataContext = vd;
 
@@ -56,7 +54,7 @@ namespace VVVF_Simulator.GUI.UtilForm
             double d = parse_d(tb);
             if (d < 0) return;
             vd.Value = d;
-            main.gen_param.Double_Values = new List<double>() { d };
+            MainWindow.Generation_Params.Double_Values = new List<double>() { d };
 
             Close();
         }

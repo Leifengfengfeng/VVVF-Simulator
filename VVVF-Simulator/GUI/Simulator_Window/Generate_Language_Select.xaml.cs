@@ -20,10 +20,8 @@ namespace VVVF_Simulator.GUI.UtilForm
     /// </summary>
     public partial class Generate_Language_Select : Window
     {
-        MainWindow main;
-        public Generate_Language_Select(MainWindow main)
+        public Generate_Language_Select()
         {
-            this.main = main;
 
             InitializeComponent();
 
@@ -36,7 +34,7 @@ namespace VVVF_Simulator.GUI.UtilForm
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             Taroimo_Status_Language_Mode selected = (Taroimo_Status_Language_Mode)string_lang_selector.SelectedItem;
-            main.gen_param.Video_Language = new() { selected, selected };
+            MainWindow.Generation_Params.Video_Language = new() { selected, selected };
             Close();
         }
     }
