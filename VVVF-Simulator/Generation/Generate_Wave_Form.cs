@@ -390,21 +390,23 @@ namespace VVVF_Simulator.Generation
             Boolean START_F64_WAIT = true;
             if (START_F64_WAIT)
             {
+                Bitmap image = new(image_width, image_height);
+                Graphics g = Graphics.FromImage(image);
+                g.FillRectangle(new SolidBrush(Color.White), 0, 0, image_width, image_height);
+                MemoryStream ms = new MemoryStream();
+                image.Save(ms, ImageFormat.Png);
+                byte[] img = ms.GetBuffer();
+                Mat mat = OpenCvSharp.Mat.FromImageData(img);
                 for (int i = 0; i < 64; i++)
                 {
-                    Bitmap image = new(image_width, image_height);
-                    Graphics g = Graphics.FromImage(image);
-                    g.FillRectangle(new SolidBrush(Color.White), 0, 0, image_width, image_height);
-                    MemoryStream ms = new MemoryStream();
-                    image.Save(ms, ImageFormat.Png);
-                    byte[] img = ms.GetBuffer();
-                    Mat mat = OpenCvSharp.Mat.FromImageData(img);
+                    
 
                     vr.Write(mat);
 
-                    g.Dispose();
-                    image.Dispose();
+                    
                 }
+                g.Dispose();
+                image.Dispose();
             }
 
             Boolean loop = true;
@@ -499,21 +501,19 @@ namespace VVVF_Simulator.Generation
             Boolean END_F64_WAIT = true;
             if (END_F64_WAIT)
             {
+                Bitmap image = new(image_width, image_height);
+                Graphics g = Graphics.FromImage(image);
+                g.FillRectangle(new SolidBrush(Color.White), 0, 0, image_width, image_height);
+                MemoryStream ms = new MemoryStream();
+                image.Save(ms, ImageFormat.Png);
+                byte[] img = ms.GetBuffer();
+                Mat mat = OpenCvSharp.Mat.FromImageData(img);
                 for (int i = 0; i < 64; i++)
                 {
-                    Bitmap image = new(image_width, image_height);
-                    Graphics g = Graphics.FromImage(image);
-                    g.FillRectangle(new SolidBrush(Color.White), 0, 0, image_width, image_height);
-                    MemoryStream ms = new MemoryStream();
-                    image.Save(ms, ImageFormat.Png);
-                    byte[] img = ms.GetBuffer();
-                    Mat mat = OpenCvSharp.Mat.FromImageData(img);
-
                     vr.Write(mat);
-
-                    g.Dispose();
-                    image.Dispose();
                 }
+                g.Dispose();
+                image.Dispose();
             }
 
             vr.Release();
