@@ -1,9 +1,22 @@
 ﻿using static VVVF_Simulator.my_math;
+using static VVVF_Simulator.vvvf_wave_calculate;
 
 namespace VVVF_Simulator
 {
     public class VVVF_Control_Values
     {
+        public VVVF_Control_Values Clone()
+        {
+            VVVF_Control_Values clone = (VVVF_Control_Values)MemberwiseClone();
+
+            //Deep copy
+            clone.set_Video_Carrier_Freq_Data(clone.get_Video_Carrier_Freq_Data().Clone());
+
+            return clone;
+        }
+
+
+
         // variables for controlling parameters
         private int mascon_off_div = 18000;
         private bool do_frequency_change = true;
@@ -115,5 +128,27 @@ namespace VVVF_Simulator
 
             random_freq_move_count = 0;
         }
+
+
+
+        // Values for Video Generation.
+        private Pulse_Mode v_pulse_mode { get; set; }
+        private double v_sine_amplitude { get; set; }
+        private Carrier_Freq v_carrier_freq_data { get; set; } = new Carrier_Freq(0, 0);
+        private double v_dipolar { get; set; }
+
+
+        public void set_Video_Pulse_Mode(Pulse_Mode p) { v_pulse_mode = p; }
+        public Pulse_Mode get_Video_Pulse_Mode() { return v_pulse_mode; }
+
+        public void set_Video_Sine_Amplitude(double d) { v_sine_amplitude = d; }
+        public double get_Video_Sine_Amplitude() { return v_sine_amplitude; }
+
+        public void set_Video_Carrier_Freq_Data(Carrier_Freq c) { v_carrier_freq_data = c; }
+        public Carrier_Freq get_Video_Carrier_Freq_Data() { return v_carrier_freq_data; }
+
+        public void set_Video_Dipolar(double d) { v_dipolar = d; }
+        public double get_Video_Dipolar() { return v_dipolar; }
+
     }
 }

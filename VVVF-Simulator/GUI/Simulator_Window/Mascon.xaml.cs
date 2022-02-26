@@ -33,11 +33,21 @@ namespace VVVF_Simulator.GUI.UtilForm
         private void interval_update()
         {
 
-            Task task = Task.Run(() => {
+            Task.Run(() => {
                 while (!RealTime_Parameter.quit)
                 {
                     System.Threading.Thread.Sleep(20);
                     view_model.sine_freq = RealTime_Parameter.control_values.get_Sine_Freq();
+                }
+            });
+            Task.Run(() => {
+                while (!RealTime_Parameter.quit)
+                {
+                    VVVF_Control_Values control = RealTime_Parameter.control_values.Clone();
+                    control.set_Saw_Time(0);
+                    control.set_Sine_Time(0);
+                    double voltage = Generation.Generate_Control_Info.get_wave_form_voltage_rate_with_radius(RealTime_Parameter.sound_data, control);
+                    view_model.voltage = voltage;
                 }
             });
         }
@@ -68,6 +78,9 @@ namespace VVVF_Simulator.GUI.UtilForm
 
             private double _sine_freq = RealTime_Parameter.control_values.get_Sine_Freq();
             public double sine_freq { get { return _sine_freq; } set { _sine_freq = value; RaisePropertyChanged(nameof(sine_freq)); } }
+
+            private double _voltage = RealTime_Parameter.control_values.get_Sine_Freq();
+            public double voltage { get { return _voltage; } set { _voltage = value; RaisePropertyChanged(nameof(voltage)); } }
         };
         public class ViewModelBase : INotifyPropertyChanged
         {

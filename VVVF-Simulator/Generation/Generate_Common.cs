@@ -11,16 +11,6 @@ namespace VVVF_Simulator.Generation
         public static double count = 0;
         public static readonly int div_freq = 192 * 1000;
 
-        public static class Video_Generate_Values
-        {
-            public static Pulse_Mode pulse_mode = Pulse_Mode.P_1;
-            public static double sine_amplitude = 0.0;
-            public static Carrier_Freq carrier_freq_data = new(20,0);
-            public static double dipolar = -1;
-            public static double sine_angle_freq = 0.0;
-        }
-
-
         /// <summary>
         /// この関数は、音声生成や、動画生成時の、マスコンの制御状態等を記述する関数です。
         /// この関数を呼ぶたびに、更新されます。
