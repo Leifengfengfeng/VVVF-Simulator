@@ -18,6 +18,7 @@ using System.ComponentModel;
 using System.Media;
 using System.Threading.Tasks;
 using VVVF_Simulator.GUI.Simulator_Window;
+using VVVF_Simulator.GUI.Simulator_Window.RealTime_Generation;
 
 namespace VVVF_Simulator
 {
@@ -414,12 +415,19 @@ namespace VVVF_Simulator
                 if (command[1].Equals("RealTime"))
                 {
                     Generation.Generate_RealTime.RealTime_Parameter.quit = false;
+                    Generation.Generate_RealTime.RealTime_Parameter.buff_size = Properties.Settings.Default.G_RealTime_Buff;
 
                     RealTime_Mascon_Window mascon = new();
                     mascon.Show();
 
-                    RealTime_WaveForm_Window wave_form = new();
-                    wave_form.Show();
+                    if (Properties.Settings.Default.G_RealTime_WaveForm)
+                    {
+                        RealTime_WaveForm_Window wave_form = new();
+                        wave_form.Show();
+                    }
+                    
+
+
 
                     view_data.blocking = true;
                     Task task = Task.Run(() => {
@@ -430,6 +438,10 @@ namespace VVVF_Simulator
                     });
                     return false;
 
+                }else if (command[1].Equals("Setting"))
+                {
+                    RealTime_Settings setting = new();
+                    setting.ShowDialog();
                 }
 
             }

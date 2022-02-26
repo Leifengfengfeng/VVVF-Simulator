@@ -126,6 +126,7 @@
                 </MenuItem>
                 <MenuItem Header="RealTime">
                     <MenuItem Header="RealTime" Tag="RealTime_RealTime" Click="Generation_Menu_Click"/>
+                    <MenuItem Header="Setting" Tag="RealTime_Setting" Click="Generation_Menu_Click"/>
                 </MenuItem>
             </Menu>
         </DockPanel>

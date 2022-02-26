@@ -14,6 +14,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using static VVVF_Simulator.Generation.Generate_RealTime;
+using static VVVF_Simulator.vvvf_wave_calculate;
 
 namespace VVVF_Simulator.GUI.UtilForm
 {
@@ -38,6 +39,7 @@ namespace VVVF_Simulator.GUI.UtilForm
                 {
                     System.Threading.Thread.Sleep(20);
                     view_model.sine_freq = RealTime_Parameter.control_values.get_Sine_Freq();
+                    view_model.pulse_state = get_Pulse_Name();
                 }
             });
             Task.Run(() => {
@@ -81,6 +83,9 @@ namespace VVVF_Simulator.GUI.UtilForm
 
             private double _voltage = RealTime_Parameter.control_values.get_Sine_Freq();
             public double voltage { get { return _voltage; } set { _voltage = value; RaisePropertyChanged(nameof(voltage)); } }
+
+            private String _pulse_state = Pulse_Mode.Async.ToString();
+            public String pulse_state { get { return _pulse_state; } set { _pulse_state = value; RaisePropertyChanged(nameof(pulse_state)); } }
         };
         public class ViewModelBase : INotifyPropertyChanged
         {
@@ -88,6 +93,52 @@ namespace VVVF_Simulator.GUI.UtilForm
             protected virtual void RaisePropertyChanged(string propertyName)
             {
                 this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            }
+        }
+
+        private String get_Pulse_Name()
+        {
+            Pulse_Mode mode = RealTime_Parameter.control_values.get_Video_Pulse_Mode();
+            //Not in sync
+            if (mode == Pulse_Mode.Async || mode == Pulse_Mode.Async_THI)
+            {
+                Carrier_Freq carrier_freq_data = RealTime_Parameter.control_values.get_Video_Carrier_Freq_Data();
+                String default_s = String.Format(carrier_freq_data.base_freq.ToString("F2"));
+                return default_s;
+            }
+
+            //Abs
+            if (mode == Pulse_Mode.P_Wide_3)
+                return "W 3";
+
+            if (mode.ToString().StartsWith("CHM"))
+            {
+                String mode_name = mode.ToString();
+                bool contain_wide = mode_name.Contains("Wide");
+                mode_name = mode_name.Replace("_Wide", "");
+
+                String[] mode_name_type = mode_name.Split("_");
+
+                String final_mode_name = ((contain_wide) ? "W " : "") + mode_name_type[1];
+
+                return "CHM " + final_mode_name;
+            }
+            if (mode.ToString().StartsWith("SHE"))
+            {
+                String mode_name = mode.ToString();
+                bool contain_wide = mode_name.Contains("Wide");
+                mode_name = mode_name.Replace("_Wide", "");
+
+                String[] mode_name_type = mode_name.Split("_");
+
+                String final_mode_name = (contain_wide) ? "W " : "" + mode_name_type[1];
+
+                return "SHE " + final_mode_name;
+            }
+            else
+            {
+                String[] mode_name_type = mode.ToString().Split("_");
+                return mode_name_type[1];
             }
         }
 

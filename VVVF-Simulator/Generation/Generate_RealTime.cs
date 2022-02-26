@@ -17,6 +17,8 @@ namespace VVVF_Simulator.Generation
             public static Boolean reselect { get; set; } = false;
             public static Boolean free_run { get; set; } = false;
 
+            public static int buff_size { get; set; } = 20000;
+
             public static VVVF_Control_Values control_values { get; set; } = new();
             public static Yaml_Sound_Data sound_data { get; set; } = new();
         }
@@ -111,7 +113,7 @@ namespace VVVF_Simulator.Generation
 
                     double pwm_value = wv_U.pwm_value - wv_V.pwm_value;
 
-                    byte sound_byte = 0x80;
+                    byte sound_byte = 0xFF/2;
                     if (pwm_value == 2) sound_byte += 0x40;
                     else if (pwm_value == 1) sound_byte += 0x20;
                     else if (pwm_value == -1) sound_byte -= 0x20;
@@ -126,7 +128,7 @@ namespace VVVF_Simulator.Generation
                 int bufsize = 20;
 
                 provider.AddSamples(add, 0, bufsize);
-                while (provider.BufferedBytes > 16000) ;
+                while (provider.BufferedBytes > RealTime_Parameter.buff_size) ;
             }
         }
         public static void realtime_sound(Yaml_Sound_Data ysd)
@@ -137,8 +139,7 @@ namespace VVVF_Simulator.Generation
             {
 
                 var bufferedWaveProvider = new BufferedWaveProvider(new WaveFormat(192000, 8, 1));
-                var mmDevice = new MMDeviceEnumerator()
-                    .GetDefaultAudioEndpoint(DataFlow.Render, Role.Multimedia);
+                var mmDevice = new MMDeviceEnumerator().GetDefaultAudioEndpoint(DataFlow.Render, Role.Multimedia);
 
                 IWavePlayer wavPlayer = new WasapiOut(mmDevice, AudioClientShareMode.Shared, false, 50);
 
