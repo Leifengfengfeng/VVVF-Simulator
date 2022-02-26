@@ -8,7 +8,6 @@ namespace VVVF_Simulator.Generation
     {
         static readonly double M_1_2PI = 1.0 / (2.0 * Math.PI);
 
-        public static double count = 0;
         public static readonly int div_freq = 192 * 1000;
 
         /// <summary>
@@ -21,10 +20,10 @@ namespace VVVF_Simulator.Generation
         /// <returns></returns>
         public static bool Check_For_Freq_Change(VVVF_Control_Values control)
         {
-            count++;
+            control.add_Generate_Common_Count(1);
 
             //This is core of control. Never to change.
-            if (count % 60 == 0 && control.is_Do_Freq_Change() && control.get_Sine_Angle_Freq() * M_1_2PI == control.get_Control_Frequency())
+            if (control.get_Generate_Common_Count() % 60 == 0 && control.is_Do_Freq_Change() && control.get_Sine_Angle_Freq() * M_1_2PI == control.get_Control_Frequency())
             {
                 double sin_new_angle_freq = control.get_Sine_Angle_Freq();
                  
@@ -46,9 +45,9 @@ namespace VVVF_Simulator.Generation
                 {
                     control.set_Do_Freq_Change(false);
                     control.set_Mascon_Off(true);
-                    count = 0;
+                    control.set_Generate_Common_Count(0);
                 }
-                else if (count / div_freq > 2 && !control.is_Do_Freq_Change())
+                else if (control.get_Generate_Common_Count() / div_freq > 2 && !control.is_Do_Freq_Change())
                 {
                     control.set_Do_Freq_Change(true);
                     control.set_Mascon_Off(false);
@@ -56,41 +55,6 @@ namespace VVVF_Simulator.Generation
                     control.set_Temp_Count(control.get_Temp_Count() + 1);
                 }
             }
-            /*
-            else if (temp_count == 1)
-            {
-                if (sin_angle_freq / 2 / Math.PI < 20 && brake && do_frequency_change)
-                {
-                    do_frequency_change = false;
-                    mascon_off = true;
-                    count = 0;
-                }
-                else if (count / div_freq > 1 && !do_frequency_change)
-                {
-                    do_frequency_change = true;
-                    mascon_off = false;
-                    brake = false;
-                    temp_count++;
-                }
-            }
-            else if (temp_count == 2)
-            {
-                if (sin_angle_freq / 2 / Math.PI > 45 && !brake && do_frequency_change)
-                {
-                    do_frequency_change = false;
-                    mascon_off = true;
-
-                    count = 0;
-                }
-                else if (count / div_freq > 1 && !do_frequency_change)
-                {
-                    do_frequency_change = true;
-                    mascon_off = false;
-                    brake = true;
-                    temp_count++;
-                }
-            }
-            */
             else
             {
                 if (control.get_Sine_Angle_Freq() * M_1_2PI < 0 && control.is_Braking() && control.is_Do_Freq_Change()) return false;
