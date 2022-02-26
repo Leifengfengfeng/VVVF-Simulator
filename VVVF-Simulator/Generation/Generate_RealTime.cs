@@ -152,6 +152,10 @@ namespace VVVF_Simulator.Generation
                 int stat = realtime_sound_calculate(bufferedWaveProvider, ysd, control);
 
                 wavPlayer.Stop();
+                wavPlayer.Dispose();
+
+                mmDevice.Dispose();
+                bufferedWaveProvider.ClearBuffer();
 
                 if (stat == 0) break;
             }
