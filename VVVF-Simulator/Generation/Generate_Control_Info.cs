@@ -20,26 +20,29 @@ namespace VVVF_Simulator.Generation
     public class Generate_Control_Info
     {
 
-        private static String[] get_Pulse_Name(Pulse_Mode mode)
+        private static String[] get_Pulse_Name(VVVF_Control_Values control)
         {
+            Pulse_Mode mode = control.get_Video_Pulse_Mode();
             //Not in sync
             if (mode == Pulse_Mode.Async || mode == Pulse_Mode.Async_THI)
             {
                 string[] names = new string[3];
                 int count = 0;
 
-                names[count] = String.Format("Async - " + Video_Generate_Values.carrier_freq_data.base_freq.ToString("F2")).PadLeft(6);
+                Carrier_Freq carrier_freq_data = control.get_Video_Carrier_Freq_Data();
+
+                names[count] = String.Format("Async - " + carrier_freq_data.base_freq.ToString("F2")).PadLeft(6);
                 count++;
 
-                if (Video_Generate_Values.carrier_freq_data.range != 0)
+                if (carrier_freq_data.range != 0)
                 {
-                    names[count] = String.Format("Random ± " + Video_Generate_Values.carrier_freq_data.range.ToString("F2")).PadLeft(6);
+                    names[count] = String.Format("Random ± " + carrier_freq_data.range.ToString("F2")).PadLeft(6);
                     count++;
                 }
 
-                if (Video_Generate_Values.dipolar != -1)
+                if (control.get_Video_Dipolar() != -1)
                 {
-                    names[count] = String.Format("Dipolar : " + Video_Generate_Values.dipolar.ToString("F0")).PadLeft(6);
+                    names[count] = String.Format("Dipolar : " + control.get_Video_Dipolar().ToString("F0")).PadLeft(6);
                     count++;
                 }
                 return names;
@@ -82,8 +85,8 @@ namespace VVVF_Simulator.Generation
 
                 mode_name += mode_name_type[1] + " Pulse";
 
-                if (Video_Generate_Values.dipolar == -1) return new string[] { mode_name };
-                else return new string[] { mode_name, "Dipolar : " + Video_Generate_Values.dipolar.ToString("F1") };
+                if (control.get_Video_Dipolar() == -1) return new string[] { mode_name };
+                else return new string[] { mode_name, "Dipolar : " + control.get_Video_Dipolar().ToString("F1") };
             }
         }
 
@@ -255,7 +258,7 @@ namespace VVVF_Simulator.Generation
                     g.FillRectangle(Brushes.Blue, 0, 68, image_width, 8);
                     if (!final_show)
                     {
-                        String[] pulse_name = get_Pulse_Name(Video_Generate_Values.pulse_mode);
+                        String[] pulse_name = get_Pulse_Name(control);
 
                         g.DrawString(pulse_name[0], val_fnt, letter_brush, 17, 100);
 
@@ -278,7 +281,7 @@ namespace VVVF_Simulator.Generation
                     g.FillRectangle(new SolidBrush(Color.FromArgb(200, 200, 255)), 0, 226, image_width, 291 - 226);
                     g.DrawString("Sine Freq[Hz]", title_fnt, title_brush, 17, 231);
                     g.FillRectangle(Brushes.Blue, 0, 291, image_width, 8);
-                    double sine_freq = Video_Generate_Values.sine_angle_freq / Math.PI / 2;
+                    double sine_freq = control.get_Sine_Freq();
                     if (!final_show)
                         g.DrawString(String.Format("{0:f2}", sine_freq).PadLeft(6), val_fnt, letter_brush, 17, 323);
 
@@ -286,7 +289,7 @@ namespace VVVF_Simulator.Generation
                     g.DrawString("Sine Amplitude[%]", title_fnt, title_brush, 17, 452);
                     g.FillRectangle(Brushes.Blue, 0, 513, image_width, 8);
                     if (!final_show)
-                        g.DrawString(String.Format("{0:f2}", Video_Generate_Values.sine_amplitude * 100).PadLeft(6), val_fnt, letter_brush, 17, 548);
+                        g.DrawString(String.Format("{0:f2}", control.get_Video_Sine_Amplitude() * 100).PadLeft(6), val_fnt, letter_brush, 17, 548);
 
                     g.FillRectangle(new SolidBrush(Color.FromArgb(240, 240, 240)), 0, 669, image_width, 735 - 669);
                     g.DrawString("Freerun", title_fnt, title_brush, 17, 674);
@@ -886,7 +889,7 @@ namespace VVVF_Simulator.Generation
                     );
 
                     // Connect dots
-                    if (!(Video_Generate_Values.pulse_mode == Pulse_Mode.Async || Video_Generate_Values.pulse_mode == Pulse_Mode.Async_THI))
+                    if (!(control.get_Video_Pulse_Mode() == Pulse_Mode.Async || control.get_Video_Pulse_Mode() == Pulse_Mode.Async_THI))
                     {
                         int connect_sync_box_size = 12;
                         for (int r = 0; r < 9; r++)
@@ -905,9 +908,9 @@ namespace VVVF_Simulator.Generation
                     }
 
                     // Carrier Freq Show
-                    if (Video_Generate_Values.pulse_mode == Pulse_Mode.Async || Video_Generate_Values.pulse_mode == Pulse_Mode.Async_THI)
+                    if (control.get_Video_Pulse_Mode() == Pulse_Mode.Async || control.get_Video_Pulse_Mode() == Pulse_Mode.Async_THI)
                     {
-                        String carrier_freq_str = String.Format("{0:f0}", Video_Generate_Values.carrier_freq_data.base_freq);
+                        String carrier_freq_str = String.Format("{0:f0}", control.get_Video_Carrier_Freq_Data().base_freq);
                         SizeF freq_str_size = info_g.MeasureString(carrier_freq_str, lng_fonts[1]);
                         SizeF hz_str_size = info_g.MeasureString("Hz", lng_fonts[4]);
 
@@ -948,7 +951,7 @@ namespace VVVF_Simulator.Generation
                     }
                     else
                     {
-                        String[] pulse_mode_name = get_Taroimo_Pulse_Name(Video_Generate_Values.pulse_mode, language);
+                        String[] pulse_mode_name = get_Taroimo_Pulse_Name(control.get_Video_Pulse_Mode(), language);
 
                         SizeF freq_str_size = info_g.MeasureString(pulse_mode_name[0], lng_fonts[1]);
                         SizeF wide_str_size = new SizeF(0, 0);
@@ -1017,7 +1020,7 @@ namespace VVVF_Simulator.Generation
                     );
                     
                     // " Freq "
-                    if(Video_Generate_Values.pulse_mode == Pulse_Mode.Async || Video_Generate_Values.pulse_mode == Pulse_Mode.Async_THI)
+                    if(control.get_Video_Pulse_Mode() == Pulse_Mode.Async || control.get_Video_Pulse_Mode() == Pulse_Mode.Async_THI)
                         center_text_with_line_corner_curved_rectangle(
                             info_g,
                             lng_words[9], 
@@ -1043,11 +1046,10 @@ namespace VVVF_Simulator.Generation
                         );
 
                     //Sine Freq
-                    double sine_freq = Video_Generate_Values.sine_angle_freq / Math.PI / 2;
                     if (!final_show)
                     {
                         int base_pos = 620;
-                        String sine_freq_str = String.Format("{0:f1}", sine_freq);
+                        String sine_freq_str = String.Format("{0:f1}", control.get_Sine_Freq());
                         SizeF freq_str_size = info_g.MeasureString(sine_freq_str, lng_fonts[1]);
                         SizeF hz_str_size = info_g.MeasureString("Hz", lng_fonts[3]);
 

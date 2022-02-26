@@ -376,6 +376,10 @@ namespace VVVF_Simulator
 		// random range => -range ~ range
 		public class Carrier_Freq
         {
+			public Carrier_Freq Clone()
+			{
+				return (Carrier_Freq)MemberwiseClone();
+			}
 			public Carrier_Freq( double base_freq_a , double range_b)
             {
 				base_freq = base_freq_a;
@@ -470,10 +474,10 @@ namespace VVVF_Simulator
 
         public static Wave_Values calculate_three_level(VVVF_Control_Values control ,Pulse_Mode pulse_mode, Carrier_Freq data, Sine_Control_Data sine_control, double dipolar)
 		{
-			Video_Generate_Values.pulse_mode = pulse_mode;
-			Video_Generate_Values.sine_amplitude = sine_control.amplitude;
-			Video_Generate_Values.carrier_freq_data = data;
-			Video_Generate_Values.dipolar = dipolar;
+			control.set_Video_Pulse_Mode(pulse_mode);
+			control.set_Video_Sine_Amplitude(sine_control.amplitude);
+			control.set_Video_Carrier_Freq_Data(data.Clone());
+			control.set_Video_Dipolar(dipolar);
 
 			double sine_angle_freq = control.get_Sine_Angle_Freq();
 			double sine_time = control.get_Sine_Time();
@@ -485,8 +489,6 @@ namespace VVVF_Simulator
             }
             else
 				control.set_Allowed_Sine_Time_Change(true);
-
-			Video_Generate_Values.sine_angle_freq = sine_angle_freq;
 
 			if (pulse_mode == Pulse_Mode.Async)
             {
@@ -533,10 +535,10 @@ namespace VVVF_Simulator
 
 		public static Wave_Values calculate_two_level(VVVF_Control_Values control , Pulse_Mode pulse_mode, Carrier_Freq carrier_freq_data, Sine_Control_Data sine_control)
 		{
-			Video_Generate_Values.pulse_mode = pulse_mode;
-			Video_Generate_Values.sine_amplitude = sine_control.amplitude;
-			Video_Generate_Values.carrier_freq_data = carrier_freq_data;
-			Video_Generate_Values.dipolar = -1;
+			control.set_Video_Pulse_Mode(pulse_mode);
+			control.set_Video_Sine_Amplitude(sine_control.amplitude);
+			control.set_Video_Carrier_Freq_Data(carrier_freq_data.Clone());
+			control.set_Video_Dipolar(-1);
 
 			double sin_angle_freq = control.get_Sine_Angle_Freq();
 			double sin_time = control.get_Sine_Time();
@@ -548,8 +550,6 @@ namespace VVVF_Simulator
 			}
 			else
 				control.set_Allowed_Sine_Time_Change(true);
-
-			Video_Generate_Values.sine_angle_freq = sin_angle_freq;
 
 			double saw_time = control.get_Saw_Time();
 			double saw_angle_freq = control.get_Saw_Angle_Freq();
