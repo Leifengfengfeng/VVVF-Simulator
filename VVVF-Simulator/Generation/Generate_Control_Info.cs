@@ -13,6 +13,7 @@ using Size = System.Drawing.Size;
 using System.Collections.Generic;
 using VVVF_Simulator.Yaml_VVVF_Sound;
 using System.Diagnostics;
+using System.Threading.Tasks;
 
 namespace VVVF_Simulator.Generation
 {
@@ -613,11 +614,13 @@ namespace VVVF_Simulator.Generation
             return voltage;
         }
 
-        private static String[] get_Taroimo_Pulse_Name(Pulse_Mode mode)
+        private static String[] get_Taroimo_Pulse_Name(Pulse_Mode mode, Taroimo_Status_Language_Mode language)
         {
-  
+
+            String wide_str = language == Taroimo_Status_Language_Mode.Japanese ? "広域" : "Wide";
+
             if (mode == Pulse_Mode.P_Wide_3)
-                return new string[] { "Wide 3"};
+                return new string[] { "3" , wide_str };
 
             if (mode.ToString().StartsWith("CHM"))
             {
@@ -627,7 +630,9 @@ namespace VVVF_Simulator.Generation
 
                 String[] mode_name_type = mode_name.Split("_");
 
-                return new string[] { (contain_wide ? "Wide " : "") + mode_name_type[1] };
+                if(contain_wide) return new string[] { mode_name_type[1], wide_str };
+                else return new string[] { mode_name_type[1] };
+
             }
             if (mode.ToString().StartsWith("SHE"))
             {
@@ -637,7 +642,8 @@ namespace VVVF_Simulator.Generation
 
                 String[] mode_name_type = mode_name.Split("_");
 
-                return new string[] { (contain_wide ? "Wide " : "") + mode_name_type[1] };
+                if (contain_wide) return new string[] { mode_name_type[1] , wide_str };
+                else return new string[] { mode_name_type[1] };
             }
             else
             {
@@ -699,35 +705,55 @@ namespace VVVF_Simulator.Generation
             Point[] jpn_f_jpn_str_compen = new Point[] { 
                 new Point(0, 43), // control stat
                 new Point(2, 19), // "Carrier"
+                new Point(20, -24),  // "Wide"
+                new Point(20, -4),// Carrier_Num
+                new Point(0, -24), // Carrier_Unit
                 new Point(36, 5), // "Async"
                 new Point(36, 5), // "Sync"
+                new Point(-4, 5) , // Key
                 new Point(0, 25), // "Output"
                 new Point(6, 30), // "Freq"
                 new Point(0, 30), // "Volt"
-                new Point(20, -4),// Carrier_Num
-                new Point(-4, 5) , // Key
-                new Point(0, -24), // Carrier_Unit
                 new Point(16, -8), // Sine Freq (10
                 new Point(-11, -16), // Sine Freq Unit (11
                 new Point(6, -7), // Voltage (12
                 new Point(-20, -7), // Voltage Unit (13
             };
-            Point[] eng_f_eng_str_compen = new Point[] { new Point(0, 0), new Point(0, 0), new Point(40, 5), new Point(40, 5), new Point(0, 0), new Point(0, 5), new Point(0, 5) , new Point(0, 0), new Point(0, 0), new Point(0, 0), new Point(0, 0), new Point(0, 0), new Point(0, 0), new Point(0, 0) };
+            Point[] eng_f_eng_str_compen = new Point[] { 
+                new Point(0, 0),
+                new Point(0, 0),
+                new Point(0, 0),
+                new Point(0, 0),
+                new Point(0, 0),
+                new Point(40, 5), // 2 => 4
+                new Point(40, 5), // 3 => 5
+                new Point(0, 0),
+                new Point(0, 0),
+                new Point(0, 5), //5 => 7
+                new Point(0, 5) , //6 => 8
+                new Point(0, 0), 
+                new Point(0, 0), 
+                new Point(0, 0), 
+                new Point(0, 0),
+                
+            };
             Point[] eng_f_jpn_str_compen = new Point[] {
-                new Point(0, 0), // control stat
-                new Point(0, 19), // "Carrier"
-                new Point(36, -1), // "Async"
-                new Point(36, -1), // "Sync"
-                new Point(0, 25), // "Output"
-                new Point(0, 0), // "Freq"
-                new Point(0, 0), // "Volt"
-                new Point(20, -4),// Carrier_Num
-                new Point(-4, 5) , // Key
-                new Point(0, -24), // Carrier_Unit
-                new Point(16, -8), // Sine Freq (10
-                new Point(-11, -16), // Sine Freq Unit (11
-                new Point(6, -7), // Voltage (12
-                new Point(-20, -7), // Voltage Unit (13
+                new Point(0, 0), // control stat (0 => 0
+                new Point(0, 19), // "Carrier" (1 => 1
+                new Point(20, -24), // "Wide" (1 => 1
+                new Point(20, -4),// Carrier_Num (7 => 2 => 3
+                new Point(0, -24), // Carrier_Unit (9 => 3 => 4
+                new Point(36, -1), // "Async" (2 => 4 => 5
+                new Point(36, -1), // "Sync" (3 => 5 => 6
+                new Point(-4, 5) , // Key (8 => 6 => 7
+                new Point(0, 25), // "Output" (4 => 7 => 8
+                new Point(0, 0), // "Freq" (5 => 8  =>9
+                new Point(0, 0), // "Volt" (6 => 9 => 10
+
+                new Point(16, -8), // Sine Freq (10 => 11
+                new Point(-11, -16), // Sine Freq Unit (11 => 12
+                new Point(6, -7), // Voltage (12 => 13
+                new Point(-20, -7), // Voltage Unit (13 => 14
             };
             Point[] lng_str_compen = language == Taroimo_Status_Language_Mode.Japanese ? jpn_f_jpn_str_compen : font == Taroimo_Status_Language_Mode.Japanese ? eng_f_jpn_str_compen : eng_f_eng_str_compen;
 
@@ -818,6 +844,13 @@ namespace VVVF_Simulator.Generation
                         status_str = lng_words[3];
                     }
 
+                    double t_voltage = 0.0;
+                    // Multi thread calculation
+                    Task T_voltage_cal = Task.Run(() =>
+                    {
+                        t_voltage = get_wave_form_voltage_rate_with_radius(sound_data, control);
+                    });
+
                     // Triangle
                     control_stat_g.FillPolygon(new SolidBrush(control_color), new PointF[] {
                         new PointF(464 * 2,105 * 2),
@@ -885,16 +918,16 @@ namespace VVVF_Simulator.Generation
                             carrier_freq_str, 
                             lng_fonts[1], 
                             new SolidBrush(Color.White),
-                            image_width / 2 - total_width / 2 + lng_str_compen[7].X, 
-                            250 * 2 + lng_str_compen[7].Y
+                            image_width / 2 - total_width / 2 + lng_str_compen[3].X, 
+                            250 * 2 + lng_str_compen[3].Y
                         );
                         // Hz
                         info_g.DrawString(
                             "Hz",
                             lng_fonts[4], 
                             new SolidBrush(Color.White), 
-                            image_width / 2 - total_width / 2 + freq_str_size.Width + lng_str_compen[9].X, 
-                            292 * 2 + lng_str_compen[9].Y
+                            image_width / 2 - total_width / 2 + freq_str_size.Width + lng_str_compen[4].X, 
+                            292 * 2 + lng_str_compen[4].Y
                         );
 
                         // Async Mode
@@ -907,28 +940,43 @@ namespace VVVF_Simulator.Generation
                             new Point(47 * 2, 359 * 2), 
                             new Point(431 * 2, 410 * 2), 
                             20,
-                            lng_str_compen[2]
+                            lng_str_compen[5]
                         );
 
                         // Draw unlocked key
-                        draw_key(info_g, new Point(letter.X - 50 + lng_str_compen[8].X, letter.Y + 18 + lng_str_compen[8].Y), Color.FromArgb(103, 103, 103), Color.FromArgb(52, 52, 52), false, 0.25);
+                        draw_key(info_g, new Point(letter.X - 50 + lng_str_compen[7].X, letter.Y + 18 + lng_str_compen[7].Y), Color.FromArgb(103, 103, 103), Color.FromArgb(52, 52, 52), false, 0.25);
                     }
                     else
                     {
-                        String[] pulse_mode_name = get_Taroimo_Pulse_Name(Video_Generate_Values.pulse_mode);
+                        String[] pulse_mode_name = get_Taroimo_Pulse_Name(Video_Generate_Values.pulse_mode, language);
 
                         SizeF freq_str_size = info_g.MeasureString(pulse_mode_name[0], lng_fonts[1]);
+                        SizeF wide_str_size = new SizeF(0, 0);
+                        if(pulse_mode_name.Length == 2)
+                            wide_str_size = info_g.MeasureString(pulse_mode_name[1], lng_fonts[4]);
+
                         SizeF freq_other_str_size = info_g.MeasureString(lng_words[6], lng_fonts[4]);
 
-                        double total_width = freq_str_size.Width + freq_other_str_size.Width;
+                        double total_width = freq_str_size.Width + freq_other_str_size.Width + wide_str_size.Width;
+
+
+                        // Draw "Wide"
+                        if(pulse_mode_name.Length == 2)
+                            info_g.DrawString(
+                                pulse_mode_name[1],
+                                lng_fonts[4],
+                                new SolidBrush(Color.White),
+                                (int)Math.Round(920 / 2 - total_width / 2) + lng_str_compen[2].X,
+                                580 + lng_str_compen[2].Y
+                            );
 
                         // Pulse mode name
                         info_g.DrawString(
                             pulse_mode_name[0], 
                             lng_fonts[1], 
                             new SolidBrush(Color.White),
-                            (int)Math.Round(920 / 2 - total_width / 2) + lng_str_compen[7].X,
-                            250 * 2 + lng_str_compen[7].Y
+                            (int)Math.Round(920 / 2 - total_width / 2 + wide_str_size.Width) + lng_str_compen[3].X,
+                            500 + lng_str_compen[3].Y
                         );
 
                         //Draw "pulse"
@@ -936,8 +984,8 @@ namespace VVVF_Simulator.Generation
                             lng_words[6],
                             lng_fonts[4],
                             new SolidBrush(Color.White),
-                            (int)Math.Round(920 / 2 - total_width / 2 + freq_str_size.Width) + lng_str_compen[9].X,
-                            580 + lng_str_compen[9].Y
+                            (int)Math.Round(920 / 2 - total_width / 2 + wide_str_size.Width + freq_str_size.Width) + lng_str_compen[4].X,
+                            580 + lng_str_compen[4].Y
                         );
 
                         // sync mode
@@ -950,10 +998,10 @@ namespace VVVF_Simulator.Generation
                             new Point(47 * 2, 359 * 2), 
                             new Point(431 * 2, 410 * 2),
                             20,
-                            lng_str_compen[3]
+                            lng_str_compen[6]
                         );
 
-                        draw_key(info_g, new Point(letter.X - 50 + lng_str_compen[8].X, letter.Y + 18 + lng_str_compen[8].Y), Color.FromArgb(52, 52, 52), Color.White, true, 0.25);
+                        draw_key(info_g, new Point(letter.X - 50 + lng_str_compen[7].X, letter.Y + 18 + lng_str_compen[7].Y), Color.FromArgb(52, 52, 52), Color.White, true, 0.25);
                     }
 
                     //OUTPUT
@@ -965,7 +1013,7 @@ namespace VVVF_Simulator.Generation
                         new Point(30 * 2, 474 * 2), 
                         new Point( 449 * 2, 731 * 2),
                         20,
-                        lng_str_compen[4]
+                        lng_str_compen[8]
                     );
                     
                     // " Freq "
@@ -979,7 +1027,7 @@ namespace VVVF_Simulator.Generation
                             new Point(47 * 2, 507 * 2),
                             new Point(182 * 2, 602 * 2),
                             10,
-                            lng_str_compen[5]
+                            lng_str_compen[9]
                         );
                     else 
                         center_text_with_filled_corner_curved_rectangle(
@@ -991,7 +1039,7 @@ namespace VVVF_Simulator.Generation
                             new Point(47 * 2, 507 * 2), 
                             new Point(182 * 2, 602 * 2),
                             10,
-                            lng_str_compen[5]
+                            lng_str_compen[9]
                         );
 
                     //Sine Freq
@@ -1005,8 +1053,8 @@ namespace VVVF_Simulator.Generation
 
                         int total_width = (int)(freq_str_size.Width + hz_str_size.Width);
 
-                        info_g.DrawString(sine_freq_str, lng_fonts[1], new SolidBrush(Color.White), base_pos - total_width / 2 + lng_str_compen[10].X, 505 * 2 + lng_str_compen[10].Y);
-                        info_g.DrawString("Hz", lng_fonts[3], new SolidBrush(Color.White), base_pos - total_width / 2 + freq_str_size.Width + lng_str_compen[11].X, 545 * 2 + lng_str_compen[11].Y);
+                        info_g.DrawString(sine_freq_str, lng_fonts[1], new SolidBrush(Color.White), base_pos - total_width / 2 + lng_str_compen[11].X, 505 * 2 + lng_str_compen[11].Y);
+                        info_g.DrawString("Hz", lng_fonts[3], new SolidBrush(Color.White), base_pos - total_width / 2 + freq_str_size.Width + lng_str_compen[12].X, 545 * 2 + lng_str_compen[12].Y);
                     }
 
                     //" Voltage "
@@ -1019,15 +1067,14 @@ namespace VVVF_Simulator.Generation
                         new Point(47 * 2, 618 * 2),
                         new Point(182 * 2, 713 * 2), 
                         10,
-                        lng_str_compen[6]
+                        lng_str_compen[10]
                     );
 
                     if (!final_show)
                     {
                         int base_pos = 620;
-
-                        double voltage = get_wave_form_voltage_rate_with_radius(sound_data , control);
-                        pre_voltage = Math.Round((voltage + pre_voltage) / 2.0, 1);
+                        T_voltage_cal.Wait();
+                        pre_voltage = Math.Round((t_voltage + pre_voltage) / 2.0, 1);
                         pre_voltage = (pre_voltage > 99.5) ? 100 : pre_voltage;
                         String sine_freq_str = String.Format("{0:f1}", pre_voltage);
                         SizeF freq_str_size = info_g.MeasureString(sine_freq_str, lng_fonts[1]);
@@ -1035,8 +1082,8 @@ namespace VVVF_Simulator.Generation
 
                         int total_width = (int)(freq_str_size.Width + hz_str_size.Width);
 
-                        info_g.DrawString(sine_freq_str, lng_fonts[1], new SolidBrush(Color.White), base_pos - total_width / 2 + lng_str_compen[12].X, 620 * 2 + lng_str_compen[12].Y);
-                        info_g.DrawString("%", lng_fonts[3], new SolidBrush(Color.White), base_pos - total_width / 2 + freq_str_size.Width + lng_str_compen[13].X, 1200 + 115 + lng_str_compen[13].Y);
+                        info_g.DrawString(sine_freq_str, lng_fonts[1], new SolidBrush(Color.White), base_pos - total_width / 2 + lng_str_compen[13].X, 620 * 2 + lng_str_compen[13].Y);
+                        info_g.DrawString("%", lng_fonts[3], new SolidBrush(Color.White), base_pos - total_width / 2 + freq_str_size.Width + lng_str_compen[14].X, 1200 + 115 + lng_str_compen[14].Y);
                     }
 
                     final_g.DrawImage(background,0,0);

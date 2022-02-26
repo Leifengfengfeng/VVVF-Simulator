@@ -314,7 +314,7 @@ namespace VVVF_Simulator
                         Generation.Generate_Control_Info.generate_status_taroimo_like_video(
                             dialog.FileName,
                             data,
-                            Generation_Params.Video_Language[0],
+                            Generation.Generate_Control_Info.Taroimo_Status_Language_Mode.Japanese,
                             Generation_Params.Video_Language[1]
                         );
                     });
