@@ -71,7 +71,7 @@ namespace VVVF_Simulator.GUI.Simulator_Window
 
             int image_width = 1200;
             int image_height = 450;
-            int calculate_div = 10;
+            int calculate_div = 3;
             int wave_height = 100;
 
             Bitmap image = new(image_width, image_height);

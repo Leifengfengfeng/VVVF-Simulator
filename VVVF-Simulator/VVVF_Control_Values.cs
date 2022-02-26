@@ -150,5 +150,11 @@ namespace VVVF_Simulator
         public void set_Video_Dipolar(double d) { v_dipolar = d; }
         public double get_Video_Dipolar() { return v_dipolar; }
 
+        // Values for Check mascon
+        private double generate_common_count { get; set; } = 0;
+        public void set_Generate_Common_Count(double d) { generate_common_count = d; }
+        public double get_Generate_Common_Count() { return generate_common_count; }
+        public void add_Generate_Common_Count(double d) { generate_common_count += d; }
+
     }
 }
