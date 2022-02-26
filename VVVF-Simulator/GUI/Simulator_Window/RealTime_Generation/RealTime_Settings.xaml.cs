@@ -50,7 +50,7 @@ namespace VVVF_Simulator.GUI.Simulator_Window.RealTime_Generation
             }
         }
 
-        private void show_waveform_box_Checked(object sender, RoutedEventArgs e)
+        private void box_Checked(object sender, RoutedEventArgs e)
         {
             if (no_update) return;
             CheckBox cb = (CheckBox)sender;
@@ -62,6 +62,8 @@ namespace VVVF_Simulator.GUI.Simulator_Window.RealTime_Generation
                 Properties.Settings.Default.G_RealTime_WaveForm = is_checked;
             else if(tag.Equals("Edit"))
                 Properties.Settings.Default.G_RealTime_Edit = is_checked;
+
+            Properties.Settings.Default.Save();
         }
 
         private void audio_buff_box_TextChanged(object sender, TextChangedEventArgs e)
@@ -71,6 +73,8 @@ namespace VVVF_Simulator.GUI.Simulator_Window.RealTime_Generation
 
             int i = parse_i(audio_buff_box);
             Properties.Settings.Default.G_RealTime_Buff = i;
+
+            Properties.Settings.Default.Save();
         }
     }
 }

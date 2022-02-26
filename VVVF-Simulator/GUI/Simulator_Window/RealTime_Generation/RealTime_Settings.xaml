@@ -30,8 +30,8 @@
             <Grid Background="#FFEF8354">
                 <Label Content="Others" HorizontalAlignment="Center" VerticalAlignment="Center" FontFamily="M PLUS 2" FontWeight="Bold" FontSize="22" Foreground="White"/>
             </Grid>
-            <CheckBox x:Name="show_waveform_box" Tag="WaveForm" Grid.Column="1" Content="Show WaveForm" HorizontalAlignment="Left" VerticalAlignment="Center" Height="41" Width="208" FontSize="22" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontWeight="Bold" FontFamily="M PLUS 2" IsChecked="True" Checked="show_waveform_box_Checked" Unchecked="show_waveform_box_Checked" Margin="46,0,0,0"/>
-            <CheckBox x:Name="realtime_edit_box" Tag="Edit" Grid.Column="1" Content="RealTime Edit" HorizontalAlignment="Left" VerticalAlignment="Center" Height="41" Width="208" FontSize="22" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontWeight="Bold" FontFamily="M PLUS 2" IsChecked="True" Checked="show_waveform_box_Checked" Unchecked="show_waveform_box_Checked" Margin="330,0,0,0"/>
+            <CheckBox x:Name="show_waveform_box" Tag="WaveForm" Grid.Column="1" Content="Show WaveForm" HorizontalAlignment="Left" VerticalAlignment="Center" Height="41" Width="208" FontSize="22" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontWeight="Bold" FontFamily="M PLUS 2" Checked="box_Checked" Unchecked="box_Checked" Margin="46,0,0,0"/>
+            <CheckBox x:Name="realtime_edit_box" Tag="Edit" Grid.Column="1" Content="RealTime Edit" HorizontalAlignment="Left" VerticalAlignment="Center" Height="41" Width="208" FontSize="22" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontWeight="Bold" FontFamily="M PLUS 2" Checked="box_Checked" Unchecked="box_Checked" Margin="330,0,0,0"/>
         </Grid>
 
     </Grid>
