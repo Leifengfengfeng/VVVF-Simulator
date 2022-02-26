@@ -7,6 +7,9 @@
     <Nullable>enable</Nullable>
     <UseWPF>true</UseWPF>
     <ApplicationIcon>vvvf-simulator.ico</ApplicationIcon>
+    <Authors>JOTAN</Authors>
+    <Description>A simple application to simulate VVVF sound</Description>
+    <PackageIcon>vvvf-simulator.png</PackageIcon>
   </PropertyGroup>
 
   <ItemGroup>
@@ -18,6 +21,13 @@
     <Resource Include="GUI\Images\Settings\2-level.png" />
     <Resource Include="GUI\Images\Settings\3-level.png" />
     <Content Include="vvvf-simulator.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="Z:\Adobe_Export\PhotoShop\アイコン\vvvf-simulator.png">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
   </ItemGroup>
 
   <ItemGroup>

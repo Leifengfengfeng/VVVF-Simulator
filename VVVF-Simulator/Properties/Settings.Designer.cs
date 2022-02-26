@@ -46,5 +46,17 @@ namespace VVVF_Simulator.Properties {
                 this["G_RealTime_WaveForm"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool G_RealTime_Edit {
+            get {
+                return ((bool)(this["G_RealTime_Edit"]));
+            }
+            set {
+                this["G_RealTime_Edit"] = value;
+            }
+        }
     }
 }

@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:VVVF_Simulator.GUI.Simulator_Window.RealTime_Generation"
         mc:Ignorable="d"
-        Title="RealTime Generation Settings" Height="245" Width="800" ResizeMode="NoResize">
+        Title="RealTime Generation Settings" Height="280" Width="800" ResizeMode="NoResize">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="1*"/>
@@ -28,9 +28,10 @@
                 <ColumnDefinition Width="5*"/>
             </Grid.ColumnDefinitions>
             <Grid Background="#FFEF8354">
-                <Label Content="Show WaveForm" HorizontalAlignment="Center" VerticalAlignment="Center" FontFamily="M PLUS 2" FontWeight="Bold" FontSize="22" Foreground="White"/>
+                <Label Content="Others" HorizontalAlignment="Center" VerticalAlignment="Center" FontFamily="M PLUS 2" FontWeight="Bold" FontSize="22" Foreground="White"/>
             </Grid>
-            <CheckBox x:Name="show_waveform_box" Grid.Column="1" Content="Check Here!" HorizontalAlignment="Center" VerticalAlignment="Center" Height="41" Width="185" FontSize="22" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontWeight="Bold" FontFamily="M PLUS 2" IsChecked="True" Checked="show_waveform_box_Checked" Unchecked="show_waveform_box_Checked"/>
+            <CheckBox x:Name="show_waveform_box" Tag="WaveForm" Grid.Column="1" Content="Show WaveForm" HorizontalAlignment="Left" VerticalAlignment="Center" Height="41" Width="208" FontSize="22" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontWeight="Bold" FontFamily="M PLUS 2" Checked="box_Checked" Unchecked="box_Checked" Margin="46,0,0,0"/>
+            <CheckBox x:Name="realtime_edit_box" Tag="Edit" Grid.Column="1" Content="RealTime Edit" HorizontalAlignment="Left" VerticalAlignment="Center" Height="41" Width="208" FontSize="22" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontWeight="Bold" FontFamily="M PLUS 2" Checked="box_Checked" Unchecked="box_Checked" Margin="330,0,0,0"/>
         </Grid>
 
     </Grid>

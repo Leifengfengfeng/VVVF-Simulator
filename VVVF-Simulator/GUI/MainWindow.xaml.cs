@@ -431,12 +431,17 @@ namespace VVVF_Simulator
 
                     view_data.blocking = true;
                     Task task = Task.Run(() => {
-                        Yaml_Sound_Data clone = Yaml_Generation.DeepClone(Yaml_Generation.current_data);
-                        Generation.Generate_RealTime.realtime_sound(clone);
+                        bool do_clone = !Properties.Settings.Default.G_RealTime_Edit;
+                        Yaml_Sound_Data data;
+                        if (do_clone)
+                            data = Yaml_Generation.DeepClone(Yaml_Generation.current_data);
+                        else
+                            data = Yaml_Generation.current_data;
+                        Generation.Generate_RealTime.realtime_sound(data);
                         view_data.blocking = false;
                         SystemSounds.Beep.Play();
                     });
-                    return false;
+                    return Properties.Settings.Default.G_RealTime_Edit; 
 
                 }else if (command[1].Equals("Setting"))
                 {
