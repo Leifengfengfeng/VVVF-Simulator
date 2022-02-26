@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:VVVF_Simulator.GUI.Simulator_Window"
         mc:Ignorable="d"
-        Title="RealTime_WaveForm_Window" Height="450" Width="1200">
+        Title="WaveForm View" Height="450" Width="1200">
     <Grid>
         <Image x:Name="waveform_view" Source="{Binding waveform}"/>
 
