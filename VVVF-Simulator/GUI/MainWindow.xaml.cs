@@ -17,6 +17,7 @@ using VVVF_Simulator.GUI.UtilForm;
 using System.ComponentModel;
 using System.Media;
 using System.Threading.Tasks;
+using VVVF_Simulator.GUI.Simulator_Window;
 
 namespace VVVF_Simulator
 {
@@ -414,8 +415,11 @@ namespace VVVF_Simulator
                 {
                     Generation.Generate_RealTime.RealTime_Parameter.quit = false;
 
-                    Mascon mascon = new();
+                    RealTime_Mascon_Window mascon = new();
                     mascon.Show();
+
+                    RealTime_WaveForm_Window wave_form = new();
+                    wave_form.Show();
 
                     view_data.blocking = true;
                     Task task = Task.Run(() => {

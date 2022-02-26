@@ -20,9 +20,9 @@ namespace VVVF_Simulator.GUI.UtilForm
     /// <summary>
     /// Mascon.xaml の相互作用ロジック
     /// </summary>
-    public partial class Mascon : Window
+    public partial class RealTime_Mascon_Window : Window
     {
-        public Mascon()
+        public RealTime_Mascon_Window()
         {
             InitializeComponent();
             set_Stat(0);
