@@ -475,7 +475,7 @@ namespace VVVF_Simulator.Generation
             g.DrawLine(new (hole_c, (int)Math.Round((15)* size)), (int)Math.Round(start.X + 78.5 * size), (int)Math.Round(start.Y + 138 * size), (int)Math.Round(start.X + 78.5 * size), (int)Math.Round(start.Y + 173 * size));
         }
 
-        public static double get_wave_form_voltage_rate_with_surface(Yaml_Sound_Data sound_data, VVVF_Control_Values control)
+        public static double get_voltage_rate_with_surface(Yaml_Sound_Data sound_data, VVVF_Control_Values control)
         {
             int hex_div_seed = 10000;
             int hex_div = 6 * hex_div_seed;
@@ -557,7 +557,96 @@ namespace VVVF_Simulator.Generation
             return voltage;
         }
 
-        public static double get_wave_form_voltage_rate_with_radius(Yaml_Sound_Data sound_data, VVVF_Control_Values control)
+        public static double get_voltage_rate_with_radius_from_surface(Yaml_Sound_Data sound_data, VVVF_Control_Values control)
+        {
+            int hex_div_seed = 20000;
+            int hex_div = 6 * hex_div_seed;
+            double[] hexagon_coordinate = new double[] { 100, 500 };
+            int resolution = 10;
+
+            List<List<Int32>> y_coordinate = new();
+
+            for (int i = 0; i < 1000 * resolution; i++)
+            {
+                y_coordinate.Add(new List<Int32>());
+            }
+
+            for (int i = 0; i < hex_div; i++)
+            {
+                control.add_Sine_Time(1.0 / (hex_div) * ((control.get_Sine_Freq() == 0) ? 0 : 1 / control.get_Sine_Freq()));
+                control.add_Saw_Time(1.0 / (hex_div) * ((control.get_Sine_Freq() == 0) ? 0 : 1 / control.get_Sine_Freq()));
+
+                Control_Values cv_U = new()
+                {
+                    brake = control.is_Braking(),
+                    mascon_on = !control.is_Mascon_Off(),
+                    free_run = control.is_Free_Running(),
+                    initial_phase = Math.PI * 2.0 / 3.0 * 0,
+                    wave_stat = control.get_Control_Frequency()
+                };
+                Wave_Values wv_U = Yaml_VVVF_Wave.calculate_Yaml(control, cv_U, sound_data);
+
+                Control_Values cv_V = new()
+                {
+                    brake = control.is_Braking(),
+                    mascon_on = !control.is_Mascon_Off(),
+                    free_run = control.is_Free_Running(),
+                    initial_phase = Math.PI * 2.0 / 3.0 * 1,
+                    wave_stat = control.get_Control_Frequency()
+                };
+                Wave_Values wv_V = Yaml_VVVF_Wave.calculate_Yaml(control, cv_V, sound_data);
+
+                Control_Values cv_W = new()
+                {
+                    brake = control.is_Braking(),
+                    mascon_on = !control.is_Mascon_Off(),
+                    free_run = control.is_Free_Running(),
+                    initial_phase = Math.PI * 2.0 / 3.0 * 2,
+                    wave_stat = control.get_Control_Frequency()
+                };
+                Wave_Values wv_W = Yaml_VVVF_Wave.calculate_Yaml(control, cv_W, sound_data);
+
+                double move_x = -0.5 * wv_W.pwm_value - 0.5 * wv_V.pwm_value + wv_U.pwm_value;
+                double move_y = -0.866025403784438646763 * wv_W.pwm_value + 0.866025403784438646763 * wv_V.pwm_value;
+                double int_move_x = 200 * move_x / hex_div_seed;
+                double int_move_y = 200 * move_y / hex_div_seed;
+
+                int table_x1 = (int)Math.Round(hexagon_coordinate[0] * resolution);
+                int table_y1 = (int)Math.Round(hexagon_coordinate[1] * resolution);
+                List<Int32> x1 = y_coordinate[table_x1];
+                if (!x1.Contains(table_y1))
+                    x1.Add(table_y1);
+
+                int table_x2 = (int)Math.Round((hexagon_coordinate[0] + int_move_x) * resolution);
+                int table_y2 = (int)Math.Round((hexagon_coordinate[1] + int_move_y) * resolution);
+                List<Int32> x2 = y_coordinate[table_x2];
+                if (!x2.Contains(table_y2))
+                    x2.Add(table_y2);
+
+                hexagon_coordinate[0] = hexagon_coordinate[0] + int_move_x;
+                hexagon_coordinate[1] = hexagon_coordinate[1] + int_move_y;
+            }
+
+            int total_dots = 0;
+            for (int i = 0; i < 1000 * resolution; i++)
+            {
+                List<Int32> y_dots = y_coordinate[i];
+                int repeat = y_dots.Count / 2;
+                for (int j = 0; j < repeat; j++)
+                {
+                    total_dots += Math.Abs(y_dots[2 * j] - y_dots[2 * j + 1]);
+                }
+            }
+
+            double raw_voltage = Math.Round(Math.Sqrt(total_dots),5) / Math.Round(595.35 * resolution,5) * 100.0;
+            Debug.Print(total_dots.ToString());
+            double voltage = Math.Round(raw_voltage, 3);
+            if (voltage > 100)
+                voltage = 100;
+            return voltage;
+        }
+
+        public static double get_voltage_rate_with_radius(Yaml_Sound_Data sound_data, VVVF_Control_Values control)
         {
             double hex_div_seed = 10000 * ((control.get_Sine_Freq() > 0 && control.get_Sine_Freq() < 1) ? 1 / control.get_Sine_Freq() : 1);
             int hex_div = (int)Math.Round(6 * hex_div_seed);
@@ -851,7 +940,7 @@ namespace VVVF_Simulator.Generation
                     // Multi thread calculation
                     Task T_voltage_cal = Task.Run(() =>
                     {
-                        t_voltage = get_wave_form_voltage_rate_with_radius(sound_data, control);
+                        t_voltage = get_voltage_rate_with_radius_from_surface(sound_data, control);
                     });
 
                     // Triangle

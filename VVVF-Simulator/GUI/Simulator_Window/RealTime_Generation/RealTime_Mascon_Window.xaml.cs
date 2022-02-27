@@ -43,13 +43,16 @@ namespace VVVF_Simulator.GUI.UtilForm
                 }
             });
             Task.Run(() => {
+                double pre_voltage = 0.0;
                 while (!RealTime_Parameter.quit)
                 {
                     VVVF_Control_Values control = RealTime_Parameter.control_values.Clone();
                     control.set_Saw_Time(0);
                     control.set_Sine_Time(0);
-                    double voltage = Generation.Generate_Control_Info.get_wave_form_voltage_rate_with_radius(RealTime_Parameter.sound_data, control);
-                    view_model.voltage = voltage;
+                    double voltage = Generation.Generate_Control_Info.get_voltage_rate_with_radius_from_surface(RealTime_Parameter.sound_data, control);
+                    double avg_voltage = Math.Round((pre_voltage + voltage) / 2.0, 2);
+                    view_model.voltage = avg_voltage;
+                    pre_voltage = voltage;
                 }
             });
         }
