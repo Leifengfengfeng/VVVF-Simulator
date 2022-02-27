@@ -289,11 +289,18 @@ namespace VVVF_Simulator
                 var dialog = new SaveFileDialog { Filter = "wav (*.wav)|*.wav" };
                 if (dialog.ShowDialog() == false) return true;
                 Task task = Task.Run(() => {
-                    Yaml_Sound_Data clone = Yaml_Generation.DeepClone(Yaml_Generation.current_data);
-                    if (command[1].Equals("VVVF"))
-                        Generation.Generate_Sound.generate_sound(dialog.FileName, clone);
-                    else if (command[1].Equals("Environment"))
-                        Generation.Generate_Sound.generate_env_sound(dialog.FileName);
+                    try
+                    {
+                        Yaml_Sound_Data clone = Yaml_Generation.DeepClone(Yaml_Generation.current_data);
+                        if (command[1].Equals("VVVF"))
+                            Generation.Generate_Sound.generate_sound(dialog.FileName, clone);
+                        else if (command[1].Equals("Environment"))
+                            Generation.Generate_Sound.generate_env_sound(dialog.FileName);
+                    }
+                    catch
+                    {
+                        MessageBox.Show("Error occurred.", "OMG", MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
                     SystemSounds.Beep.Play();
                 });
                 
@@ -305,8 +312,15 @@ namespace VVVF_Simulator
                 if (command[1].Equals("Original"))
                 {
                     Task task = Task.Run(() => {
-                        Yaml_Sound_Data clone = Yaml_Generation.DeepClone(Yaml_Generation.current_data);
-                        Generation.Generate_Control_Info.generate_status_video(dialog.FileName, clone);
+                        try
+                        {
+                            Yaml_Sound_Data clone = Yaml_Generation.DeepClone(Yaml_Generation.current_data);
+                            Generation.Generate_Control_Info.generate_status_video(dialog.FileName, clone);
+                        }
+                        catch
+                        {
+                            MessageBox.Show("Error occurred.", "OMG", MessageBoxButton.OK, MessageBoxImage.Error);
+                        }
                         SystemSounds.Beep.Play();
                     });
                 }
@@ -317,13 +331,20 @@ namespace VVVF_Simulator
                     lang_select.ShowDialog();
 
                     Task task = Task.Run(() => {
-                        Yaml_Sound_Data clone = Yaml_Generation.DeepClone(Yaml_Generation.current_data);
-                        Generation.Generate_Control_Info.generate_status_taroimo_like_video(
-                            dialog.FileName,
-                            clone,
-                            Generation.Generate_Control_Info.Taroimo_Status_Language_Mode.Japanese,
-                            Generation_Params.Video_Language[1]
-                        );
+                        try
+                        {
+                            Yaml_Sound_Data clone = Yaml_Generation.DeepClone(Yaml_Generation.current_data);
+                            Generation.Generate_Control_Info.generate_status_taroimo_like_video(
+                                dialog.FileName,
+                                clone,
+                                Generation.Generate_Control_Info.Taroimo_Status_Language_Mode.Japanese,
+                                Generation_Params.Video_Language[1]
+                            );
+                        }
+                        catch
+                        {
+                            MessageBox.Show("Error occurred.", "OMG", MessageBoxButton.OK, MessageBoxImage.Error);
+                        }
                         SystemSounds.Beep.Play();
                     });
                 }
@@ -334,25 +355,21 @@ namespace VVVF_Simulator
                 var dialog = new SaveFileDialog { Filter = "mp4 (*.mp4)|*.mp4" };
                 if (dialog.ShowDialog() == false) return true;
                 Task task = Task.Run(() => {
-                    if (command[1].Equals("Original"))
+                    try
                     {
                         Yaml_Sound_Data clone = Yaml_Generation.DeepClone(Yaml_Generation.current_data);
-                        Generation.Generate_Wave_Form.generate_wave_U_V(dialog.FileName, clone);
-                        SystemSounds.Beep.Play();
+                        if (command[1].Equals("Original"))
+                            Generation.Generate_Wave_Form.generate_wave_U_V(dialog.FileName, clone);
+                        else if (command[1].Equals("Taroimo"))
+                            Generation.Generate_Wave_Form.generate_taroimo_like_wave_U_V(dialog.FileName, clone);
+                        else if (command[1].Equals("UVW"))
+                            Generation.Generate_Wave_Form.generate_taroimo_like_wave_U_V(dialog.FileName, clone);
                     }
-                    else if (command[1].Equals("Taroimo"))
+                    catch
                     {
-                        Yaml_Sound_Data clone = Yaml_Generation.DeepClone(Yaml_Generation.current_data);
-                        Generation.Generate_Wave_Form.generate_taroimo_like_wave_U_V(dialog.FileName, clone);
-                        SystemSounds.Beep.Play();
+                        MessageBox.Show("Error occurred.", "OMG", MessageBoxButton.OK, MessageBoxImage.Error);
                     }
-                    else if (command[1].Equals("UVW"))
-                    {
-                        Yaml_Sound_Data clone = Yaml_Generation.DeepClone(Yaml_Generation.current_data);
-                        Generation.Generate_Wave_Form.generate_taroimo_like_wave_U_V(dialog.FileName, clone);
-                        SystemSounds.Beep.Play();
-                    }
-                       
+                    SystemSounds.Beep.Play();
                 });
             }
             else if (command[0].Equals("Hexagon"))
@@ -366,8 +383,15 @@ namespace VVVF_Simulator
                     if (dialog.ShowDialog() == false) return true;
 
                     Task task = Task.Run(() => {
-                        Yaml_Sound_Data clone = Yaml_Generation.DeepClone(Yaml_Generation.current_data);
-                        Generation.Generate_Hexagon.generate_wave_hexagon(dialog.FileName, clone, circle);
+                        try
+                        {
+                            Yaml_Sound_Data clone = Yaml_Generation.DeepClone(Yaml_Generation.current_data);
+                            Generation.Generate_Hexagon.generate_wave_hexagon(dialog.FileName, clone, circle);
+                        }
+                        catch
+                        {
+                            MessageBox.Show("Error occurred.", "OMG", MessageBoxButton.OK, MessageBoxImage.Error);
+                        }
                         SystemSounds.Beep.Play();
                     });
                 }
@@ -377,8 +401,15 @@ namespace VVVF_Simulator
                     if (dialog.ShowDialog() == false) return true;
 
                     Task task = Task.Run(() => {
-                        Yaml_Sound_Data clone = Yaml_Generation.DeepClone(Yaml_Generation.current_data);
-                        Generation.Generate_Hexagon.generate_wave_hexagon_taroimo_like(dialog.FileName, clone, circle);
+                        try
+                        {
+                            Yaml_Sound_Data clone = Yaml_Generation.DeepClone(Yaml_Generation.current_data);
+                            Generation.Generate_Hexagon.generate_wave_hexagon_taroimo_like(dialog.FileName, clone, circle);
+                        }
+                        catch
+                        {
+                            MessageBox.Show("Error occurred.", "OMG", MessageBoxButton.OK, MessageBoxImage.Error);
+                        }
                         SystemSounds.Beep.Play();
                     });
                 }
@@ -391,8 +422,15 @@ namespace VVVF_Simulator
                     double_Ask_Dialog.ShowDialog();
 
                     Task task = Task.Run(() => {
-                        Yaml_Sound_Data clone = Yaml_Generation.DeepClone(Yaml_Generation.current_data);
-                        Generation.Generate_Hexagon.generate_wave_hexagon_explain(dialog.FileName, clone, circle, Generation_Params.Double_Values[0]);
+                        try
+                        {
+                            Yaml_Sound_Data clone = Yaml_Generation.DeepClone(Yaml_Generation.current_data);
+                            Generation.Generate_Hexagon.generate_wave_hexagon_explain(dialog.FileName, clone, circle, Generation_Params.Double_Values[0]);
+                        }
+                        catch
+                        {
+                            MessageBox.Show("Error occurred.", "OMG", MessageBoxButton.OK, MessageBoxImage.Error);
+                        }
                         SystemSounds.Beep.Play();
                     });
                 }
@@ -405,8 +443,15 @@ namespace VVVF_Simulator
                     double_Ask_Dialog.ShowDialog();
 
                     Task task = Task.Run(() => {
-                        Yaml_Sound_Data clone = Yaml_Generation.DeepClone(Yaml_Generation.current_data);
-                        Generation.Generate_Hexagon.generate_wave_hexagon_picture(dialog.FileName, clone, circle, Generation_Params.Double_Values[0]);
+                        try
+                        {
+                            Yaml_Sound_Data clone = Yaml_Generation.DeepClone(Yaml_Generation.current_data);
+                            Generation.Generate_Hexagon.generate_wave_hexagon_picture(dialog.FileName, clone, circle, Generation_Params.Double_Values[0]);
+                        }
+                        catch
+                        {
+                            MessageBox.Show("Error occurred.", "OMG", MessageBoxButton.OK, MessageBoxImage.Error);
+                        }
                         SystemSounds.Beep.Play();
                     });
                 }
@@ -418,26 +463,30 @@ namespace VVVF_Simulator
                     Generation.Generate_RealTime.RealTime_Parameter.buff_size = Properties.Settings.Default.G_RealTime_Buff;
 
                     RealTime_Mascon_Window mascon = new();
-                    mascon.Show();
+                    RealTime_WaveForm_Window wave_form = new();
 
+                    mascon.Show();
                     if (Properties.Settings.Default.G_RealTime_WaveForm)
-                    {
-                        RealTime_WaveForm_Window wave_form = new();
                         wave_form.Show();
-                    }
-                    
 
 
 
                     view_data.blocking = true;
                     Task task = Task.Run(() => {
-                        bool do_clone = !Properties.Settings.Default.G_RealTime_Edit;
-                        Yaml_Sound_Data data;
-                        if (do_clone)
-                            data = Yaml_Generation.DeepClone(Yaml_Generation.current_data);
-                        else
-                            data = Yaml_Generation.current_data;
-                        Generation.Generate_RealTime.realtime_sound(data);
+                        try
+                        {
+                            bool do_clone = !Properties.Settings.Default.G_RealTime_Edit;
+                            Yaml_Sound_Data data;
+                            if (do_clone)
+                                data = Yaml_Generation.DeepClone(Yaml_Generation.current_data);
+                            else
+                                data = Yaml_Generation.current_data;
+                            Generation.Generate_RealTime.realtime_sound(data);
+                        }
+                        catch
+                        {
+                            MessageBox.Show("Error occurred.", "OMG", MessageBoxButton.OK, MessageBoxImage.Error);
+                        }
                         view_data.blocking = false;
                         SystemSounds.Beep.Play();
                     });
