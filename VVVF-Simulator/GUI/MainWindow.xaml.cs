@@ -82,7 +82,7 @@ namespace VVVF_Simulator
             if (tag_str == null) return;
             String[] command = tag_str.Split("_");
 
-            var list_view = command[0].Equals("accelerate") ? accelerate_settings : accelerate_settings;
+            var list_view = command[0].Equals("accelerate") ? accelerate_settings : brake_settings;
             var settings = command[0].Equals("accelerate") ? Yaml_Generation.current_data.accelerate_pattern : Yaml_Generation.current_data.braking_pattern;
 
             if (command[1].Equals("remove"))

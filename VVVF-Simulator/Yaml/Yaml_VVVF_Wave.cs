@@ -35,6 +35,35 @@ namespace VVVF_Simulator.Yaml_VVVF_Sound
 			if (amp_param.max_amp != -1 && amp_param.max_amp < amp) amp = amp_param.max_amp;
 			return amp;
 		}
+
+		public static bool is_Matching(VVVF_Control_Values control, Control_Values cv,Yaml_Control_Data ysd, bool compare_with_sine)
+        {
+			Yaml_Free_Run_Condition_Single free_run_data;
+			if (cv.mascon_on) free_run_data = ysd.when_freerun.on;
+			else free_run_data = ysd.when_freerun.off;
+
+			bool enable_on_free_run_condition = ysd.enable_on_free_run && cv.free_run;
+			bool enable_on_not_free_run_condition = ysd.enable_on_not_free_run && !cv.free_run;
+			if (!enable_on_free_run_condition && !enable_on_not_free_run_condition) return false;
+
+			bool over_from = ysd.from <= (compare_with_sine ? control.get_Sine_Freq() : cv.wave_stat);
+
+			if (!cv.free_run && over_from) return true;
+			if (!cv.free_run && !over_from) return false;
+
+			if (free_run_data.skip) return false;
+
+			if (over_from) return true;
+
+			if (free_run_data.stuck_at_here)
+			{
+				if (control.get_Sine_Freq() > ysd.from) return true;
+				return false;
+			}
+
+			return false;
+
+		}
 		public static Wave_Values calculate_Yaml(VVVF_Control_Values control , Control_Values cv, Yaml_Sound_Data yvs)
 		{
 			Pulse_Mode pulse_mode;
@@ -82,34 +111,33 @@ namespace VVVF_Simulator.Yaml_VVVF_Sound
 			for (int x = 0; x < control_list.Count; x++)
 			{
 				Yaml_Control_Data ysd = control_list[x];
-				Yaml_Free_Run_Condition_Single free_run_data;
-				if (cv.mascon_on) free_run_data = ysd.when_freerun.on;
-				else free_run_data = ysd.when_freerun.off;
-
-				bool enable_on_free_run_condition = ysd.enable_on_free_run && cv.free_run;
-				bool enable_on_not_free_run_condition = ysd.enable_on_not_free_run && !cv.free_run;
-				if (!enable_on_free_run_condition && !enable_on_not_free_run_condition) continue;//alow
-
-				bool condition_1 = ysd.from <= cv.wave_stat;
-				if (condition_1 && !cv.free_run)
-				{
+				bool match = is_Matching(control, cv, ysd , false);
+                if (match)
+                {
 					solve = x;
 					break;
-				}
-
-
-				if (!cv.free_run) continue;
-				if (free_run_data.skip) continue;
-				if (cv.free_run && control.get_Sine_Angle_Freq() < ysd.from * M_2PI) continue;
-
-				if (!free_run_data.stuck_at_here && !condition_1) continue;
-				solve = x;
-				break;
+                }
 
 			}
+
 			if (solve == -1)
 			{
-				return get_Wave_Values_None();
+                if (cv.free_run)
+                {
+                    if (!cv.mascon_on)
+                    {
+						control.set_Control_Frequency(0);
+						return get_Wave_Values_None();
+					}
+					else
+					{
+						control.set_Control_Frequency(control.get_Sine_Freq());
+						cv.wave_stat = control.get_Sine_Freq();
+						return get_Wave_Values_None();
+					}
+				}
+				else
+					return get_Wave_Values_None();
 			}
 
 			Yaml_Control_Data solve_data = control_list[solve];

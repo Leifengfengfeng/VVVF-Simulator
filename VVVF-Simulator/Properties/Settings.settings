@@ -3,7 +3,7 @@
   <Profiles />
   <Settings>
     <Setting Name="G_RealTime_Buff" Type="System.Int32" Scope="User">
-      <Value Profile="(Default)">20000</Value>
+      <Value Profile="(Default)">40000</Value>
     </Setting>
     <Setting Name="G_RealTime_WaveForm" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
