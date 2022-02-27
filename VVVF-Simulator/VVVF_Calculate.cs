@@ -597,129 +597,129 @@ namespace VVVF_Simulator
 
 			if (pulse_mode == Pulse_Mode.CHMP_15)
 				return get_P_with_switchingangle(
-				   my_switchingangles._7Alpha[(int)(1000 * amplitude) + 1, 0] * M_PI_180,
-				   my_switchingangles._7Alpha[(int)(1000 * amplitude) + 1, 1] * M_PI_180,
-				   my_switchingangles._7Alpha[(int)(1000 * amplitude) + 1, 2] * M_PI_180,
-				   my_switchingangles._7Alpha[(int)(1000 * amplitude) + 1, 3] * M_PI_180,
-				   my_switchingangles._7Alpha[(int)(1000 * amplitude) + 1, 4] * M_PI_180,
-				   my_switchingangles._7Alpha[(int)(1000 * amplitude) + 1, 5] * M_PI_180,
-				   my_switchingangles._7Alpha[(int)(1000 * amplitude) + 1, 6] * M_PI_180,
-				   my_switchingangles._7Alpha_Polary[(int)(1000 * amplitude) + 1], sin_time, sin_angle_freq, initial_phase);
+				   My_Switchingangles._7Alpha[(int)(1000 * amplitude) + 1, 0] * M_PI_180,
+				   My_Switchingangles._7Alpha[(int)(1000 * amplitude) + 1, 1] * M_PI_180,
+				   My_Switchingangles._7Alpha[(int)(1000 * amplitude) + 1, 2] * M_PI_180,
+				   My_Switchingangles._7Alpha[(int)(1000 * amplitude) + 1, 3] * M_PI_180,
+				   My_Switchingangles._7Alpha[(int)(1000 * amplitude) + 1, 4] * M_PI_180,
+				   My_Switchingangles._7Alpha[(int)(1000 * amplitude) + 1, 5] * M_PI_180,
+				   My_Switchingangles._7Alpha[(int)(1000 * amplitude) + 1, 6] * M_PI_180,
+				   My_Switchingangles._7Alpha_Polary[(int)(1000 * amplitude) + 1], sin_time, sin_angle_freq, initial_phase);
 			if (pulse_mode == Pulse_Mode.CHMP_Old_15)
 				return get_P_with_switchingangle(
-				   my_switchingangles._7Alpha_Old[(int)(1000 * amplitude) + 1, 0] * M_PI_180,
-				   my_switchingangles._7Alpha_Old[(int)(1000 * amplitude) + 1, 1] * M_PI_180,
-				   my_switchingangles._7Alpha_Old[(int)(1000 * amplitude) + 1, 2] * M_PI_180,
-				   my_switchingangles._7Alpha_Old[(int)(1000 * amplitude) + 1, 3] * M_PI_180,
-				   my_switchingangles._7Alpha_Old[(int)(1000 * amplitude) + 1, 4] * M_PI_180,
-				   my_switchingangles._7Alpha_Old[(int)(1000 * amplitude) + 1, 5] * M_PI_180,
-				   my_switchingangles._7Alpha_Old[(int)(1000 * amplitude) + 1, 6] * M_PI_180,
-				   my_switchingangles._7OldAlpha_Polary[(int)(1000 * amplitude) + 1], sin_time, sin_angle_freq, initial_phase);
+				   My_Switchingangles._7Alpha_Old[(int)(1000 * amplitude) + 1, 0] * M_PI_180,
+				   My_Switchingangles._7Alpha_Old[(int)(1000 * amplitude) + 1, 1] * M_PI_180,
+				   My_Switchingangles._7Alpha_Old[(int)(1000 * amplitude) + 1, 2] * M_PI_180,
+				   My_Switchingangles._7Alpha_Old[(int)(1000 * amplitude) + 1, 3] * M_PI_180,
+				   My_Switchingangles._7Alpha_Old[(int)(1000 * amplitude) + 1, 4] * M_PI_180,
+				   My_Switchingangles._7Alpha_Old[(int)(1000 * amplitude) + 1, 5] * M_PI_180,
+				   My_Switchingangles._7Alpha_Old[(int)(1000 * amplitude) + 1, 6] * M_PI_180,
+				   My_Switchingangles._7OldAlpha_Polary[(int)(1000 * amplitude) + 1], sin_time, sin_angle_freq, initial_phase);
 			if (pulse_mode == Pulse_Mode.CHMP_Wide_15)
 				return get_P_with_switchingangle(
-				   my_switchingangles._7WideAlpha[(int)(1000 * amplitude) - 999, 0] * M_PI_180,
-				   my_switchingangles._7WideAlpha[(int)(1000 * amplitude) - 999, 1] * M_PI_180,
-				   my_switchingangles._7WideAlpha[(int)(1000 * amplitude) - 999, 2] * M_PI_180,
-				   my_switchingangles._7WideAlpha[(int)(1000 * amplitude) - 999, 3] * M_PI_180,
-				   my_switchingangles._7WideAlpha[(int)(1000 * amplitude) - 999, 4] * M_PI_180,
-				   my_switchingangles._7WideAlpha[(int)(1000 * amplitude) - 999, 5] * M_PI_180,
-				   my_switchingangles._7WideAlpha[(int)(1000 * amplitude) - 999, 6] * M_PI_180,
+				   My_Switchingangles._7WideAlpha[(int)(1000 * amplitude) - 999, 0] * M_PI_180,
+				   My_Switchingangles._7WideAlpha[(int)(1000 * amplitude) - 999, 1] * M_PI_180,
+				   My_Switchingangles._7WideAlpha[(int)(1000 * amplitude) - 999, 2] * M_PI_180,
+				   My_Switchingangles._7WideAlpha[(int)(1000 * amplitude) - 999, 3] * M_PI_180,
+				   My_Switchingangles._7WideAlpha[(int)(1000 * amplitude) - 999, 4] * M_PI_180,
+				   My_Switchingangles._7WideAlpha[(int)(1000 * amplitude) - 999, 5] * M_PI_180,
+				   My_Switchingangles._7WideAlpha[(int)(1000 * amplitude) - 999, 6] * M_PI_180,
 				   'B', sin_time, sin_angle_freq, initial_phase);
 			if (pulse_mode == Pulse_Mode.CHMP_13)
 				return get_P_with_switchingangle(
-				   my_switchingangles._6Alpha[(int)(1000 * amplitude) + 1, 0] * M_PI_180,
-				   my_switchingangles._6Alpha[(int)(1000 * amplitude) + 1, 1] * M_PI_180,
-				   my_switchingangles._6Alpha[(int)(1000 * amplitude) + 1, 2] * M_PI_180,
-				   my_switchingangles._6Alpha[(int)(1000 * amplitude) + 1, 3] * M_PI_180,
-				   my_switchingangles._6Alpha[(int)(1000 * amplitude) + 1, 4] * M_PI_180,
-				   my_switchingangles._6Alpha[(int)(1000 * amplitude) + 1, 5] * M_PI_180,
+				   My_Switchingangles._6Alpha[(int)(1000 * amplitude) + 1, 0] * M_PI_180,
+				   My_Switchingangles._6Alpha[(int)(1000 * amplitude) + 1, 1] * M_PI_180,
+				   My_Switchingangles._6Alpha[(int)(1000 * amplitude) + 1, 2] * M_PI_180,
+				   My_Switchingangles._6Alpha[(int)(1000 * amplitude) + 1, 3] * M_PI_180,
+				   My_Switchingangles._6Alpha[(int)(1000 * amplitude) + 1, 4] * M_PI_180,
+				   My_Switchingangles._6Alpha[(int)(1000 * amplitude) + 1, 5] * M_PI_180,
 				   M_PI_2,
-				   my_switchingangles._6Alpha_Polary[(int)(1000 * amplitude) + 1], sin_time, sin_angle_freq, initial_phase);
+				   My_Switchingangles._6Alpha_Polary[(int)(1000 * amplitude) + 1], sin_time, sin_angle_freq, initial_phase);
 			if (pulse_mode == Pulse_Mode.CHMP_Old_13)
 				return get_P_with_switchingangle(
-				   my_switchingangles._6Alpha_Old[(int)(1000 * amplitude) + 1, 0] * M_PI_180,
-				   my_switchingangles._6Alpha_Old[(int)(1000 * amplitude) + 1, 1] * M_PI_180,
-				   my_switchingangles._6Alpha_Old[(int)(1000 * amplitude) + 1, 2] * M_PI_180,
-				   my_switchingangles._6Alpha_Old[(int)(1000 * amplitude) + 1, 3] * M_PI_180,
-				   my_switchingangles._6Alpha_Old[(int)(1000 * amplitude) + 1, 4] * M_PI_180,
-				   my_switchingangles._6Alpha_Old[(int)(1000 * amplitude) + 1, 5] * M_PI_180,
+				   My_Switchingangles._6Alpha_Old[(int)(1000 * amplitude) + 1, 0] * M_PI_180,
+				   My_Switchingangles._6Alpha_Old[(int)(1000 * amplitude) + 1, 1] * M_PI_180,
+				   My_Switchingangles._6Alpha_Old[(int)(1000 * amplitude) + 1, 2] * M_PI_180,
+				   My_Switchingangles._6Alpha_Old[(int)(1000 * amplitude) + 1, 3] * M_PI_180,
+				   My_Switchingangles._6Alpha_Old[(int)(1000 * amplitude) + 1, 4] * M_PI_180,
+				   My_Switchingangles._6Alpha_Old[(int)(1000 * amplitude) + 1, 5] * M_PI_180,
 				   M_PI_2,
-				   my_switchingangles._6OldAlpha_Polary[(int)(1000 * amplitude) + 1], sin_time, sin_angle_freq, initial_phase);
+				   My_Switchingangles._6OldAlpha_Polary[(int)(1000 * amplitude) + 1], sin_time, sin_angle_freq, initial_phase);
 			if (pulse_mode == Pulse_Mode.CHMP_Wide_13)
 				return get_P_with_switchingangle(
-				   my_switchingangles._6WideAlpha[(int)(1000 * amplitude) - 999, 0] * M_PI_180,
-				   my_switchingangles._6WideAlpha[(int)(1000 * amplitude) - 999, 1] * M_PI_180,
-				   my_switchingangles._6WideAlpha[(int)(1000 * amplitude) - 999, 2] * M_PI_180,
-				   my_switchingangles._6WideAlpha[(int)(1000 * amplitude) - 999, 3] * M_PI_180,
-				   my_switchingangles._6WideAlpha[(int)(1000 * amplitude) - 999, 4] * M_PI_180,
-				   my_switchingangles._6WideAlpha[(int)(1000 * amplitude) - 999, 5] * M_PI_180,
+				   My_Switchingangles._6WideAlpha[(int)(1000 * amplitude) - 999, 0] * M_PI_180,
+				   My_Switchingangles._6WideAlpha[(int)(1000 * amplitude) - 999, 1] * M_PI_180,
+				   My_Switchingangles._6WideAlpha[(int)(1000 * amplitude) - 999, 2] * M_PI_180,
+				   My_Switchingangles._6WideAlpha[(int)(1000 * amplitude) - 999, 3] * M_PI_180,
+				   My_Switchingangles._6WideAlpha[(int)(1000 * amplitude) - 999, 4] * M_PI_180,
+				   My_Switchingangles._6WideAlpha[(int)(1000 * amplitude) - 999, 5] * M_PI_180,
 				   M_PI_2,
 				   'A', sin_time, sin_angle_freq, initial_phase);
 			if (pulse_mode == Pulse_Mode.CHMP_11)
 				return get_P_with_switchingangle(
-					my_switchingangles._5Alpha[(int)(1000 * amplitude) + 1, 0] * M_PI_180,
-					my_switchingangles._5Alpha[(int)(1000 * amplitude) + 1, 1] * M_PI_180,
-					my_switchingangles._5Alpha[(int)(1000 * amplitude) + 1, 2] * M_PI_180,
-					my_switchingangles._5Alpha[(int)(1000 * amplitude) + 1, 3] * M_PI_180,
-					my_switchingangles._5Alpha[(int)(1000 * amplitude) + 1, 4] * M_PI_180,
+					My_Switchingangles._5Alpha[(int)(1000 * amplitude) + 1, 0] * M_PI_180,
+					My_Switchingangles._5Alpha[(int)(1000 * amplitude) + 1, 1] * M_PI_180,
+					My_Switchingangles._5Alpha[(int)(1000 * amplitude) + 1, 2] * M_PI_180,
+					My_Switchingangles._5Alpha[(int)(1000 * amplitude) + 1, 3] * M_PI_180,
+					My_Switchingangles._5Alpha[(int)(1000 * amplitude) + 1, 4] * M_PI_180,
 					M_PI_2,
 					M_PI_2,
-					my_switchingangles._5Alpha_Polary[(int)(1000 * amplitude) + 1], sin_time, sin_angle_freq, initial_phase);
+					My_Switchingangles._5Alpha_Polary[(int)(1000 * amplitude) + 1], sin_time, sin_angle_freq, initial_phase);
 			if (pulse_mode == Pulse_Mode.CHMP_Old_11)
 				return get_P_with_switchingangle(
-					my_switchingangles._5Alpha_Old[(int)(1000 * amplitude) + 1, 0] * M_PI_180,
-					my_switchingangles._5Alpha_Old[(int)(1000 * amplitude) + 1, 1] * M_PI_180,
-					my_switchingangles._5Alpha_Old[(int)(1000 * amplitude) + 1, 2] * M_PI_180,
-					my_switchingangles._5Alpha_Old[(int)(1000 * amplitude) + 1, 3] * M_PI_180,
-					my_switchingangles._5Alpha_Old[(int)(1000 * amplitude) + 1, 4] * M_PI_180,
+					My_Switchingangles._5Alpha_Old[(int)(1000 * amplitude) + 1, 0] * M_PI_180,
+					My_Switchingangles._5Alpha_Old[(int)(1000 * amplitude) + 1, 1] * M_PI_180,
+					My_Switchingangles._5Alpha_Old[(int)(1000 * amplitude) + 1, 2] * M_PI_180,
+					My_Switchingangles._5Alpha_Old[(int)(1000 * amplitude) + 1, 3] * M_PI_180,
+					My_Switchingangles._5Alpha_Old[(int)(1000 * amplitude) + 1, 4] * M_PI_180,
 					M_PI_2,
 					M_PI_2,
-					my_switchingangles._5OldAlpha_Polary[(int)(1000 * amplitude) + 1], sin_time, sin_angle_freq, initial_phase);
+					My_Switchingangles._5OldAlpha_Polary[(int)(1000 * amplitude) + 1], sin_time, sin_angle_freq, initial_phase);
 			if (pulse_mode == Pulse_Mode.CHMP_Wide_11)
 				return get_P_with_switchingangle(
-					my_switchingangles._5WideAlpha[(int)(1000 * amplitude) - 999, 0] * M_PI_180,
-					my_switchingangles._5WideAlpha[(int)(1000 * amplitude) - 999, 1] * M_PI_180,
-					my_switchingangles._5WideAlpha[(int)(1000 * amplitude) - 999, 2] * M_PI_180,
-					my_switchingangles._5WideAlpha[(int)(1000 * amplitude) - 999, 3] * M_PI_180,
-					my_switchingangles._5WideAlpha[(int)(1000 * amplitude) - 999, 4] * M_PI_180,
+					My_Switchingangles._5WideAlpha[(int)(1000 * amplitude) - 999, 0] * M_PI_180,
+					My_Switchingangles._5WideAlpha[(int)(1000 * amplitude) - 999, 1] * M_PI_180,
+					My_Switchingangles._5WideAlpha[(int)(1000 * amplitude) - 999, 2] * M_PI_180,
+					My_Switchingangles._5WideAlpha[(int)(1000 * amplitude) - 999, 3] * M_PI_180,
+					My_Switchingangles._5WideAlpha[(int)(1000 * amplitude) - 999, 4] * M_PI_180,
 					M_PI_2,
 					M_PI_2,
 					'B', sin_time, sin_angle_freq, initial_phase);
 			if (pulse_mode == Pulse_Mode.CHMP_9)
 				return get_P_with_switchingangle(
-				   my_switchingangles._4Alpha[(int)(1000 * amplitude) + 1, 0] * M_PI_180,
-				   my_switchingangles._4Alpha[(int)(1000 * amplitude) + 1, 1] * M_PI_180,
-				   my_switchingangles._4Alpha[(int)(1000 * amplitude) + 1, 2] * M_PI_180,
-				   my_switchingangles._4Alpha[(int)(1000 * amplitude) + 1, 3] * M_PI_180,
+				   My_Switchingangles._4Alpha[(int)(1000 * amplitude) + 1, 0] * M_PI_180,
+				   My_Switchingangles._4Alpha[(int)(1000 * amplitude) + 1, 1] * M_PI_180,
+				   My_Switchingangles._4Alpha[(int)(1000 * amplitude) + 1, 2] * M_PI_180,
+				   My_Switchingangles._4Alpha[(int)(1000 * amplitude) + 1, 3] * M_PI_180,
 				   M_PI_2,
 				   M_PI_2,
 				   M_PI_2,
-				   my_switchingangles._4Alpha_Polary[(int)(1000 * amplitude) + 1], sin_time, sin_angle_freq, initial_phase);
+				   My_Switchingangles._4Alpha_Polary[(int)(1000 * amplitude) + 1], sin_time, sin_angle_freq, initial_phase);
 			if (pulse_mode == Pulse_Mode.CHMP_Wide_9)
 				return get_P_with_switchingangle(
-				   my_switchingangles._4WideAlpha[(int)(1000 * amplitude) - 799, 0] * M_PI_180,
-				   my_switchingangles._4WideAlpha[(int)(1000 * amplitude) - 799, 1] * M_PI_180,
-				   my_switchingangles._4WideAlpha[(int)(1000 * amplitude) - 799, 2] * M_PI_180,
-				   my_switchingangles._4WideAlpha[(int)(1000 * amplitude) - 799, 3] * M_PI_180,
+				   My_Switchingangles._4WideAlpha[(int)(1000 * amplitude) - 799, 0] * M_PI_180,
+				   My_Switchingangles._4WideAlpha[(int)(1000 * amplitude) - 799, 1] * M_PI_180,
+				   My_Switchingangles._4WideAlpha[(int)(1000 * amplitude) - 799, 2] * M_PI_180,
+				   My_Switchingangles._4WideAlpha[(int)(1000 * amplitude) - 799, 3] * M_PI_180,
 				   M_PI_2,
 				   M_PI_2,
 				   M_PI_2,
 				   'A', sin_time, sin_angle_freq, initial_phase);
 			if (pulse_mode == Pulse_Mode.CHMP_7)
 				return get_P_with_switchingangle(
-				   my_switchingangles._3Alpha[(int)(1000 * amplitude) + 1, 0] * M_PI_180,
-				   my_switchingangles._3Alpha[(int)(1000 * amplitude) + 1, 1] * M_PI_180,
-				   my_switchingangles._3Alpha[(int)(1000 * amplitude) + 1, 2] * M_PI_180,
+				   My_Switchingangles._3Alpha[(int)(1000 * amplitude) + 1, 0] * M_PI_180,
+				   My_Switchingangles._3Alpha[(int)(1000 * amplitude) + 1, 1] * M_PI_180,
+				   My_Switchingangles._3Alpha[(int)(1000 * amplitude) + 1, 2] * M_PI_180,
 				   M_PI_2,
 				   M_PI_2,
 				   M_PI_2,
 				   M_PI_2,
-				   my_switchingangles._3Alpha_Polary[(int)(1000 * amplitude) + 1], sin_time, sin_angle_freq, initial_phase);
+				   My_Switchingangles._3Alpha_Polary[(int)(1000 * amplitude) + 1], sin_time, sin_angle_freq, initial_phase);
 			if (pulse_mode == Pulse_Mode.CHMP_Wide_7)
 				return get_P_with_switchingangle(
-				   my_switchingangles._3WideAlpha[(int)(1000 * amplitude) - 799, 0] * M_PI_180,
-				   my_switchingangles._3WideAlpha[(int)(1000 * amplitude) - 799, 1] * M_PI_180,
-				   my_switchingangles._3WideAlpha[(int)(1000 * amplitude) - 799, 2] * M_PI_180,
+				   My_Switchingangles._3WideAlpha[(int)(1000 * amplitude) - 799, 0] * M_PI_180,
+				   My_Switchingangles._3WideAlpha[(int)(1000 * amplitude) - 799, 1] * M_PI_180,
+				   My_Switchingangles._3WideAlpha[(int)(1000 * amplitude) - 799, 2] * M_PI_180,
 				   M_PI_2,
 				   M_PI_2,
 				   M_PI_2,
@@ -727,18 +727,18 @@ namespace VVVF_Simulator
 				   'B', sin_time, sin_angle_freq, initial_phase);
 			if (pulse_mode == Pulse_Mode.CHMP_5)
 				return get_P_with_switchingangle(
-				   my_switchingangles._2Alpha[(int)(1000 * amplitude) + 1, 0] * M_PI_180,
-				   my_switchingangles._2Alpha[(int)(1000 * amplitude) + 1, 1] * M_PI_180,
+				   My_Switchingangles._2Alpha[(int)(1000 * amplitude) + 1, 0] * M_PI_180,
+				   My_Switchingangles._2Alpha[(int)(1000 * amplitude) + 1, 1] * M_PI_180,
 				   M_PI_2,
 				   M_PI_2,
 				   M_PI_2,
 				   M_PI_2,
 				   M_PI_2,
-				   my_switchingangles._2Alpha_Polary[(int)(1000 * amplitude) + 1], sin_time, sin_angle_freq, initial_phase);
+				   My_Switchingangles._2Alpha_Polary[(int)(1000 * amplitude) + 1], sin_time, sin_angle_freq, initial_phase);
 			if (pulse_mode == Pulse_Mode.CHMP_Wide_5)
 				return get_P_with_switchingangle(
-				   my_switchingangles._2WideAlpha[(int)(1000 * amplitude) - 799, 0] * M_PI_180,
-				   my_switchingangles._2WideAlpha[(int)(1000 * amplitude) - 799, 1] * M_PI_180,
+				   My_Switchingangles._2WideAlpha[(int)(1000 * amplitude) - 799, 0] * M_PI_180,
+				   My_Switchingangles._2WideAlpha[(int)(1000 * amplitude) - 799, 1] * M_PI_180,
 				   M_PI_2,
 				   M_PI_2,
 				   M_PI_2,
@@ -747,7 +747,7 @@ namespace VVVF_Simulator
 				   'A', sin_time, sin_angle_freq, initial_phase);
 			if (pulse_mode == Pulse_Mode.CHMP_Wide_3)
 				return get_P_with_switchingangle(
-				   my_switchingangles._WideAlpha[(int)(500 * amplitude) + 1] * M_PI_180,
+				   My_Switchingangles._WideAlpha[(int)(500 * amplitude) + 1] * M_PI_180,
 				   M_PI_2,
 				   M_PI_2,
 				   M_PI_2,
@@ -757,7 +757,7 @@ namespace VVVF_Simulator
 				   'B', sin_time, sin_angle_freq, initial_phase);
 			if (pulse_mode == Pulse_Mode.SHEP_3)
 				return get_P_with_switchingangle(
-				   my_switchingangles._1Alpha_SHE[(int)(1000 * amplitude) + 1] * M_PI_180,
+				   My_Switchingangles._1Alpha_SHE[(int)(1000 * amplitude) + 1] * M_PI_180,
 				   M_PI_2,
 				   M_PI_2,
 				   M_PI_2,
@@ -767,8 +767,8 @@ namespace VVVF_Simulator
 				   'B', sin_time, sin_angle_freq, initial_phase);
 			if (pulse_mode == Pulse_Mode.SHEP_5)
 				return get_P_with_switchingangle(
-				   my_switchingangles._2Alpha_SHE[(int)(1000 * amplitude) + 1, 0] * M_PI_180,
-				   my_switchingangles._2Alpha_SHE[(int)(1000 * amplitude) + 1, 1] * M_PI_180,
+				   My_Switchingangles._2Alpha_SHE[(int)(1000 * amplitude) + 1, 0] * M_PI_180,
+				   My_Switchingangles._2Alpha_SHE[(int)(1000 * amplitude) + 1, 1] * M_PI_180,
 				   M_PI_2,
 				   M_PI_2,
 				   M_PI_2,
@@ -777,9 +777,9 @@ namespace VVVF_Simulator
 				   'A', sin_time, sin_angle_freq, initial_phase);
 			if (pulse_mode == Pulse_Mode.SHEP_7)
 				return get_P_with_switchingangle(
-				   my_switchingangles._3Alpha_SHE[(int)(1000 * amplitude) + 1, 0] * M_PI_180,
-				   my_switchingangles._3Alpha_SHE[(int)(1000 * amplitude) + 1, 1] * M_PI_180,
-				   my_switchingangles._3Alpha_SHE[(int)(1000 * amplitude) + 1, 2] * M_PI_180,
+				   My_Switchingangles._3Alpha_SHE[(int)(1000 * amplitude) + 1, 0] * M_PI_180,
+				   My_Switchingangles._3Alpha_SHE[(int)(1000 * amplitude) + 1, 1] * M_PI_180,
+				   My_Switchingangles._3Alpha_SHE[(int)(1000 * amplitude) + 1, 2] * M_PI_180,
 				   M_PI_2,
 				   M_PI_2,
 				   M_PI_2,
@@ -787,11 +787,11 @@ namespace VVVF_Simulator
 				   'B', sin_time, sin_angle_freq, initial_phase);
 			if (pulse_mode == Pulse_Mode.SHEP_11)
 				return get_P_with_switchingangle(
-				  my_switchingangles._5Alpha_SHE[(int)(1000 * amplitude) + 1, 0] * M_PI_180,
-				   my_switchingangles._5Alpha_SHE[(int)(1000 * amplitude) + 1, 1] * M_PI_180,
-				   my_switchingangles._5Alpha_SHE[(int)(1000 * amplitude) + 1, 2] * M_PI_180,
-				   my_switchingangles._5Alpha_SHE[(int)(1000 * amplitude) + 1, 3] * M_PI_180,
-				   my_switchingangles._5Alpha_SHE[(int)(1000 * amplitude) + 1, 4] * M_PI_180,
+				  My_Switchingangles._5Alpha_SHE[(int)(1000 * amplitude) + 1, 0] * M_PI_180,
+				   My_Switchingangles._5Alpha_SHE[(int)(1000 * amplitude) + 1, 1] * M_PI_180,
+				   My_Switchingangles._5Alpha_SHE[(int)(1000 * amplitude) + 1, 2] * M_PI_180,
+				   My_Switchingangles._5Alpha_SHE[(int)(1000 * amplitude) + 1, 3] * M_PI_180,
+				   My_Switchingangles._5Alpha_SHE[(int)(1000 * amplitude) + 1, 4] * M_PI_180,
 				   M_PI_2,
 				   M_PI_2,
 				   'A', sin_time, sin_angle_freq, initial_phase);
