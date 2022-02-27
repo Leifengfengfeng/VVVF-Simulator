@@ -1,6 +1,6 @@
 ﻿namespace VVVF_Simulator
 {
-    public class my_switchingangles
+    public class My_Switchingangles
     {
 
 
