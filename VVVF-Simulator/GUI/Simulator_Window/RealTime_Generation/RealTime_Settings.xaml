@@ -18,9 +18,9 @@
             </Grid.ColumnDefinitions>
             <Grid Background="#FFEF8354">
                 <Label Content="Audio Buff Size" HorizontalAlignment="Center" VerticalAlignment="Top" FontFamily="M PLUS 2" FontWeight="Bold" FontSize="22" Foreground="White" Margin="0,32,0,0"/>
-                <Label Content="Recommend : 20000" HorizontalAlignment="Center" VerticalAlignment="Top" FontFamily="M PLUS 2" FontWeight="Bold" FontSize="18" Foreground="#FFFFCA8A" Margin="0,68,0,0"/>
+                <Label Content="Recommend : 40000" HorizontalAlignment="Center" VerticalAlignment="Top" FontFamily="M PLUS 2" FontWeight="Bold" FontSize="18" Foreground="#FFFFCA8A" Margin="0,68,0,0"/>
             </Grid>
-            <TextBox x:Name="audio_buff_box" Grid.Column="1" HorizontalAlignment="Center" TextWrapping="Wrap" Text="20000" VerticalAlignment="Center" Width="389" Height="48" FontFamily="M PLUS 2" FontWeight="Bold" FontSize="22" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" TextChanged="audio_buff_box_TextChanged"/>
+            <TextBox x:Name="audio_buff_box" Grid.Column="1" HorizontalAlignment="Center" TextWrapping="Wrap" Text="40000" VerticalAlignment="Center" Width="389" Height="48" FontFamily="M PLUS 2" FontWeight="Bold" FontSize="22" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" TextChanged="audio_buff_box_TextChanged"/>
         </Grid>
         <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>

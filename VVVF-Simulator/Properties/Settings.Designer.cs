@@ -25,7 +25,7 @@ namespace VVVF_Simulator.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("20000")]
+        [global::System.Configuration.DefaultSettingValueAttribute("40000")]
         public int G_RealTime_Buff {
             get {
                 return ((int)(this["G_RealTime_Buff"]));
