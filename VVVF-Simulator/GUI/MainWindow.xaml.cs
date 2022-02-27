@@ -183,11 +183,11 @@ namespace VVVF_Simulator
         }
         public void update_Control_Showing()
         {
-            if (setting_tabs.SelectedIndex == 2)
+            if (setting_tabs.SelectedIndex == 1)
             {
                 accelerate_selected_show();
             }
-            else if (setting_tabs.SelectedIndex == 3)
+            else if (setting_tabs.SelectedIndex == 2)
             {
                 brake_selected_show();
             }
