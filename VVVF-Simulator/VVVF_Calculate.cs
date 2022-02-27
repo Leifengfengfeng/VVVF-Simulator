@@ -534,7 +534,7 @@ namespace VVVF_Simulator
 			
 		}
 
-		public static Wave_Values calculate_two_level(VVVF_Control_Values control , Pulse_Mode pulse_mode, Carrier_Freq carrier_freq_data, Sine_Control_Data sine_control)
+		public static Wave_Values calculate_two_level (VVVF_Control_Values control , Pulse_Mode pulse_mode, Carrier_Freq carrier_freq_data, Sine_Control_Data sine_control)
 		{
 			control.set_Video_Pulse_Mode(pulse_mode);
 			control.set_Video_Sine_Amplitude(sine_control.amplitude);

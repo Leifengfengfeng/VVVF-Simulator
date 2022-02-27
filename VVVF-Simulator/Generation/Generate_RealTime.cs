@@ -150,7 +150,21 @@ namespace VVVF_Simulator.Generation
                 control.reset_all_variables();
                 control.reset_control_variables();
 
-                int stat = realtime_sound_calculate(bufferedWaveProvider, ysd, control);
+                int stat;
+                try
+                {
+                    stat = realtime_sound_calculate(bufferedWaveProvider, ysd, control);
+                }
+                catch
+                {
+                    wavPlayer.Stop();
+                    wavPlayer.Dispose();
+
+                    mmDevice.Dispose();
+                    bufferedWaveProvider.ClearBuffer();
+
+                    throw;
+                }
 
                 wavPlayer.Stop();
                 wavPlayer.Dispose();
